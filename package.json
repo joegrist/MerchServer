@@ -1,0 +1,14 @@
+{
+  "name": "Branded Product Configuration Server",
+  "version": "0.0.1",
+  "description": "Server Thingy",
+  "scripts": {
+    "ts": "tsc --build ./",
+    "build": "npm run ts",
+    "server": "node build/server.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.7",
+    "typescript": "^4.8.4"
+  }
+}

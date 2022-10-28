@@ -1,0 +1,12 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "skipLibCheck": true,
+        "types": ["node"],
+        "outFile": "build/server.js"
+    },
+    "include": ["src/ts/**/*", "test/ts/**/*"],
+}
