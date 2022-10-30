@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true
+    },
+    "extends": "../config/base",
+    "include": ["ts/**/*"],
+}

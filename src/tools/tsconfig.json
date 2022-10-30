@@ -1,0 +1,7 @@
+{
+    "extends": "../config/base",
+    "compilerOptions": {
+        "outDir": "../../build/tools",
+    },
+    "include": ["ts/**/*", "../common/logger.ts"],
+}
