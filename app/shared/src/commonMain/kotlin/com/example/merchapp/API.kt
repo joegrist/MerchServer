@@ -1,5 +1,7 @@
 import io.ktor.client.*
 import io.ktor.client.engine.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 
 class TodoApiClient constructor(
     httpClientEngine: HttpClientEngine? = null) {
@@ -10,10 +12,8 @@ class TodoApiClient constructor(
 
     private val client: HttpClient =
         HttpClient(httpClientEngine!!) {
-            install(JsonFeature) {
-                serializer = KotlinxSerializer().apply {
-                    register(Task.serializer())
-                }
+            install(ContentNegotiation) {
+                json()
             }
         }
 }
