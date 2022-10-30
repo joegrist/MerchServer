@@ -6,6 +6,7 @@ plugins {
 }
 
 version = "1.0"
+val ktor_version = "2.1.3"
 
 kotlin {
     android()
@@ -27,7 +28,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
-                implementation("io.realm.kotlin:library-base:1.2.0")
+                implementation("io.ktor:ktor-client-core:$ktor_version")
+                implementation("io.ktor:ktor-client-cio:$ktor_version")
+                implementation("io.ktor:ktor-client-serialization:$ktor_version")
             }
         }
         val commonTest by getting {
