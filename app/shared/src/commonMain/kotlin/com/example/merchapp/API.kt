@@ -8,12 +8,14 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.http.ContentType.Application.Json
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
+import kotlinx.coroutines.*
 
 @Serializable data class DataMerchant(val id: Int, val name: String)
 
@@ -39,6 +41,7 @@ interface IObservable {
 
 class ApiClient: IObservable {
 
+    private val json = Json { ignoreUnknownKeys = true }
     override val observers: ArrayList<IObserver> = ArrayList()
     var nerk: Array<DataMerchant> = arrayOf()
     var loadingMerchants by Delegates.observable(true) { property, old, new ->
@@ -60,16 +63,22 @@ class ApiClient: IObservable {
         expectSuccess = true
     }
 
-    suspend fun loadMerchants() = coroutineScope {
+    fun loadMerchants()  {
         loadingMerchants = true
-        val response: HttpResponse = client.get("http://miriams-mbp.lan:3000/merchants") {
-            url {
-                parameters.append("token", "abc123")
+
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = client.get("http://miriams-mbp.lan:3000/merchants") {
+                url {
+                    parameters.append("token", "abc123")
+                }
+            }
+            nerk = json.decodeFromString(response.body())
+            client.close()
+            loadingMerchants = false
+
+            CoroutineScope(Dispatchers.Main).launch {
+                sendUpdateEvent()
             }
         }
-        nerk = Json{ ignoreUnknownKeys = true }.decodeFromString<Array<DataMerchant>>(response.body())
-        client.close()
-        loadingMerchants = false
-        sendUpdateEvent()
     }
 }
