@@ -11,5 +11,6 @@ export async function listAllMerchants(request: Request, response: Response) {
     const posts = await postRepository.find();
 
     // return loaded posts
+    response.setHeader('content-type', 'application/json');
     response.send(posts);
 }

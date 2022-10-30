@@ -3,11 +3,20 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import kotlinx.serialization.Serializable
+
+@Serializable
+class Merchant: RealmObject {
+    @PrimaryKey
+    var id: Int = 0
+    var name: String = ""
+}
 
 class Purchaseable : RealmObject {
     @PrimaryKey
     var id: Int = 0
-    var merchantName: String = ""
+    var merchant: Merchant? = null
+    var name: String = ""
     var designName: String = ""
 }
 
