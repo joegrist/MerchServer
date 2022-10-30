@@ -3,7 +3,7 @@ import io.ktor.client.engine.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 
-class TodoApiClient constructor(
+class ApiClient constructor(
     httpClientEngine: HttpClientEngine? = null) {
     companion object {
         const val BASE_ENDPOINT =
