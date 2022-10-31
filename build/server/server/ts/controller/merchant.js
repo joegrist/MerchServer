@@ -50,6 +50,7 @@ function listAllMerchants(request, response) {
                 case 1:
                     posts = _a.sent();
                     // return loaded posts
+                    response.setHeader('content-type', 'application/json');
                     response.send(posts);
                     return [2 /*return*/];
             }

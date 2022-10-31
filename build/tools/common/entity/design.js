@@ -21,12 +21,12 @@ var Design = /** @class */ (function () {
         __metadata("design:type", Number)
     ], Design.prototype, "id");
     __decorate([
-        (0, typeorm_1.OneToOne)(function () { return merchant_1.Merchant; }),
+        (0, typeorm_1.ManyToOne)(function () { return merchant_1.Merchant; }),
         (0, typeorm_1.JoinColumn)(),
         __metadata("design:type", merchant_1.Merchant)
     ], Design.prototype, "merchant");
     __decorate([
-        (0, typeorm_1.OneToOne)(function () { return product_1.Product; }),
+        (0, typeorm_1.ManyToOne)(function () { return product_1.Product; }),
         (0, typeorm_1.JoinColumn)(),
         __metadata("design:type", product_1.Product)
     ], Design.prototype, "product");

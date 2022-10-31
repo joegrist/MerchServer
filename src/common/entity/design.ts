@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm"
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm"
 import {Merchant} from "./merchant"
 import {Product} from "./product"
 
@@ -8,11 +8,11 @@ export class Design {
     @PrimaryGeneratedColumn() 
     id: number
 
-    @OneToOne(() => Merchant)
+    @ManyToOne(() => Merchant)
     @JoinColumn()
     merchant: Merchant
 
-    @OneToOne(() => Product)
+    @ManyToOne(() => Product)
     @JoinColumn()
     product: Product
 

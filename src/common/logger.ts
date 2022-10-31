@@ -1,10 +1,10 @@
 export class Logger {
 
-    log(message: String) {
+    log(message: string) {
         console.log(message)
     }
 
-    err(error: Error) {
-        console.error(`${error.name}: ${error.message}`)
+    err(message: string, error: Error) {
+        console.error(`${message}: ${error.name}: ${error.message}`)
     }
 }

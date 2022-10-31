@@ -1,11 +1,10 @@
 import Jimp from 'jimp';
+import { Logger } from "../../common/logger"
 
 const root = "img/"
-const input = `${root}product/1/`
-const design = `${root}design/1/src.png`
-const output  = `${root}design/1/preview/`
-const color = 0x336699
-const view = "Front"
+const input = `${root}view`
+const design = `${root}design`
+const log = new Logger()
 
 class Point {
     constructor(public x: number, public y: number) {}
@@ -25,17 +24,23 @@ class Frame {
     }
 }
 
-async function main(): Promise<void> {
-    let base = await Jimp.read(`${input}base.png`)
-    let artworkMask = await Jimp.read(`${input}artwork_mask.png`)
-    let colorMask = await Jimp.read(`${input}color_mask.png`)
-    let artwork = await Jimp.read(design)
-    let previewFrame = new Frame(0, 0, 1000, 2000)
-    let artworkFrame = new Frame (100, 100, 800, 1800)
-    await generate(artwork, base, artworkMask, colorMask, artworkFrame, previewFrame, color, view)
+export async function process(description: string, name: string, viewId: number, designId: number, color: number): Promise<void> {
+    try {
+        let base = await Jimp.read(`${input}/${viewId}/base.png`)
+        let artworkMask = await Jimp.read(`${input}/${viewId}/artwork_mask.png`)
+        let colorMask = await Jimp.read(`${input}/${viewId}/color_mask.png`)
+        let artwork = await Jimp.read(`${design}/${designId}/src.png`)
+        let previewFrame = new Frame(0, 0, 1000, 2000)
+        let artworkFrame = new Frame (100, 100, 800, 1800)
+        log.log(`Processing ${description}`)
+        await generate(artwork, base, artworkMask, colorMask, artworkFrame, previewFrame, color, name, designId)
+    } catch (e) {
+        log.err(`Skipping ${description}`, e)
+    }
+    
 }
 
-export async function generate(artwork: Jimp, product: Jimp, artworkMask: Jimp, colorMask: Jimp, artworkFrame: Frame, previewFrame: Frame, background: number, name: string) {
+export async function generate(artwork: Jimp, product: Jimp, artworkMask: Jimp, colorMask: Jimp, artworkFrame: Frame, previewFrame: Frame, background: number, name: string, id: number) {
 
     // Scale source images for output
     product.cover(previewFrame.size.width, previewFrame.size.height)
@@ -63,7 +68,5 @@ export async function generate(artwork: Jimp, product: Jimp, artworkMask: Jimp, 
     out.composite(productForeground, 0, 0)
 
     // Save
-    out.write(`${output}${name}.png`)
+    out.write(`${design}/${id}/preview/${name}.png`)
 }
-
-main()

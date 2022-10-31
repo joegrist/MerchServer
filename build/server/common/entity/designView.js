@@ -9,34 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 exports.__esModule = true;
-exports.Design = void 0;
+exports.DesignView = void 0;
 var typeorm_1 = require("typeorm");
-var merchant_1 = require("./merchant");
-var product_1 = require("./product");
-var Design = /** @class */ (function () {
-    function Design() {
+var design_1 = require("./design");
+var DesignView = /** @class */ (function () {
+    function DesignView() {
     }
     __decorate([
         (0, typeorm_1.PrimaryGeneratedColumn)(),
         __metadata("design:type", Number)
-    ], Design.prototype, "id");
+    ], DesignView.prototype, "id");
     __decorate([
-        (0, typeorm_1.ManyToOne)(function () { return merchant_1.Merchant; }),
+        (0, typeorm_1.ManyToOne)(function () { return design_1.Design; }),
         (0, typeorm_1.JoinColumn)(),
-        __metadata("design:type", merchant_1.Merchant)
-    ], Design.prototype, "merchant");
-    __decorate([
-        (0, typeorm_1.ManyToOne)(function () { return product_1.Product; }),
-        (0, typeorm_1.JoinColumn)(),
-        __metadata("design:type", product_1.Product)
-    ], Design.prototype, "product");
+        __metadata("design:type", design_1.Design)
+    ], DesignView.prototype, "design");
     __decorate([
         (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Design.prototype, "name");
-    Design = __decorate([
+        __metadata("design:type", Number)
+    ], DesignView.prototype, "background");
+    DesignView = __decorate([
         (0, typeorm_1.Entity)()
-    ], Design);
-    return Design;
+    ], DesignView);
+    return DesignView;
 }());
-exports.Design = Design;
+exports.DesignView = DesignView;

@@ -6,6 +6,7 @@ import { Design } from "./entity/design"
 import { Merchant } from "./entity/merchant"
 import { Product } from "./entity/product"
 import { View } from "./entity/view"
+import { DesignView } from "./entity/designView"
 
 export const ds = new DataSource({
     type: "mysql",
@@ -14,7 +15,7 @@ export const ds = new DataSource({
     username: "root",
     password: "root",
     database: "merch_server",
-    entities: [Design, Merchant, Product, View],
+    entities: [Design, Merchant, Product, View, DesignView],
     synchronize: true,
     logging: false
 })

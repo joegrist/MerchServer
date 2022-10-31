@@ -7,6 +7,7 @@ import * as bodyParser from "body-parser"
 import {appInfo} from "./controller/info"
 import {listAllMerchants} from "./controller/merchant"
 import {getDesign} from "./controller/design"
+import {listDesignsForMerchant} from "./controller/designs"
 
 let log = new Logger()
 
@@ -32,6 +33,13 @@ ds.initialize().then(async () => {
         .catch(err => next(err));
      });
 
+     app.get("/merchant/:merchantId/designs", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> listDesignsForMerchant`)
+        listDesignsForMerchant(request, response)
+        .then(() => next)
+        .catch(err => next(err));
+     });
+
      app.get("/design/:id", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> getDesign`)
         getDesign(request, response)
@@ -45,5 +53,5 @@ ds.initialize().then(async () => {
     console.log("Express application is up and running on port 3000");
 
 }).catch((err: Error) => {
-    log.err(err)
+    log.err(`Error on startup`, err)
 })

@@ -7,8 +7,8 @@ var Logger = /** @class */ (function () {
     Logger.prototype.log = function (message) {
         console.log(message);
     };
-    Logger.prototype.err = function (error) {
-        console.error("".concat(error.name, ": ").concat(error.message));
+    Logger.prototype.err = function (message, error) {
+        console.error("".concat(message, ": ").concat(error.name, ": ").concat(error.message));
     };
     return Logger;
 }());

@@ -22,6 +22,7 @@ class Purchaseable : RealmObject {
     var merchant: Merchant? = null
     var name: String = ""
     var designName: String = ""
+    var thumbnail: String = ""
 }
 
 class Cart: RealmObject {
@@ -54,5 +55,17 @@ object Database {
 
     fun merchants(): RealmResults<Merchant> {
         return realm.query<Merchant>().find()
+    }
+
+    fun saveOrUpdatePurchaseables(m: ArrayList<Purchaseable>) {
+        realm.writeBlocking {
+            m.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
+        }
+    }
+
+    fun purchaseables(merchantId: Int): RealmResults<Purchaseable> {
+        return realm.query<Purchaseable>("merchant.id = $0", merchantId).find()
     }
 }

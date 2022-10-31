@@ -73,5 +73,5 @@ dataSource_1.ds.initialize().then(function () { return __awaiter(void 0, void 0,
         return [2 /*return*/];
     });
 }); })["catch"](function (err) {
-    log.err(err);
+    log.err("Error on startup", err);
 });

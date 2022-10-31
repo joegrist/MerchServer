@@ -19,7 +19,7 @@ export async function getDesign(request: Request, response: Response) {
 
     // load design
     let id = parseInt(request.params["id"])
-    if (!id) throw new Error("id paramater was not numeric")
+    if (!id) throw new Error("id parameter was not numeric")
     const design = await designs.findOne({
         where: {id : id},
         relations: ["product"]

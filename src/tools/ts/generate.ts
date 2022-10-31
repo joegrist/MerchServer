@@ -10,5 +10,5 @@ ds.initialize().then(async () => {
     loader.loadDemoData(ds)
 
 }).catch((err: Error) => {
-    log.err(err)
+    log.err(`Error on startup`, err)
 })

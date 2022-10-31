@@ -42,6 +42,7 @@ var merchant_1 = require("../../common/entity/merchant");
 var product_1 = require("../../common/entity/product");
 var design_1 = require("../../common/entity/design");
 var view_1 = require("../../common/entity/view");
+var designView_1 = require("../../common/entity/designView");
 var DemoDataLoader = /** @class */ (function () {
     function DemoDataLoader() {
         this.log = new logger_1.Logger();
@@ -49,10 +50,11 @@ var DemoDataLoader = /** @class */ (function () {
         this.foundationMerchantName = "Van Demon Kyokushin";
         this.foundationProductName = "Mens Black Hoodie";
         this.foundationDesignName = "Gang Member Mens Hoodie";
+        this.demoDesignName = "Cursor Hoodie";
     }
     DemoDataLoader.prototype.loadDemoData = function (ds) {
         return __awaiter(this, void 0, void 0, function () {
-            var merchantRepo, productRepo, designRepo, viewRepo, product;
+            var merchantRepo, productRepo, designRepo, viewRepo, designViewRepo, product, merchant1, merchant2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -60,6 +62,7 @@ var DemoDataLoader = /** @class */ (function () {
                         productRepo = ds.getRepository(product_1.Product);
                         designRepo = ds.getRepository(design_1.Design);
                         viewRepo = ds.getRepository(view_1.View);
+                        designViewRepo = ds.getRepository(designView_1.DesignView);
                         return [4 /*yield*/, this.ensureMerchant(merchantRepo, this.demoMerchantName)];
                     case 1:
                         _a.sent();
@@ -69,17 +72,26 @@ var DemoDataLoader = /** @class */ (function () {
                         return [4 /*yield*/, this.ensureProduct(productRepo, this.foundationProductName)];
                     case 3:
                         _a.sent();
-                        return [4 /*yield*/, this.ensureDesign(merchantRepo, productRepo, designRepo, this.foundationDesignName)];
-                    case 4:
-                        _a.sent();
                         return [4 /*yield*/, productRepo.findOneBy({ name: this.foundationProductName })];
-                    case 5:
+                    case 4:
                         product = _a.sent();
                         return [4 /*yield*/, this.ensureView(viewRepo, product, "Front")];
-                    case 6:
+                    case 5:
                         _a.sent();
                         return [4 /*yield*/, this.ensureView(viewRepo, product, "Back")];
+                    case 6:
+                        _a.sent();
+                        return [4 /*yield*/, merchantRepo.findOneBy({ name: this.foundationMerchantName })];
                     case 7:
+                        merchant1 = _a.sent();
+                        return [4 /*yield*/, this.ensureDesign(merchant1, viewRepo, designViewRepo, productRepo, designRepo, this.foundationDesignName, 0x336699)];
+                    case 8:
+                        _a.sent();
+                        return [4 /*yield*/, merchantRepo.findOneBy({ name: this.demoMerchantName })];
+                    case 9:
+                        merchant2 = _a.sent();
+                        return [4 /*yield*/, this.ensureDesign(merchant2, viewRepo, designViewRepo, productRepo, designRepo, this.demoDesignName, 0x996633)];
+                    case 10:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -128,9 +140,10 @@ var DemoDataLoader = /** @class */ (function () {
             });
         });
     };
-    DemoDataLoader.prototype.ensureDesign = function (merchants, products, designs, name) {
+    DemoDataLoader.prototype.ensureDesign = function (merchant, viewList, designViewList, products, designs, name, background) {
         return __awaiter(this, void 0, void 0, function () {
-            var d, merchant, product, design;
+            var d, product, design, views;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, designs.findOneBy({ name: name })];
@@ -138,11 +151,8 @@ var DemoDataLoader = /** @class */ (function () {
                         d = _a.sent();
                         if (d)
                             return [2 /*return*/];
-                        return [4 /*yield*/, merchants.findOneBy({ name: this.foundationMerchantName })];
-                    case 2:
-                        merchant = _a.sent();
                         return [4 /*yield*/, products.findOneBy({ name: this.foundationProductName })];
-                    case 3:
+                    case 2:
                         product = _a.sent();
                         this.log.log("Adding Design ".concat(name));
                         design = new design_1.Design();
@@ -150,8 +160,18 @@ var DemoDataLoader = /** @class */ (function () {
                         design.product = product;
                         design.merchant = merchant;
                         return [4 /*yield*/, designs.save(design)];
-                    case 4:
+                    case 3:
                         _a.sent();
+                        return [4 /*yield*/, viewList.findBy({ product: product })];
+                    case 4:
+                        views = _a.sent();
+                        views.forEach(function (view) {
+                            _this.log.log("Adding Design View ".concat(name, " ").concat(view.name));
+                            var dv = new designView_1.DesignView();
+                            dv.background = background;
+                            dv.design = design;
+                            designViewList.save(dv);
+                        });
                         return [2 /*return*/];
                 }
             });

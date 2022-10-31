@@ -3,6 +3,7 @@ import { Merchant } from "../../common/entity/merchant"
 import { Product } from "../../common/entity/product"
 import { Design } from "../../common/entity/design"
 import { View } from "../../common/entity/view"
+import { DesignView } from "../../common/entity/designView"
 import { DataSource, Repository } from "typeorm"
 
 export class DemoDataLoader {
@@ -12,19 +13,27 @@ export class DemoDataLoader {
     foundationMerchantName = "Van Demon Kyokushin"
     foundationProductName = "Mens Black Hoodie"
     foundationDesignName = "Gang Member Mens Hoodie"
+    demoDesignName = "Cursor Hoodie"
 
     public async loadDemoData(ds: DataSource) {
         const merchantRepo = ds.getRepository(Merchant)
         const productRepo = ds.getRepository(Product)
         const designRepo = ds.getRepository(Design)
         const viewRepo = ds.getRepository(View)
+        const designViewRepo = ds.getRepository(DesignView)
         await this.ensureMerchant(merchantRepo, this.demoMerchantName)
         await this.ensureMerchant(merchantRepo, this.foundationMerchantName)
         await this.ensureProduct(productRepo, this.foundationProductName)
-        await this.ensureDesign(merchantRepo, productRepo, designRepo, this.foundationDesignName)
+        
         let product = await productRepo.findOneBy({name: this.foundationProductName})
         await this.ensureView(viewRepo, product, "Front")
         await this.ensureView(viewRepo, product, "Back")
+
+        const merchant1 = await merchantRepo.findOneBy({name: this.foundationMerchantName})
+        await this.ensureDesign(merchant1, viewRepo, designViewRepo, productRepo, designRepo, this.foundationDesignName, 0x336699)
+
+        const merchant2 = await merchantRepo.findOneBy({name: this.demoMerchantName})
+        await this.ensureDesign(merchant2, viewRepo, designViewRepo, productRepo, designRepo, this.demoDesignName, 0x996633)
     }
 
     async ensureMerchant(merchants: Repository<Merchant>, name: string) {
@@ -45,20 +54,29 @@ export class DemoDataLoader {
         await products.save(product)
     }
 
-    async ensureDesign(merchants: Repository<Merchant>, products: Repository<Product>, designs: Repository<Design>, name: string) {
+    async ensureDesign(merchant: Merchant, viewList: Repository<View>, designViewList: Repository<DesignView>, products: Repository<Product>, designs: Repository<Design>, name: string, background: number) {
 
         const d = await designs.findOneBy({name: name})
         if (d) return
 
-        const merchant = await merchants.findOneBy({name: this.foundationMerchantName})
         const product = await products.findOneBy({name: this.foundationProductName})
-        
         this.log.log(`Adding Design ${name}`)
         const design = new Design()
         design.name = name
         design.product = product
         design.merchant = merchant
+        
         await designs.save(design)
+
+        const views = await viewList.findBy({product: product})
+        views.forEach (view => {
+            this.log.log(`Adding Design View ${name} ${view.name}`)
+            const dv = new DesignView()
+            dv.background = background
+            dv.view = view
+            dv.design = design
+            designViewList.save(dv)
+        })
     }
 
     async ensureView(views: Repository<View>, product: Product, name: string) {
