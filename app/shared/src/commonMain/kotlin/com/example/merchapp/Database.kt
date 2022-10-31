@@ -1,11 +1,15 @@
 package com.example.merchapp
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.ext.query
+import io.realm.kotlin.query.RealmResults
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.serialization.Serializable
 
 @Serializable
+
 class Merchant: RealmObject {
     @PrimaryKey
     var id: Int = 0
@@ -28,14 +32,27 @@ class Purchase : RealmObject {
     var cart: Cart? = null
 }
 
-class Database {
-    val configuration = RealmConfiguration.Builder(
+object Database {
+    private val configuration = RealmConfiguration.Builder(
          setOf(
-            Purchase::class,
-            Purchaseable::class,
-            Cart::class
+             Merchant::class,
+             Purchase::class,
+             Purchaseable::class,
+             Cart::class
         )
     ).build()
 
-    val realm = Realm.open(configuration)
+    private val realm = Realm.open(configuration)
+
+    fun saveOrUpdateMerchants(m: ArrayList<Merchant>) {
+        realm.writeBlocking {
+            m.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
+        }
+    }
+
+    fun merchants(): RealmResults<Merchant> {
+        return realm.query<Merchant>().find()
+    }
 }

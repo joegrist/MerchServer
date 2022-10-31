@@ -38,12 +38,13 @@ class MainActivity : AppCompatActivity(), IObserver  {
         itemsAdapter?.notifyDataSetChanged()
 
         client.add(this)
+        showCurrent()
         client.loadMerchants()
         update()
     }
 
     override fun update() {
-        if (client.loadingMerchants) {
+        if (client.c) {
             loader?.visibility = VISIBLE
             showCurrent()
             return
@@ -51,12 +52,12 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
         showCurrent()
         loader?.visibility = GONE
-        tv?.text = client.nerk.toString()
+        tv?.text = client.merchants().count().toString()
     }
 
     private fun showCurrent() {
         itemsAdapter?.clear()
-        client.nerk.forEach {
+        client.merchants().forEach {
             itemsAdapter?.add(it.name)
         }
         itemsAdapter?.notifyDataSetChanged()

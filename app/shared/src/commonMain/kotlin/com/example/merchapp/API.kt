@@ -1,3 +1,4 @@
+import com.example.merchapp.Database
 import com.example.merchapp.Merchant
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -43,10 +44,7 @@ class ApiClient: IObservable {
 
     private val json = Json { ignoreUnknownKeys = true }
     override val observers: ArrayList<IObserver> = ArrayList()
-    var nerk: Array<DataMerchant> = arrayOf()
-    var loadingMerchants by Delegates.observable(true) { property, old, new ->
-        println("$property has changed from $old to $new")
-    }
+    var loadingMerchants = false
 
     companion object {
         const val BASE_ENDPOINT = "http://jsonplaceholder.typicode.com"
@@ -63,6 +61,14 @@ class ApiClient: IObservable {
         expectSuccess = true
     }
 
+    fun merchants(): ArrayList<DataMerchant> {
+        val result = ArrayList<DataMerchant>()
+        Database.merchants().forEach {
+            result.add(DataMerchant(it.id, it.name))
+        }
+        return result
+    }
+
     fun loadMerchants()  {
         loadingMerchants = true
 
@@ -72,7 +78,16 @@ class ApiClient: IObservable {
                     parameters.append("token", "abc123")
                 }
             }
-            nerk = json.decodeFromString(response.body())
+
+            val data : Array<DataMerchant> = json.decodeFromString(response.body())
+            val list = ArrayList<Merchant>()
+            data.forEach {
+                val m = Merchant()
+                m.id = it.id
+                m.name = it.name
+                list.add(m)
+            }
+            Database.saveOrUpdateMerchants(list)
             client.close()
             loadingMerchants = false
 
