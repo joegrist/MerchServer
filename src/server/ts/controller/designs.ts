@@ -9,12 +9,15 @@ class DesignViewDTO {
     thumbnail: string
     name: string
     background: number
+    designId: number
+    designName: string
 }
 
 class DesignDTO {
     id: number
     merchantId: number
     productId: number
+    productName: string
     name: string
     thumbnail: string
     views: DesignViewDTO[]
@@ -39,6 +42,7 @@ export async function listDesignsForMerchant(request: Request, response: Respons
         dto.name = design.name
         dto.merchantId = design.merchant.id
         dto.productId = design.product.id
+        dto.productName = design.product.name
         dto.thumbnail = `${design.id}/src.png`
         const viewList = await views.find({
             where: { design: { id: design.id } },
@@ -49,6 +53,8 @@ export async function listDesignsForMerchant(request: Request, response: Respons
              v.id = view.id
              v.background = view.background
              v.name = view.view.name
+             v.designId = design.id
+             v.designName = design.name
              v.thumbnail = `${design.id}/preview/${view.view.name}.png`
              return v
          })

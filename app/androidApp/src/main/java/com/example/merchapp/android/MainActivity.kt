@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
         lv = findViewById(R.id.list_view)
         loader = findViewById(R.id.loader)
         tv?.text = greet()
+
         itemsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
         lv?.adapter = itemsAdapter
 

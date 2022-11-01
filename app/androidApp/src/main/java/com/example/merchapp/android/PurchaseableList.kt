@@ -2,20 +2,28 @@ package com.example.merchapp.android
 
 import ApiClient
 import IObserver
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.database.DataSetObserver
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
 
 class PurchaseableList : AppCompatActivity(), IObserver {
 
     var tv: TextView? = null
     var lv: ListView? = null
     var loader: View? = null
-    var itemsAdapter: ArrayAdapter<String>? = null
+    var itemsAdapter: PurchaseableListAdapter? = null
 
     private val client = ApiClient()
     private var merchantId = 1
@@ -23,8 +31,14 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_purchaseable_list)
+
+        tv = findViewById(R.id.text_view)
+        lv = findViewById(R.id.list_view)
+        loader = findViewById(R.id.loader)
+        tv?.text = greet()
+
         merchantId = intent.extras?.get("id") as? Int ?: 1
-        itemsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
+        itemsAdapter = PurchaseableListAdapter(this, arrayListOf())
         lv?.adapter = itemsAdapter
 
         lv?.setOnItemClickListener { parent, view, position, id ->
@@ -32,11 +46,6 @@ class PurchaseableList : AppCompatActivity(), IObserver {
             intent.putExtra("id", position)
             this.startActivity(intent)
         }
-
-        tv = findViewById(R.id.text_view)
-        lv = findViewById(R.id.list_view)
-        loader = findViewById(R.id.loader)
-        tv?.text = greet()
 
         client.add(this)
         showCurrent()
@@ -59,7 +68,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     private fun showCurrent() {
         itemsAdapter?.clear()
         client.purchaseables(merchantId).forEach {
-            itemsAdapter?.add(it.name)
+            itemsAdapter?.add(it)
         }
         itemsAdapter?.notifyDataSetChanged()
     }

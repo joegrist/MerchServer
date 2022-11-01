@@ -1,6 +1,12 @@
 package com.example.merchapp.android
 
+import ApiClient
+import IObserver
+import PurchaseableDTO
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ListView
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -11,30 +17,28 @@ import com.example.merchapp.android.databinding.ActivityPurchaseableBinding
 
 class Purchaseable : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityPurchaseableBinding
+    private var purchaseableId = 0
+    private var purchaseable: PurchaseableDTO? = null
+    private var title: TextView? = null
+    private var list: ListView? = null
+    private var button: Button? = null
+    private val client = ApiClient()
+    var itemsAdapter: ViewListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityPurchaseableBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        purchaseableId = intent.extras?.get("id") as? Int ?: 1
+        setContentView(R.layout.activity_purchaseable)
 
-        setSupportActionBar(binding.toolbar)
+        title = findViewById(R.id.title)
+        list = findViewById(R.id.view_list)
+        button = findViewById(R.id.order_button)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_purchaseable)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        purchaseable = client.purchaseable(purchaseableId)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_purchaseable)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        title?.text = purchaseable?.name
+        itemsAdapter = ViewListAdapter(this, purchaseable?.views ?: arrayListOf())
+        list?.adapter = itemsAdapter
     }
 }

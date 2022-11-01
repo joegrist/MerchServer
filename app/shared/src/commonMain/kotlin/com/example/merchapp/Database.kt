@@ -21,19 +21,26 @@ class Purchaseable : RealmObject {
     @PrimaryKey
     var id: Int = 0
     var merchantId: Int = 0
+    var productId: Int = 0
     var name: String = ""
     var designName: String = ""
+    var productName: String = ""
     var thumbnail: String = ""
 }
 
 class View: RealmObject {
+    @PrimaryKey
     var id: Int = 0
     var purchaseableid: Int = 0
+    var designId: Int = 0
+    var designName: String = ""
     var background: Int = 0
     var thumbnail: String = ""
+    var name: String = ""
 }
 
 class Cart: RealmObject {
+    @PrimaryKey
     var id: Int = 0
 }
 
@@ -47,7 +54,8 @@ object Database {
              Merchant::class,
              Purchase::class,
              Purchaseable::class,
-             Cart::class
+             Cart::class,
+             View::class
         )
     ).build()
 
@@ -62,11 +70,11 @@ object Database {
     }
 
     fun merchant(id: Int): Merchant? {
-        return realm.query<Merchant>("id = $id").find().get(0)
+        return realm.query<Merchant>("id = $id").first().find()
     }
 
-    fun merchants(): RealmResults<Merchant> {
-        return realm.query<Merchant>().find()
+    fun merchants(): Array<Merchant> {
+        return realm.query<Merchant>().find().toTypedArray()
     }
 
     fun saveOrUpdatePurchaseables(m: ArrayList<Purchaseable>) {
@@ -77,15 +85,23 @@ object Database {
         }
     }
 
-    fun purchaseables(merchantId: Int): RealmResults<Purchaseable> {
-        return realm.query<Purchaseable>("merchantId = $0", merchantId).find()
+    fun purchaseables(merchantId: Int): Array<Purchaseable> {
+        return realm.query<Purchaseable>("merchantId = $0", merchantId).find().toTypedArray()
     }
 
-    fun purchaseable(id: Int): RealmSingleQuery<Purchaseable> {
-        return realm.query<Purchaseable>("id = $0", id).first()
+    fun purchaseable(id: Int): Purchaseable? {
+        return realm.query<Purchaseable>("id = $0", id).first().find()
     }
 
-    fun views(purchaseableId: Int): RealmResults<Purchaseable> {
-        return realm.query<View>("purchaseableId = $0", purchaseableId).find()
+    fun views(purchaseableId: Int): Array<View> {
+        return realm.query<View>("designId = $0", purchaseableId).find().toTypedArray()
+    }
+
+    fun saveOrUpdateViews(m: ArrayList<View>) {
+        realm.writeBlocking {
+            m.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
+        }
     }
 }

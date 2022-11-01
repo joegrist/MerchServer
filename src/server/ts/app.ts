@@ -6,7 +6,6 @@ import * as express from "express"
 import * as bodyParser from "body-parser"
 import {appInfo} from "./controller/info"
 import {listAllMerchants} from "./controller/merchant"
-import {getDesign} from "./controller/design"
 import {listDesignsForMerchant} from "./controller/designs"
 
 let log = new Logger()
@@ -36,13 +35,6 @@ ds.initialize().then(async () => {
      app.get("/merchant/:merchantId/designs", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> listDesignsForMerchant`)
         listDesignsForMerchant(request, response)
-        .then(() => next)
-        .catch(err => next(err));
-     });
-
-     app.get("/design/:id", (request: Request, response: Response, next: Function) => {
-        log.log(`${request.path} -> getDesign`)
-        getDesign(request, response)
         .then(() => next)
         .catch(err => next(err));
      });
