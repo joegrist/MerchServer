@@ -3,6 +3,7 @@ package com.example.merchapp.android
 import ApiClient
 import IObserver
 import PurchaseableDTO
+import PurchaseableViewDTO
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ListView
@@ -24,6 +25,7 @@ class Purchaseable : AppCompatActivity() {
     private var button: Button? = null
     private val client = ApiClient()
     var itemsAdapter: ViewListAdapter? = null
+    var items: ArrayList<PurchaseableViewDTO> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,8 @@ class Purchaseable : AppCompatActivity() {
         purchaseable = client.purchaseable(purchaseableId)
 
         title?.text = purchaseable?.name
-        itemsAdapter = ViewListAdapter(this, purchaseable?.views ?: arrayListOf())
+        items = purchaseable?.views ?: arrayListOf()
+        itemsAdapter = ViewListAdapter(this, items)
         list?.adapter = itemsAdapter
     }
 }

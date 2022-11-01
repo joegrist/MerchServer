@@ -17,24 +17,9 @@ import kotlinx.coroutines.launch
 import java.io.InputStream
 import java.net.URL
 
-class ViewListAdapter(private val context: Activity, private val list: ArrayList<PurchaseableViewDTO>): ArrayAdapter<PurchaseableViewDTO>(context, 0) {
-
-    override fun getCount(): Int {
-        return list.count()
-    }
-
-    override fun clear() {
-        list.clear()
-    }
-
-    override fun add(`object`: PurchaseableViewDTO?) {
-        if (`object` != null) {
-            list.add(`object`)
-        }
-    }
-
+class ViewListAdapter(private val context: Activity, list: ArrayList<PurchaseableViewDTO>): ArrayAdapter<PurchaseableViewDTO>(context, 0, list) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val p: PurchaseableViewDTO = list[position]
+        val p= getItem(position) ?: return View(context)
         var view = convertView
 
         if (view == null) {
@@ -62,5 +47,4 @@ class ViewListAdapter(private val context: Activity, private val list: ArrayList
 
         return view ?: View(context)
     }
-
  }

@@ -108,7 +108,7 @@ class ApiClient: IObservable {
         val p = Database.purchaseable(id)
         val result = PurchaseableDTO(id, p?.merchantId ?: -1, p?.productId ?: -1, p?.thumbnail ?: "", p?.name ?: "", p?.productName ?: "", arrayListOf())
         Database.views(id).forEach {
-            result.views.add(PurchaseableViewDTO(it.id, -1, it.designName, it.thumbnail, it.name, it.background))
+            result.views.add(PurchaseableViewDTO(it.id, it.purchaseableid, it.designName, it.thumbnail, it.name, it.background))
         }
         return result
     }
@@ -161,7 +161,7 @@ class ApiClient: IObservable {
                 p.name = it.name
                 p.productName = it.productName
                 p.thumbnail = it.thumbnail
-                p.merchantId = it.id
+                p.merchantId = it.merchantId
                 p.productId = it.productId
                 purchasableList.add(p)
                 it.views.forEach {

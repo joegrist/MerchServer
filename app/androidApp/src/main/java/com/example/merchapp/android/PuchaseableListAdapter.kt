@@ -16,24 +16,11 @@ import kotlinx.coroutines.launch
 import java.io.InputStream
 import java.net.URL
 
-class PurchaseableListAdapter(private val context: Activity, private val list: ArrayList<PurchaseableDTO>): ArrayAdapter<PurchaseableDTO>(context, 0) {
-
-    override fun getCount(): Int {
-        return list.count()
-    }
-
-    override fun clear() {
-        list.clear()
-    }
-
-    override fun add(`object`: PurchaseableDTO?) {
-        if (`object` != null) {
-            list.add(`object`)
-        }
-    }
+class PurchaseableListAdapter(private val context: Activity, list: ArrayList<PurchaseableDTO>): ArrayAdapter<PurchaseableDTO>(context, 0, list) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val p: PurchaseableDTO = list[position]
+
+        val p = getItem(position) ?: return View(context)
         var view = convertView
 
         if (view == null) {
@@ -48,7 +35,6 @@ class PurchaseableListAdapter(private val context: Activity, private val list: A
         title?.text = p.name
         sub?.text = p.productName
 
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val bitmap =BitmapFactory.decodeStream(URL("http://hugo.lan:8888/${p.thumbnail}").content as InputStream)
@@ -62,5 +48,4 @@ class PurchaseableListAdapter(private val context: Activity, private val list: A
 
         return view ?: View(context)
     }
-
  }

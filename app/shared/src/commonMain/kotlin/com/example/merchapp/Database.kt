@@ -23,7 +23,6 @@ class Purchaseable : RealmObject {
     var merchantId: Int = 0
     var productId: Int = 0
     var name: String = ""
-    var designName: String = ""
     var productName: String = ""
     var thumbnail: String = ""
 }
@@ -32,7 +31,6 @@ class View: RealmObject {
     @PrimaryKey
     var id: Int = 0
     var purchaseableid: Int = 0
-    var designId: Int = 0
     var designName: String = ""
     var background: Int = 0
     var thumbnail: String = ""
@@ -94,7 +92,7 @@ object Database {
     }
 
     fun views(purchaseableId: Int): Array<View> {
-        return realm.query<View>("designId = $0", purchaseableId).find().toTypedArray()
+        return realm.query<View>("purchaseableid = $0", purchaseableId).find().toTypedArray()
     }
 
     fun saveOrUpdateViews(m: ArrayList<View>) {

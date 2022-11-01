@@ -2,6 +2,7 @@ package com.example.merchapp.android
 
 import ApiClient
 import IObserver
+import PurchaseableDTO
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -24,6 +25,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     var lv: ListView? = null
     var loader: View? = null
     var itemsAdapter: PurchaseableListAdapter? = null
+    var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
     private val client = ApiClient()
     private var merchantId = 1
@@ -38,12 +40,12 @@ class PurchaseableList : AppCompatActivity(), IObserver {
         tv?.text = greet()
 
         merchantId = intent.extras?.get("id") as? Int ?: 1
-        itemsAdapter = PurchaseableListAdapter(this, arrayListOf())
+        itemsAdapter = PurchaseableListAdapter(this, items)
         lv?.adapter = itemsAdapter
 
         lv?.setOnItemClickListener { parent, view, position, id ->
             val intent = Intent(this, Purchaseable::class.java)
-            intent.putExtra("id", position)
+            intent.putExtra("id", items.get(position).id)
             this.startActivity(intent)
         }
 
@@ -66,9 +68,9 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     }
 
     private fun showCurrent() {
-        itemsAdapter?.clear()
+        items.clear()
         client.purchaseables(merchantId).forEach {
-            itemsAdapter?.add(it)
+            items.add(it)
         }
         itemsAdapter?.notifyDataSetChanged()
     }
