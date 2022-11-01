@@ -4,6 +4,7 @@ import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.RealmResults
+import io.realm.kotlin.query.RealmSingleQuery
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -19,9 +20,16 @@ class Merchant: RealmObject {
 class Purchaseable : RealmObject {
     @PrimaryKey
     var id: Int = 0
-    var merchant: Merchant? = null
+    var merchantId: Int = 0
     var name: String = ""
     var designName: String = ""
+    var thumbnail: String = ""
+}
+
+class View: RealmObject {
+    var id: Int = 0
+    var purchaseableid: Int = 0
+    var background: Int = 0
     var thumbnail: String = ""
 }
 
@@ -53,6 +61,10 @@ object Database {
         }
     }
 
+    fun merchant(id: Int): Merchant? {
+        return realm.query<Merchant>("id = $id").find().get(0)
+    }
+
     fun merchants(): RealmResults<Merchant> {
         return realm.query<Merchant>().find()
     }
@@ -66,6 +78,14 @@ object Database {
     }
 
     fun purchaseables(merchantId: Int): RealmResults<Purchaseable> {
-        return realm.query<Purchaseable>("merchant.id = $0", merchantId).find()
+        return realm.query<Purchaseable>("merchantId = $0", merchantId).find()
+    }
+
+    fun purchaseable(id: Int): RealmSingleQuery<Purchaseable> {
+        return realm.query<Purchaseable>("id = $0", id).first()
+    }
+
+    fun views(purchaseableId: Int): RealmResults<Purchaseable> {
+        return realm.query<View>("purchaseableId = $0", purchaseableId).find()
     }
 }

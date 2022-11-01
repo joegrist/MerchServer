@@ -19,7 +19,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.coroutines.*
 
 @Serializable data class MerchantDTO(val id: Int, val name: String)
-@Serializable data class PurchaseableDTO(val id: Int, val thumbnail: String, val name: String)
+@Serializable data class PurchaseableDTO(val id: Int, val merchantId: Int, val productId: Int, val thumbnail: String, val name: String, val views: ArrayList<PurchaseableViewDTO>)
+@Serializable data class PurchaseableViewDTO(val id: Int, val purchaseableId: Int, val thumbnail: String, val name: String, val background: Int)
 
 interface IObserver {
     fun update()
@@ -49,7 +50,7 @@ class ApiClient: IObservable {
     var loadingPurchaseables = false
 
     companion object {
-        const val BASE_ENDPOINT = "http://hugo.lan:3000"
+        const val BASE_ENDPOINT = "http://miriams-mbp.lan:3000"
     }
 
     private val client: HttpClient = HttpClient(CIO) {
@@ -71,14 +72,23 @@ class ApiClient: IObservable {
         return result
     }
 
+    // Simple Purchaseables without views and stuff for thr main list
     fun purchaseables(merchantId: Int): ArrayList<PurchaseableDTO> {
         val result = ArrayList<PurchaseableDTO>()
         Database.purchaseables(merchantId).forEach {
-            result.add(PurchaseableDTO(it.id, it.thumbnail, it.name))
+            result.add(PurchaseableDTO(it.id, merchantId, 0, it.thumbnail, it.name, arrayListOf()))
         }
         return result
     }
 
+    fun purchaseable(id: Int): PurchaseableDTO {
+        Database.purchaseable(id)
+        val result = PurchaseableDTO()
+        Database.views(purchaseableId).forEach {
+            result.add(PurchaseableDTO(it.id, merchantId, 0, it.thumbnail, it.name, arrayListOf()))
+        }
+        return result
+    }
     fun loadMerchants()  {
         loadingMerchants = true
 
@@ -124,6 +134,7 @@ class ApiClient: IObservable {
                 m.id = it.id
                 m.name = it.name
                 m.thumbnail = it.thumbnail
+                m.merchantId = it.id
                 list.add(m)
             }
             Database.saveOrUpdatePurchaseables(list)
