@@ -1,7 +1,4 @@
-import com.example.merchapp.Database
-import com.example.merchapp.Merchant
-import com.example.merchapp.Purchaseable
-import com.example.merchapp.PurchaseableView
+import com.example.merchapp.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -29,6 +26,7 @@ import kotlinx.serialization.json.Json
     val thumbnail: String,
     val name: String,
     val productName: String,
+    val priceCents: Long,
     val views: ArrayList<PurchaseableViewDTO>
     )
 
@@ -40,6 +38,11 @@ import kotlinx.serialization.json.Json
     val name: String,
     val background: Long
     )
+
+@Serializable data class CustomerDTO(
+    val id: Long,
+    val name: String
+)
 
 interface IObserver {
     fun update()
@@ -108,9 +111,24 @@ class ApiClient: IObservable {
     // Fully populated purchaseable for the detail screen
     fun purchaseable(id: Long): PurchaseableDTO {
         val p = Database.purchaseable(id)
-        val result = PurchaseableDTO(id, p?.merchantId ?: -1, p?.productId ?: -1, p?.thumbnail ?: "", p?.name ?: "", p?.productName ?: "", arrayListOf())
+        val result = PurchaseableDTO(
+            id,
+            p?.merchantId ?: -1,
+            p?.productId ?: -1,
+            p?.thumbnail ?: "",
+            p?.name ?: "",
+            p?.productName ?: "",
+            p?.priceCents ?: 0,
+            arrayListOf())
         Database.views(id).forEach {
-            result.views.add(PurchaseableViewDTO(it.id, it.purchaseableId, it.designName, it.thumbnail, it.name, it.background))
+            val view = PurchaseableViewDTO(
+                it.id,
+                it.purchaseableId,
+                it.designName,
+                it.thumbnail,
+                it.name,
+                it.background)
+            result.views.add(view)
         }
         return result
     }

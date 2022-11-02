@@ -1,10 +1,5 @@
 import Jimp from 'jimp';
-import { Logger } from "../../common/logger"
-
-const root = "img/"
-const input = `${root}view`
-const design = `${root}design`
-const log = new Logger()
+import { IMAGE_DESIGN, IMAGE_VIEW, log } from "../../config/config"
 
 class Point {
     constructor(public x: number, public y: number) {}
@@ -26,10 +21,10 @@ class Frame {
 
 export async function process(description: string, name: string, viewId: number, designId: number, color: number): Promise<void> {
     try {
-        let base = await Jimp.read(`${input}/${viewId}/base.png`)
-        let artworkMask = await Jimp.read(`${input}/${viewId}/artwork_mask.png`)
-        let colorMask = await Jimp.read(`${input}/${viewId}/color_mask.png`)
-        let artwork = await Jimp.read(`${design}/${designId}/src.png`)
+        let base = await Jimp.read(`${IMAGE_VIEW}/${viewId}/base.png`)
+        let artworkMask = await Jimp.read(`${IMAGE_VIEW}/${viewId}/artwork_mask.png`)
+        let colorMask = await Jimp.read(`${IMAGE_VIEW}/${viewId}/color_mask.png`)
+        let artwork = await Jimp.read(`${IMAGE_DESIGN}/${designId}/src.png`)
         let previewFrame = new Frame(0, 0, 1000, 2000)
         let artworkFrame = new Frame (100, 100, 800, 1800)
         log.log(`Processing ${description}`)
@@ -68,5 +63,5 @@ export async function generate(artwork: Jimp, product: Jimp, artworkMask: Jimp, 
     out.composite(productForeground, 0, 0)
 
     // Save
-    out.write(`${design}/${id}/preview/${name}.png`)
+    out.write(`${IMAGE_DESIGN}/${id}/preview/${name}.png`)
 }

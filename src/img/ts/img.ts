@@ -2,8 +2,7 @@ import { ds } from "../../common/dataSource"
 import { Logger } from "../../common/logger"
 import { DesignView } from "../../common/entity/designView"
 import { process } from "./generate"
-
-const log = new Logger()
+import { log } from "../../config/config"
 
 ds.initialize().then(async () => {
     log.log("Database Connected")

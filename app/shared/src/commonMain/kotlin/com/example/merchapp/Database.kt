@@ -23,6 +23,7 @@ class Purchaseable : RealmObject {
     var name: String = ""
     var productName: String = ""
     var thumbnail: String = ""
+    var priceCents: Long = 0
 }
 
 class PurchaseableView: RealmObject {
@@ -35,13 +36,14 @@ class PurchaseableView: RealmObject {
     var name: String = ""
 }
 
-class Cart: RealmObject {
+class Customer: RealmObject {
     @PrimaryKey
     var id: Long = 0
+    var name: String = ""
 }
 
 class Purchase : RealmObject {
-    var cart: Cart? = null
+    var customer: Customer? = null
 }
 
 object Database {
@@ -50,7 +52,7 @@ object Database {
              Merchant::class,
              Purchase::class,
              Purchaseable::class,
-             Cart::class,
+             Customer::class,
              PurchaseableView::class
         )
     ).build()

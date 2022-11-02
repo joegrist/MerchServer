@@ -1,14 +1,12 @@
 import "reflect-metadata";
 import { ds } from "../../common/dataSource"
-import { Logger } from "../../common/logger"
 import {Request, Response} from "express"
 import * as express from "express"
 import * as bodyParser from "body-parser"
 import {appInfo} from "./controller/info"
 import {listAllMerchants} from "./controller/merchant"
 import {listDesignsForMerchant} from "./controller/designs"
-
-let log = new Logger()
+import { log } from "../../config/config"
 
 ds.initialize().then(async () => {
     log.log("Database Connected")

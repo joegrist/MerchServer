@@ -1,8 +1,7 @@
-import { Logger } from "../../common/logger"
 import { DemoDataLoader } from "./demoDataLoader"
 import { ds } from "../../common/dataSource"
+import { log } from "../../config/config"
 
-let log = new Logger()
 let loader = new DemoDataLoader()
 
 ds.initialize().then(async () => {
