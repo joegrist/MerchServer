@@ -3,30 +3,29 @@ import shared
 
 struct PurchaseableList: View {
     
-    @StateObject private var viewModel = PurchaseablesViewModel()
+    @StateObject var viewModel: PurchaseablesViewModel
+    
+    init(merchantId: Int64) {
+        self._viewModel = StateObject(wrappedValue: PurchaseablesViewModel(merchantId: merchantId))
+    }
     
     var body: some View {
-
-        //.opacity(viewModel.merchantsLoading ? 1 : 0)
-        
-
-            VStack {
-                Text(viewModel.greet)
-                List {
-                    ForEach (viewModel.purchaseables, id: \.id) { purchaseable in
-                        NavigationLink(value: purchaseable) {
-                            PurchaseableRow(purchaseable: purchaseable)
-                        }
-                        .disabled(viewModel.purchaseablesLoading)
-                        .opacity(viewModel.purchaseablesLoading ? 1 : 0.5)
+        VStack {
+            Text(viewModel.greet)
+            List {
+                ForEach (viewModel.purchaseables, id: \.id) { purchaseable in
+                    NavigationLink(value: purchaseable) {
+                        PurchaseableRow(purchaseable: purchaseable)
                     }
+                    .disabled(viewModel.purchaseablesLoading)
+                    .opacity(viewModel.purchaseablesLoading ? 0.5 : 1)
                 }
-//                .navigationDestination(for: PurchaseableDTO.self) { purchaseable in
-//                        PurchaseableList()
-//                }
-                .refreshable {viewModel.update()}
             }
-        
+            .navigationDestination(for: PurchaseableDTO.self) { purchaseable in
+                Purchaseable(purchaseableId: purchaseable.id)
+            }
+            .refreshable {viewModel.update()}
+        }
     }
 }
 
@@ -44,16 +43,11 @@ struct PurchaseableRow: View {
             } placeholder: {
                 ProgressView()
             }
-            
             .cornerRadius(10)
             Text(purchaseable.name)
         }
     }
 }
 
-struct PurchaseableList_Previews: PreviewProvider {
-    static var previews: some View {
-        PurchaseableList()
-    }
-}
+
 

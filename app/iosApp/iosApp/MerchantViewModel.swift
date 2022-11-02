@@ -11,12 +11,15 @@ class MerchantsViewModel: ObservableObject, IObserver {
     
     init() {
         client.add(observer: self)
-        showCurrent()
-        client.loadMerchants()
         update()
+        client.loadMerchants()
     }
     
     @objc func update() {
+        
+        func showCurrent() {
+            merchants = client.merchants() as? [MerchantDTO] ?? []
+        }
         
         guard !client.operationInProgress else {
             merchantsLoading = true
@@ -26,9 +29,6 @@ class MerchantsViewModel: ObservableObject, IObserver {
         
         merchantsLoading = false
         greet = "Count: \(client.merchants().count)"
-    }
-    
-    func showCurrent() {
-        merchants = client.merchants() as? [MerchantDTO] ?? []
+        showCurrent()
     }
 }

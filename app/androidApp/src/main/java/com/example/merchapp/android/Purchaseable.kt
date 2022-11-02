@@ -18,7 +18,7 @@ import com.example.merchapp.android.databinding.ActivityPurchaseableBinding
 
 class Purchaseable : AppCompatActivity() {
 
-    private var purchaseableId = 0
+    private var purchaseableId: Long = 0
     private var purchaseable: PurchaseableDTO? = null
     private var title: TextView? = null
     private var list: ListView? = null
@@ -30,7 +30,7 @@ class Purchaseable : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        purchaseableId = intent.extras?.get("id") as? Int ?: 1
+        purchaseableId = intent.extras?.get("id") as? Long ?: 1
         setContentView(R.layout.activity_purchaseable)
 
         title = findViewById(R.id.title)

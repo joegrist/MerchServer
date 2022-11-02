@@ -12,6 +12,8 @@
 		10DFBA69290F4F800043A062 /* MerchantViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DFBA68290F4F800043A062 /* MerchantViewModel.swift */; };
 		10DFBA6B2911BC3C0043A062 /* PurchaseableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DFBA6A2911BC3C0043A062 /* PurchaseableList.swift */; };
 		10DFBA6D2911BF650043A062 /* PurchaseablesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DFBA6C2911BF650043A062 /* PurchaseablesViewModel.swift */; };
+		10DFBA712911F2160043A062 /* Purchaseable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DFBA702911F2160043A062 /* Purchaseable.swift */; };
+		10DFBA732911F50F0043A062 /* PurchaseableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DFBA722911F50F0043A062 /* PurchaseableViewModel.swift */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		4DF906933E9F47E1459A6544 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F527FF52356FA252F5508F0 /* Pods_iosApp.framework */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
@@ -23,6 +25,8 @@
 		10DFBA68290F4F800043A062 /* MerchantViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantViewModel.swift; sourceTree = "<group>"; };
 		10DFBA6A2911BC3C0043A062 /* PurchaseableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseableList.swift; sourceTree = "<group>"; };
 		10DFBA6C2911BF650043A062 /* PurchaseablesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseablesViewModel.swift; sourceTree = "<group>"; };
+		10DFBA702911F2160043A062 /* Purchaseable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchaseable.swift; sourceTree = "<group>"; };
+		10DFBA722911F50F0043A062 /* PurchaseableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseableViewModel.swift; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		238C85B8C5583D492A151B0D /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +94,8 @@
 				10DFBA68290F4F800043A062 /* MerchantViewModel.swift */,
 				10DFBA6A2911BC3C0043A062 /* PurchaseableList.swift */,
 				10DFBA6C2911BF650043A062 /* PurchaseablesViewModel.swift */,
+				10DFBA702911F2160043A062 /* Purchaseable.swift */,
+				10DFBA722911F50F0043A062 /* PurchaseableViewModel.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -200,6 +206,8 @@
 			files = (
 				10DFBA6B2911BC3C0043A062 /* PurchaseableList.swift in Sources */,
 				10DFBA69290F4F800043A062 /* MerchantViewModel.swift in Sources */,
+				10DFBA712911F2160043A062 /* Purchaseable.swift in Sources */,
+				10DFBA732911F50F0043A062 /* PurchaseableViewModel.swift in Sources */,
 				10DFBA6D2911BF650043A062 /* PurchaseablesViewModel.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
@@ -332,6 +340,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = X963XQ8DDC;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -339,7 +348,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = merch.joegrist.org;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -353,6 +362,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = X963XQ8DDC;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -360,7 +370,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = merch.joegrist.org;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

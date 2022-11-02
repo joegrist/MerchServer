@@ -6,17 +6,22 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
     @Published private(set) var purchaseables = [PurchaseableDTO]()
     @Published private(set) var purchaseablesLoading = false
     @Published var greet = Greeting().greeting()
+    var merchantId: Int64
     
     private let client = ApiClient()
     
-    init() {
+    init(merchantId: Int64) {
+        self.merchantId = merchantId
         client.add(observer: self)
-        showCurrent()
-        client.loadPurchaseables(merchantId: 1)
         update()
+        client.loadPurchaseables(merchantId: merchantId)
     }
     
     @objc func update() {
+        
+        func showCurrent() {
+            purchaseables = client.purchaseables(merchantId: merchantId) as? [PurchaseableDTO] ?? []
+        }
         
         guard !client.operationInProgress else {
             purchaseablesLoading = true
@@ -25,10 +30,7 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
         }
         
         purchaseablesLoading = false
-        greet = "Count: \(client.purchaseables(merchantId: 1).count)"
-    }
-    
-    func showCurrent() {
-        purchaseables = client.purchaseables(merchantId: 1) as? [PurchaseableDTO] ?? []
+        greet = "Count: \(client.purchaseables(merchantId: merchantId).count)"
+        showCurrent()
     }
 }

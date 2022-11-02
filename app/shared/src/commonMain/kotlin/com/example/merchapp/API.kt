@@ -18,15 +18,14 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Serializable data class MerchantDTO(
-    val id:
-    Int, val
-    name: String
+    val id: Long,
+    val name: String
     )
 
 @Serializable data class PurchaseableDTO(
-    val id: Int,
-    val merchantId: Int,
-    val productId: Int,
+    val id: Long,
+    val merchantId: Long,
+    val productId: Long,
     val thumbnail: String,
     val name: String,
     val productName: String,
@@ -34,12 +33,12 @@ import kotlinx.serialization.json.Json
     )
 
 @Serializable data class PurchaseableViewDTO(
-    val id: Int,
-    val designId: Int,
+    val id: Long,
+    val designId: Long,
     val designName: String,
     val thumbnail: String,
     val name: String,
-    val background: Int
+    val background: Long
     )
 
 interface IObserver {
@@ -98,7 +97,7 @@ class ApiClient: IObservable {
     }
 
     // Simple Purchaseables without views for the main list
-    fun purchaseables(merchantId: Int): ArrayList<PurchaseableDTO> {
+    fun purchaseables(merchantId: Long): ArrayList<PurchaseableDTO> {
         val result = ArrayList<PurchaseableDTO>()
         Database.purchaseables(merchantId).forEach {
             result.add(PurchaseableDTO(it.id, merchantId, it.productId, it.thumbnail, it.name, it.productName, arrayListOf()))
@@ -107,7 +106,7 @@ class ApiClient: IObservable {
     }
 
     // Fully populated purchaseable for the detail screen
-    fun purchaseable(id: Int): PurchaseableDTO {
+    fun purchaseable(id: Long): PurchaseableDTO {
         val p = Database.purchaseable(id)
         val result = PurchaseableDTO(id, p?.merchantId ?: -1, p?.productId ?: -1, p?.thumbnail ?: "", p?.name ?: "", p?.productName ?: "", arrayListOf())
         Database.views(id).forEach {
@@ -141,7 +140,7 @@ class ApiClient: IObservable {
         }
     }
 
-    fun loadPurchaseables(merchantId: Int) {
+    fun loadPurchaseables(merchantId: Long) {
         operationInProgress = true
 
         CoroutineScope(Dispatchers.Default).launch {

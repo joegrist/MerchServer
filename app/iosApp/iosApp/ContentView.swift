@@ -6,8 +6,6 @@ struct ContentView: View {
     @StateObject private var viewModel = MerchantsViewModel()
     
 	var body: some View {
-
-        //.opacity(viewModel.merchantsLoading ? 1 : 0)
         
         NavigationStack {
             VStack {
@@ -21,10 +19,8 @@ struct ContentView: View {
                         .opacity(viewModel.merchantsLoading ? 0.5 : 1)
                     }
                 }
-                .navigationDestination(for: MerchantDTO.self) { merchant in
-                        PurchaseableList()
-                }
-                .refreshable {viewModel.update()}
+                .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantId: merchant.id) }
+                .refreshable { viewModel.update() }
             }
         }
 	}
