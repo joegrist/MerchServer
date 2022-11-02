@@ -68,7 +68,7 @@ class ApiClient: IObservable {
     var operationInProgress = false
 
     companion object {
-        const val baseEndpoint = "http://hugo.lan" // ""http://merch.zapto.org"
+        const val baseEndpoint = "http://merch.zapto.org"
         const val imagesEndpoint = "$baseEndpoint:8888"
         const val apiEndpoint = "$baseEndpoint:3000"
     }
