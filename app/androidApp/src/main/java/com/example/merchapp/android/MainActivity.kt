@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
     }
 
     override fun update() {
-        if (client.loadingMerchants) {
+        if (client.operationInProgress) {
             loader?.visibility = VISIBLE
             showCurrent()
             return

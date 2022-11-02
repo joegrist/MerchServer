@@ -6,26 +6,33 @@ struct ContentView: View {
     @StateObject private var viewModel = MerchantsViewModel()
     
 	var body: some View {
-        ZStack {
-            ZStack {
-                Color.black.opacity(0.2)
-                ProgressView()
-            }
-            .opacity(viewModel.merchantsLoading ? 1 : 0)
+
+        //.opacity(viewModel.merchantsLoading ? 1 : 0)
+        
+        NavigationStack {
             VStack {
                 Text(viewModel.greet)
-                List(viewModel.merchants, id: \.id) { merchant in
-                    MerchantRow(merchant: merchant)
+                List {
+                    ForEach (viewModel.merchants, id: \.id) { merchant in
+                        NavigationLink(value: merchant) {
+                            MerchantRow(merchant: merchant)
+                        }
+                        .disabled(viewModel.merchantsLoading)
+                        .opacity(viewModel.merchantsLoading ? 0.5 : 1)
+                    }
                 }
+                .navigationDestination(for: MerchantDTO.self) { merchant in
+                        PurchaseableList()
+                }
+                .refreshable {viewModel.update()}
             }
         }
-        .ignoresSafeArea()
 	}
 }
 
 
 struct MerchantRow: View {
-    var merchant: DataMerchant
+    var merchant: MerchantDTO
 
     var body: some View {
         Text(merchant.name)

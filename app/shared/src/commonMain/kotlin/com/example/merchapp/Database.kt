@@ -3,8 +3,6 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
-import io.realm.kotlin.query.RealmResults
-import io.realm.kotlin.query.RealmSingleQuery
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.serialization.Serializable
@@ -27,10 +25,10 @@ class Purchaseable : RealmObject {
     var thumbnail: String = ""
 }
 
-class View: RealmObject {
+class PurchaseableView: RealmObject {
     @PrimaryKey
     var id: Int = 0
-    var purchaseableid: Int = 0
+    var purchaseableId: Int = 0
     var designName: String = ""
     var background: Int = 0
     var thumbnail: String = ""
@@ -53,7 +51,7 @@ object Database {
              Purchase::class,
              Purchaseable::class,
              Cart::class,
-             View::class
+             PurchaseableView::class
         )
     ).build()
 
@@ -91,11 +89,11 @@ object Database {
         return realm.query<Purchaseable>("id = $0", id).first().find()
     }
 
-    fun views(purchaseableId: Int): Array<View> {
-        return realm.query<View>("purchaseableid = $0", purchaseableId).find().toTypedArray()
+    fun views(purchaseableId: Int): Array<PurchaseableView> {
+        return realm.query<PurchaseableView>("purchaseableId = $0", purchaseableId).find().toTypedArray()
     }
 
-    fun saveOrUpdateViews(m: ArrayList<View>) {
+    fun saveOrUpdateViews(m: ArrayList<PurchaseableView>) {
         realm.writeBlocking {
             m.forEach {
                 copyToRealm(it, UpdatePolicy.ALL)

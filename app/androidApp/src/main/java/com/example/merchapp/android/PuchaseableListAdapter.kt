@@ -1,5 +1,6 @@
 package com.example.merchapp.android
 
+import ApiClient
 import PurchaseableDTO
 import android.app.Activity
 import android.graphics.BitmapFactory
@@ -37,7 +38,7 @@ class PurchaseableListAdapter(private val context: Activity, list: ArrayList<Pur
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val bitmap =BitmapFactory.decodeStream(URL("http://hugo.lan:8888/${p.thumbnail}").content as InputStream)
+                val bitmap = BitmapFactory.decodeStream(URL("${ApiClient.imagesEndpoint}/${p.thumbnail}").content as InputStream)
                 CoroutineScope(Dispatchers.Main).launch {
                     image?.setImageBitmap(bitmap)
                 }

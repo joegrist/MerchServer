@@ -56,7 +56,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     }
 
     override fun update() {
-        if (client.loadingPurchaseables) {
+        if (client.operationInProgress) {
             loader?.visibility = View.VISIBLE
             showCurrent()
             return

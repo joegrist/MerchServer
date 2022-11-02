@@ -3,7 +3,7 @@ import shared
 
 class MerchantsViewModel: ObservableObject, IObserver {
     
-    @Published private(set) var merchants = [DataMerchant]()
+    @Published private(set) var merchants = [MerchantDTO]()
     @Published private(set) var merchantsLoading = false
     @Published var greet = Greeting().greeting()
     
@@ -18,7 +18,7 @@ class MerchantsViewModel: ObservableObject, IObserver {
     
     @objc func update() {
         
-        guard !client.loadingMerchants else {
+        guard !client.operationInProgress else {
             merchantsLoading = true
             showCurrent()
             return
@@ -29,6 +29,6 @@ class MerchantsViewModel: ObservableObject, IObserver {
     }
     
     func showCurrent() {
-        merchants = client.merchants() as? [DataMerchant] ?? []
+        merchants = client.merchants() as? [MerchantDTO] ?? []
     }
 }
