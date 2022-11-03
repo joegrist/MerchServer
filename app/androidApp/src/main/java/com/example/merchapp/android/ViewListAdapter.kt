@@ -29,11 +29,9 @@ class ViewListAdapter(private val context: Activity, list: ArrayList<Purchaseabl
         }
 
         val title: TextView? = view?.findViewById(R.id.design_text_view)
-        val sub: TextView? = view?.findViewById(R.id.product_text_view)
         val image: ImageView? = view?.findViewById(R.id.image_view)
 
         title?.text = p.name
-        sub?.text = p.designName
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

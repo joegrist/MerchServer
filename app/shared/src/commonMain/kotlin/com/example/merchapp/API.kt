@@ -15,33 +15,48 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Serializable data class MerchantDTO(
-    val id: Long,
+    val slug: String,
     val name: String
     )
 
 @Serializable data class PurchaseableDTO(
     val id: Long,
-    val merchantId: Long,
+    val merchantSlug: String,
     val productId: Long,
+    val productName: String,
+    val purchaseableId: Long,
+    val purchaseableName: String,
     val thumbnail: String,
     val name: String,
-    val productName: String,
     val priceCents: Long,
+    var variations: ArrayList<PurchaseableVariation>,
     val views: ArrayList<PurchaseableViewDTO>
     )
 
+@Serializable data class PurchaseableVariation(
+    val id: Long,
+    val name: String,
+    val options: String
+)
+
 @Serializable data class PurchaseableViewDTO(
     val id: Long,
-    val designId: Long,
-    val designName: String,
     val thumbnail: String,
     val name: String,
     val background: Long
     )
 
 @Serializable data class CustomerDTO(
-    val id: Long,
-    val name: String
+    val email: String,
+    val name: String,
+    val mobile: String
+)
+
+@Serializable data class PurchaseDTO(
+    val id: String,
+    val purchaseableId: String,
+    var quantity: Long,
+    var variation: String
 )
 
 interface IObserver {
@@ -94,16 +109,27 @@ class ApiClient: IObservable {
     fun merchants(): ArrayList<MerchantDTO> {
         val result = ArrayList<MerchantDTO>()
         Database.merchants().forEach {
-            result.add(MerchantDTO(it.id, it.name))
+            result.add(MerchantDTO(it.slug, it.name))
         }
         return result
     }
 
     // Simple Purchaseables without views for the main list
-    fun purchaseables(merchantId: Long): ArrayList<PurchaseableDTO> {
+    fun purchaseables(merchantSlug: String): ArrayList<PurchaseableDTO> {
         val result = ArrayList<PurchaseableDTO>()
-        Database.purchaseables(merchantId).forEach {
-            result.add(PurchaseableDTO(it.id, merchantId, it.productId, it.thumbnail, it.name, it.productName, arrayListOf()))
+        Database.purchaseables(merchantSlug).forEach {
+            result.add(PurchaseableDTO(
+                it.id,
+                merchantSlug,
+                it.productId,
+                it.productName,
+                it.purchaseableId,
+                it.purchaseableName,
+                it.thumbnail,
+                it.name,
+                it.priceCents,
+                arrayListOf(),
+                arrayListOf()))
         }
         return result
     }
@@ -113,18 +139,19 @@ class ApiClient: IObservable {
         val p = Database.purchaseable(id)
         val result = PurchaseableDTO(
             id,
-            p?.merchantId ?: -1,
+            p?.merchantSlug ?: "",
             p?.productId ?: -1,
+            p?.productName ?: "",
+            p?.productId ?: 0,
+            p?.purchaseableName ?: "",
             p?.thumbnail ?: "",
             p?.name ?: "",
-            p?.productName ?: "",
             p?.priceCents ?: 0,
+            arrayListOf(),
             arrayListOf())
         Database.views(id).forEach {
             val view = PurchaseableViewDTO(
                 it.id,
-                it.purchaseableId,
-                it.designName,
                 it.thumbnail,
                 it.name,
                 it.background)
@@ -149,7 +176,7 @@ class ApiClient: IObservable {
             val list = ArrayList<Merchant>()
             data.forEach {
                 val m = Merchant()
-                m.id = it.id
+                m.slug = it.slug
                 m.name = it.name
                 list.add(m)
             }
@@ -158,13 +185,13 @@ class ApiClient: IObservable {
         }
     }
 
-    fun loadPurchaseables(merchantId: Long) {
+    fun loadPurchaseables(merchantSlug: String) {
         operationInProgress = true
 
         CoroutineScope(Dispatchers.Default).launch {
 
             val response: HttpResponse = try {
-                client.get("$apiEndpoint/merchant/$merchantId/designs")
+                client.get("$apiEndpoint/merchant/$merchantSlug/designs")
             } catch (e: Exception) {
                 log("Error loading purchaseables: ", e)
                 onOperationCompleted()
@@ -181,17 +208,18 @@ class ApiClient: IObservable {
                 p.name = it.name
                 p.productName = it.productName
                 p.thumbnail = it.thumbnail
-                p.merchantId = it.merchantId
+                p.merchantSlug = it.merchantSlug
                 p.productId = it.productId
+                p.purchaseableId = it.purchaseableId
+                p.purchaseableName = it.purchaseableName
                 purchasableList.add(p)
                 it.views.forEach {
                     val v = PurchaseableView()
                     v.id = it.id
-                    v.purchaseableId = it.designId
-                    v.designName = it.designName
                     v.name = it.name
                     v.thumbnail = it.thumbnail
                     v.background = it.background
+                    v.purchaseableId = p.purchaseableId
                     viewList.add(v)
                 }
             }

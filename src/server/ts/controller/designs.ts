@@ -24,12 +24,14 @@ export async function listDesignsForMerchant(request: Request, response: Respons
         const dto = new PurchaseableDTO()
         dto.id = design.id
         dto.name = design.name
-        dto.shopSlug = design.merchant.slug
-        dto.purchaseableId = design.product.id
-        dto.purchaseableName = design.product.name
+        dto.merchantSlug = design.merchant.slug
+        dto.purchaseableId = design.id
+        dto.purchaseableName = design.name
         dto.thumbnail = `${design.id}/src.png`
         dto.priceCents = design.priceCents
-        
+        dto.productId = design.product.id
+        dto.productName = design.product.name
+
         const viewList = await views.find({
             where: { design: { id: design.id } },
             relations: ["view"]
@@ -44,8 +46,6 @@ export async function listDesignsForMerchant(request: Request, response: Respons
              v.id = view.id
              v.background = view.background
              v.name = view.view.name
-             v.purchaseableId = design.id
-             v.purchaseableName = design.name
              v.thumbnail = `${design.id}/preview/${view.view.name}.png`
              return v
          })
@@ -54,7 +54,7 @@ export async function listDesignsForMerchant(request: Request, response: Respons
             const pv = new PurchaseableVariationsDTO()
             pv.id = variation.id
             pv.name = variation.name
-            pv.variations = variation.variationsCommaSeparated.split(",")
+            pv.options = variation.variationsCommaSeparated
             return pv
          })
 

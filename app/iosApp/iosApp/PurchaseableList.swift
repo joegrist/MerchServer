@@ -5,8 +5,8 @@ struct PurchaseableList: View {
     
     @StateObject var viewModel: PurchaseablesViewModel
     
-    init(merchantId: Int64) {
-        self._viewModel = StateObject(wrappedValue: PurchaseablesViewModel(merchantId: merchantId))
+    init(merchantSlug: String) {
+        self._viewModel = StateObject(wrappedValue: PurchaseablesViewModel(merchantSlug: merchantSlug))
     }
     
     var body: some View {

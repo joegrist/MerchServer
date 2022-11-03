@@ -28,7 +28,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
     var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
     private val client = ApiClient()
-    private var merchantId: Long = 1
+    private var merchantSlug: String = "demo"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
         loader = findViewById(R.id.loader)
         tv?.text = greet()
 
-        merchantId = intent.extras?.get("id") as? Long ?: 1
+        merchantSlug = intent.extras?.get("slug") as? String ?: "demo"
         itemsAdapter = PurchaseableListAdapter(this, items)
         lv?.adapter = itemsAdapter
 
@@ -51,7 +51,7 @@ class PurchaseableList : AppCompatActivity(), IObserver {
 
         client.add(this)
         showCurrent()
-        client.loadPurchaseables(merchantId)
+        client.loadPurchaseables(merchantSlug)
         update()
     }
 
@@ -64,12 +64,12 @@ class PurchaseableList : AppCompatActivity(), IObserver {
 
         showCurrent()
         loader?.visibility = View.GONE
-        tv?.text = client.purchaseables(merchantId).count().toString()
+        tv?.text = client.purchaseables(merchantSlug).count().toString()
     }
 
     private fun showCurrent() {
         items.clear()
-        client.purchaseables(merchantId).forEach {
+        client.purchaseables(merchantSlug).forEach {
             items.add(it)
         }
         itemsAdapter?.notifyDataSetChanged()

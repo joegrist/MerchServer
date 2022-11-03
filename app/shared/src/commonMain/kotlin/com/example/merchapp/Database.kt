@@ -11,17 +11,19 @@ import kotlinx.serialization.Serializable
 
 class Merchant: RealmObject {
     @PrimaryKey
-    var id: Long = 0
+    var slug: String = ""
     var name: String = ""
 }
 
 class Purchaseable : RealmObject {
     @PrimaryKey
     var id: Long = 0
-    var merchantId: Long = 0
+    var merchantSlug: String = ""
+    var purchaseableId: Long = 0
+    var purchaseableName: String = ""
     var productId: Long = 0
-    var name: String = ""
     var productName: String = ""
+    var name: String = ""
     var thumbnail: String = ""
     var priceCents: Long = 0
     var variations: String = ""
@@ -31,7 +33,7 @@ class PurchaseableView: RealmObject {
     @PrimaryKey
     var id: Long = 0
     var purchaseableId: Long = 0
-    var designName: String = ""
+    var purchaseableName: String = ""
     var background: Long = 0
     var thumbnail: String = ""
     var name: String = ""
@@ -39,12 +41,17 @@ class PurchaseableView: RealmObject {
 
 class Customer: RealmObject {
     @PrimaryKey
-    var id: Long = 0
+    var email: String = ""
     var name: String = ""
+    var mobile: String = ""
 }
 
 class Purchase : RealmObject {
-    var customer: Customer? = null
+    @PrimaryKey
+    var id: String = ""
+    var purchaseableId: Long = 0
+    var quantity: Long = 0
+    var variation: String? = null
 }
 
 object Database {
@@ -84,8 +91,8 @@ object Database {
         }
     }
 
-    fun purchaseables(merchantId: Long): Array<Purchaseable> {
-        return realm.query<Purchaseable>("merchantId = $0", merchantId).find().toTypedArray()
+    fun purchaseables(merchantSlug: String): Array<Purchaseable> {
+        return realm.query<Purchaseable>("merchantSlug = $0", merchantSlug).find().toTypedArray()
     }
 
     fun purchaseable(id: Long): Purchaseable? {

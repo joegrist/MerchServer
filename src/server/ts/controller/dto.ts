@@ -17,21 +17,21 @@ export class PurchaseableViewDTO {
     thumbnail: string
     name: string
     background: number
-    purchaseableId: number
-    purchaseableName: string
 }
 
 export class PurchaseableVariationsDTO {
     id: number
     name: string
-    variations: string[]
+    options: string
 }
 
 export class PurchaseableDTO {
     id: number
-    shopSlug: string
+    merchantSlug: string
     purchaseableId: number
     purchaseableName: string
+    productId: number
+    productName: string
     name: string
     thumbnail: string
     priceCents: number

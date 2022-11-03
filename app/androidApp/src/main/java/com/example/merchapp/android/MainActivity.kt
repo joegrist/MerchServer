@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity(), IObserver  {
         lv?.adapter = itemsAdapter
 
         lv?.setOnItemClickListener { _, _, position, _ ->
-            val mid = client.merchants().get(position).id
+            val mid = client.merchants().get(position).slug
             val intent = Intent(this, PurchaseableList::class.java)
-            intent.putExtra("id", mid)
+            intent.putExtra("slug", mid)
             this.startActivity(intent)
         }
 

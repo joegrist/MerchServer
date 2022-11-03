@@ -11,7 +11,7 @@ struct ContentView: View {
             VStack {
                 Text(viewModel.greet)
                 List {
-                    ForEach (viewModel.merchants, id: \.id) { merchant in
+                    ForEach (viewModel.merchants, id: \.slug) { merchant in
                         NavigationLink(value: merchant) {
                             MerchantRow(merchant: merchant)
                         }
@@ -19,7 +19,7 @@ struct ContentView: View {
                         .opacity(viewModel.merchantsLoading ? 0.5 : 1)
                     }
                 }
-                .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantId: merchant.id) }
+                .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantSlug: merchant.slug) }
                 .refreshable { viewModel.update() }
             }
         }
