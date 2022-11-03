@@ -1,48 +1,21 @@
-import {Request, Response} from "express";
-import { View } from "typeorm/schema-builder/view/View";
-import {ds} from "../../../common/dataSource"
-import {Design} from "../../../common/entity/design";
-import {DesignView} from "../../../common/entity/designView";
-import { ProductVariation } from "../../../common/entity/productVariation";
+import { Request, Response } from "express"
+import { ds } from "../../../common/dataSource"
+import { Design } from "../../../common/entity/design"
+import { DesignView } from "../../../common/entity/designView"
+import { ProductVariation } from "../../../common/entity/productVariation"
+import { PurchaseableDTO, PurchaseableViewDTO, PurchaseableVariationsDTO } from "./dto"
 
-class PurchaseableViewDTO {
-    id: number
-    thumbnail: string
-    name: string
-    background: number
-    purchaseableId: number
-    purchaseableName: string
-}
-
-class PurchaseableVariationsDTO {
-    id: number
-    name: string
-    variations: string[]
-}
-
-class PurchaseableDTO {
-    id: number
-    shopId: number
-    purchaseableId: number
-    purchaseableName: string
-    name: string
-    thumbnail: string
-    priceCents: number
-    views: PurchaseableViewDTO[]
-    variations: PurchaseableVariationsDTO[]
-}
+const designs = ds.getRepository(Design)
+const views = ds.getRepository(DesignView)
+const variations = ds.getRepository(ProductVariation)
 
 export async function listDesignsForMerchant(request: Request, response: Response) {
 
-    const designs = ds.getRepository(Design)
-    const views = ds.getRepository(DesignView)
-    const variations = ds.getRepository(ProductVariation)
-
-    let id = parseInt(request.params["merchantId"])
-    if (!id) throw new Error("id parameter was not numeric")
+    let slug = request.params["slug"]
+    if (!slug) throw new Error("id parameter was not numeric")
 
     const designList = await designs.find({
-        where: { merchant: { id: id } },
+        where: { merchant: { slug: slug } },
         relations: ["merchant", "product"]
     })
 
@@ -51,7 +24,7 @@ export async function listDesignsForMerchant(request: Request, response: Respons
         const dto = new PurchaseableDTO()
         dto.id = design.id
         dto.name = design.name
-        dto.shopId = design.merchant.id
+        dto.shopSlug = design.merchant.slug
         dto.purchaseableId = design.product.id
         dto.purchaseableName = design.product.name
         dto.thumbnail = `${design.id}/src.png`

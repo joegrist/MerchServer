@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm"
+import {Entity, Column, PrimaryColumn, ManyToOne, JoinColumn} from "typeorm"
 import {Address} from "./address"
 
 var crypto = require('crypto');
@@ -6,8 +6,8 @@ var crypto = require('crypto');
 @Entity()
 export class Customer {
 
-    @PrimaryGeneratedColumn() 
-    id: number
+    @PrimaryColumn()
+    email: string
 
     @ManyToOne(() => Address)
     @JoinColumn()
@@ -18,21 +18,18 @@ export class Customer {
     delivery: Address
 
     @Column()
-    name: String
+    name: string
 
     @Column()
-    mobile: String
+    mobile: string
 
     @Column()
-    email: String
+    salt: string
 
     @Column()
-    salt: String
+    password: string
 
-    @Column()
-    password: String
-
-    correctPassword(candidate: String) {
+    correctPassword(candidate: string) {
         const hash = crypto.pbkdf2Sync(candidate, this.salt, 1000, 64, `sha512`).toString(`hex`)
         return this.password === hash
     }

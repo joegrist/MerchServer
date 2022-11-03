@@ -6,6 +6,7 @@ import * as bodyParser from "body-parser"
 import {appInfo} from "./controller/info"
 import {listAllMerchants} from "./controller/merchant"
 import {listDesignsForMerchant} from "./controller/designs"
+import {getCustomer} from "./controller/customer"
 import { log } from "../../config/config"
 
 ds.initialize().then(async () => {
@@ -21,18 +22,25 @@ ds.initialize().then(async () => {
         appInfo(request, response)
         .then(() => next)
         .catch(err => next(err));
-     });
+    });
 
-     app.get("/merchants", (request: Request, response: Response, next: Function) => {
+    app.get("/merchants", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> listAllMerchants`)
         listAllMerchants(request, response)
         .then(() => next)
         .catch(err => next(err));
-     });
+    });
 
-     app.get("/merchant/:merchantId/designs", (request: Request, response: Response, next: Function) => {
+    app.get("/merchant/:slug/designs", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> listDesignsForMerchant`)
         listDesignsForMerchant(request, response)
+        .then(() => next)
+        .catch(err => next(err));
+    });
+
+    app.get("/customer/:email", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> getCustomer`)
+        getCustomer(request, response)
         .then(() => next)
         .catch(err => next(err));
      });

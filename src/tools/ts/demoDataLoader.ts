@@ -2,6 +2,7 @@ import { Merchant } from "../../common/entity/merchant"
 import { Product } from "../../common/entity/product"
 import { Design } from "../../common/entity/design"
 import { View } from "../../common/entity/view"
+import { CustomerDesign } from "../../common/entity/customerDesign"
 import { DesignView } from "../../common/entity/designView"
 import { DataSource, Repository } from "typeorm"
 import { log } from "../../config/config"
@@ -13,15 +14,18 @@ var crypto = require('crypto');
 export class DemoDataLoader {
 
     demoMerchantName = "Demo Inc"
+    demoMerchantSlug = "demo"
     foundationMerchantName = "Van Demon Kyokushin"
+    foundationMerchantSlug = "vdk"
     foundationProductName = "Mens Black Hoodie"
     foundationDesignName = "Gang Member Mens Hoodie"
     demoDesignName = "Cursor Hoodie"
+    foundationCustomerEmail = "joe@joe.com"
 
     public async loadDemoData(ds: DataSource) {
 
-        await this.ensureMerchant(ds, this.demoMerchantName)
-        await this.ensureMerchant(ds, this.foundationMerchantName)
+        await this.ensureMerchant(ds, this.demoMerchantName, this.demoMerchantSlug)
+        await this.ensureMerchant(ds, this.foundationMerchantName, this.foundationMerchantSlug)
         await this.ensureProduct(ds, this.foundationProductName)
         
         const product = await ds.getRepository(Product).findOneBy({name: this.foundationProductName})
@@ -29,21 +33,26 @@ export class DemoDataLoader {
         await this.ensureView(ds, product, "Back")
         await this.ensureVariations(ds, product)
 
-        const merchant1 = await ds.getRepository(Merchant).findOneBy({name: this.foundationMerchantName})
-        const merchant2 = await ds.getRepository(Merchant).findOneBy({name: this.demoMerchantName})
+        const merchant1 = await ds.getRepository(Merchant).findOneBy({slug: this.foundationMerchantSlug})
+        const merchant2 = await ds.getRepository(Merchant).findOneBy({slug: this.demoMerchantSlug})
         await this.ensureDesign(ds, merchant1, this.foundationDesignName, 0x336699)
         await this.ensureDesign(ds, merchant2, this.demoDesignName, 0x996633)
 
-        await this.enureCustomer(ds, "Joe", "1234", "joe@joe.com", "password")
+        await this.enureCustomer(ds, "Joe", "1234", this.foundationCustomerEmail, "password")
         await this.enureCustomer(ds, "Craig", "5678", "craig@craig.com", "password")
+
+        const customer = await ds.getRepository(Customer).findOneBy({email: this.foundationCustomerEmail})
+        const design = await ds.getRepository(Design).findOneBy({name: this.demoDesignName})
+        await this.addToCart(ds, customer, design)
     }
 
-    async ensureMerchant(ds: DataSource, name: string) {
+    async ensureMerchant(ds: DataSource, name: string, slug: string) {
         const merchants = ds.getRepository(Merchant)
         const m = await merchants.findOneBy({name: name})
         if (m) return
         log.log(`Adding Merchant ${name}`)
         const merchant = new Merchant()
+        merchant.slug = slug
         merchant.name = name
         await merchants.save(merchant)
     }
@@ -131,5 +140,17 @@ export class DemoDataLoader {
         pv.name = "Size"
         pv.variationsCommaSeparated = "S,M,L,XL,XXL"
         await variations.save(pv)
+    }
+
+    async addToCart(ds: DataSource, customer: Customer, design: Design) {
+        const purchases = ds.getRepository(CustomerDesign)
+        log.log(`Adding Cart Item '${design.name}' for ${customer.name}`)
+        const purchase = new CustomerDesign()
+        purchase.customer = customer
+        purchase.design = design
+        purchase.variation = "XL"
+        purchase.priceCents = design.priceCents
+        purchase.id = purchase.makeId()
+        await purchases.save(purchase)
     }
 }

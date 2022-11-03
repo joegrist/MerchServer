@@ -1,10 +1,10 @@
-import {Entity, Column, PrimaryGeneratedColumn} from "typeorm"
+import {Entity, Column, PrimaryColumn} from "typeorm"
 
 @Entity()
 export class Merchant {
 
-    @PrimaryGeneratedColumn() 
-    id: number
+    @PrimaryColumn() 
+    slug: string
 
     @Column() 
     name: string

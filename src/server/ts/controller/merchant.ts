@@ -2,15 +2,10 @@ import {Request, Response} from "express";
 import {Merchant} from "../../../common/entity/merchant";
 import {ds} from "../../../common/dataSource"
 
+const repo = ds.getRepository(Merchant);
+
 export async function listAllMerchants(request: Request, response: Response) {
-
-    // get a post repository to perform operations with post
-    const postRepository = ds.getRepository(Merchant);
-
-    // load posts
-    const posts = await postRepository.find();
-
-    // return loaded posts
+    const shops = await repo.find();
     response.setHeader('content-type', 'application/json');
-    response.send(posts);
+    response.send(shops);
 }

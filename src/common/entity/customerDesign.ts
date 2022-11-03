@@ -1,12 +1,13 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm"
+import {Entity, Column, PrimaryColumn, ManyToOne, JoinColumn} from "typeorm"
 import {Customer} from "./customer"
 import {Design} from "./design"
+const { v4: uuidv4} = require('uuid');
 
 @Entity()
 export class CustomerDesign {
 
-    @PrimaryGeneratedColumn() 
-    id: number
+    @PrimaryColumn() 
+    id: string
 
     @ManyToOne(() => Customer)
     @JoinColumn()
@@ -19,10 +20,16 @@ export class CustomerDesign {
     @Column() 
     quantity: number = 0
     
-    @Column() 
-    variation: string | null
+    @Column({ nullable: true })
+    variation: string
+
+    @Column({ nullable: true })
+    purchased: Date
 
     @Column() 
-    purchased: Date | null
+    priceCents: number = 0
 
+    makeId() {
+        return uuidv4()
+    }
 }
