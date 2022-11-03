@@ -1,7 +1,7 @@
-import {Entity, Column, PrimaryColumn, ManyToOne, JoinColumn} from "typeorm"
-import {Customer} from "./customer"
-import {Design} from "./design"
-const { v4: uuidv4} = require('uuid');
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm"
+import { Customer } from "./customer"
+import { Design } from "./design"
+const { v4: uuidv4} = require('uuid')
 
 @Entity()
 export class CustomerDesign {

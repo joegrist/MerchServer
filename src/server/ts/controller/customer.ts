@@ -1,11 +1,14 @@
-import {Request, Response} from "express";
-import {ds} from "../../../common/dataSource"
+import { Request, Response } from "express"
+import { ds } from "../../../common/dataSource"
 import { Customer } from "../../../common/entity/customer"
 import { CustomerDesign } from "../../../common/entity/customerDesign"
+import { Design } from "../../../common/entity/design"
 import { PurchaseDTO, CustomerDTO, PurchaseableDTO } from "./dto"
+import { log } from "../../../config/config"
 
-const customerRepo = ds.getRepository(Customer);
-const cartRepo = ds.getRepository(CustomerDesign);
+const customerRepo = ds.getRepository(Customer)
+const cartRepo = ds.getRepository(CustomerDesign)
+const designRepo = ds.getRepository(Design)
 
 export async function getCustomer(request: Request, response: Response) {
 
@@ -39,4 +42,44 @@ export async function getCustomer(request: Request, response: Response) {
     // return loaded posts
     response.setHeader('content-type', 'application/json')
     response.send(result)
+}
+
+export async function addEditCartItem(request: Request, response: Response) {
+
+    let id: string | null | undefined = request.body.id
+    let customerEmail: string | null | undefined = request.body.customerEmail
+    let designId: number | null | undefined = request.body.designId
+    let variation: string | null | undefined = request.body.variation
+
+    if (!customerEmail || !designId) {
+        throw new Error("must specify customer email and design id")
+    }
+
+    let customer = await customerRepo.findOneBy({email : customerEmail})
+    let design = await designRepo.findOneBy({id : designId})
+
+
+    if (!customer || !design) {
+        throw new Error("could not find customer or design (or both)")
+    }
+
+    const item = await ensureCartItem(id)
+    item.design = design
+    item.customer = customer
+    if (item.variation) item.variation = variation
+    await cartRepo.save(item)
+    log.log(request.body)
+}
+
+async function ensureCartItem(id: string) {
+    if (id) {
+        let cd = await cartRepo.findOneBy({id : id})
+        if (cd) {
+            return cd
+        }
+    }
+    let cd = new CustomerDesign()
+    cd.id = cd.makeId()
+    await cartRepo.save(cd)
+    return cd
 }

@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryColumn, ManyToOne, JoinColumn} from "typeorm"
 import {Address} from "./address"
 
-var crypto = require('crypto');
+const crypto = require('crypto')
 
 @Entity()
 export class Customer {
