@@ -149,6 +149,7 @@ export class DemoDataLoader {
         purchase.customer = customer
         purchase.design = design
         purchase.variation = "XL"
+        purchase.quantity = 5
         purchase.priceCents = design.priceCents
         purchase.id = makeUuid()
         await purchases.save(purchase)

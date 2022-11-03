@@ -1,6 +1,8 @@
 export class PurchaseDTO {
     id: string
     purchaseable: PurchaseableDTO
+    quantity: number
+    variation: string
 }
 
 export class CustomerDTO {

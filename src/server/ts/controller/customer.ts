@@ -36,6 +36,8 @@ export async function getCustomer(request: Request, response: Response) {
         pp.id = purchase.design.id
         pp.name = purchase.design.name
         p.id = purchase.id
+        p.quantity = purchase.quantity
+        p.variation = purchase.variation
         p.purchaseable = pp
         result.cart.push(p)
     })
@@ -51,6 +53,7 @@ export async function addEditCartItem(request: Request, response: Response) {
     let id: string | null | undefined = request.body.id
     let designId: number | null | undefined = request.body.designId
     let variation: string | null | undefined = request.body.variation
+    let quantity: number = request.body.quantity ?? 0
 
     if (!designId) {
         throw new Error("must specify design id")
@@ -66,9 +69,12 @@ export async function addEditCartItem(request: Request, response: Response) {
     const item = await ensureCartItem(id)
     item.design = design
     item.customer = customer
-    if (item.variation) item.variation = variation
+    item.quantity = quantity
+    item.priceCents = design.priceCents
+    if (variation) item.variation = variation
+
     await cartRepo.save(item)
-    log.log(request.body)
+    return getCustomer(request, response)
 }
 
 async function ensureCartItem(id: string) {
@@ -99,7 +105,7 @@ export async function buy(request: Request, response: Response) {
     const result = await payment.go()
     
     if (payment.failed) {
-        log.err(`Payment Fail ${result}`)
+        log.err(`Payment Fail: ${result}`)
         return
     }
 
@@ -107,4 +113,6 @@ export async function buy(request: Request, response: Response) {
         purchase.purchased = new Date()
         cartRepo.save(purchase)
     })
+
+    return getCustomer(request, response)
 }

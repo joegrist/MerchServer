@@ -14,7 +14,12 @@ ds.initialize().then(async () => {
 
     // create express app
     const app = express()
-    app.use(bodyParser.json());
+
+    // for parsing application/json
+    app.use(bodyParser.json())
+
+    // for parsing application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({ extended: true }))
 
     // register all application routes
     app.get("/", (request: Request, response: Response, next: Function) => {
@@ -45,14 +50,14 @@ ds.initialize().then(async () => {
         .catch(err => next(err))
     })
 
-    app.get("/customer/:email/purchase", (request: Request, response: Response, next: Function) => {
+    app.post("/customer/:email/purchase", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> addEditCartItem`)
         addEditCartItem(request, response)
         .then(() => next)
         .catch(err => next(err))
     })
 
-        app.get("/customer/:email/buy", (request: Request, response: Response, next: Function) => {
+    app.post("/customer/:email/buy", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> buy`)
         buy(request, response)
         .then(() => next)
