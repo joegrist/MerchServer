@@ -5,7 +5,7 @@ import { View } from "../../common/entity/view"
 import { CustomerDesign } from "../../common/entity/customerDesign"
 import { DesignView } from "../../common/entity/designView"
 import { DataSource, Repository } from "typeorm"
-import { log } from "../../config/config"
+import { log, makeUuid } from "../../config/config"
 import { Customer } from "../../common/entity/customer"
 import { ProductVariation } from "../../common/entity/productVariation"
 
@@ -150,7 +150,7 @@ export class DemoDataLoader {
         purchase.design = design
         purchase.variation = "XL"
         purchase.priceCents = design.priceCents
-        purchase.id = purchase.makeId()
+        purchase.id = makeUuid()
         await purchases.save(purchase)
     }
 }

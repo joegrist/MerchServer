@@ -4,7 +4,11 @@ export class Logger {
         console.log(message)
     }
 
-    err(message: string, error: Error) {
+    err(message: string, error: Error | null = null) {
+        if (!error) {
+            console.error(message)
+            return
+        }
         console.error(`${message}: ${error.name}: ${error.message}`)
     }
 }

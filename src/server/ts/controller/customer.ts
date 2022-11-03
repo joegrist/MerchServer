@@ -4,7 +4,8 @@ import { Customer } from "../../../common/entity/customer"
 import { CustomerDesign } from "../../../common/entity/customerDesign"
 import { Design } from "../../../common/entity/design"
 import { PurchaseDTO, CustomerDTO, PurchaseableDTO } from "./dto"
-import { log } from "../../../config/config"
+import { log, makeUuid } from "../../../config/config"
+import { StripePayment } from "../stripe"
 
 const customerRepo = ds.getRepository(Customer)
 const cartRepo = ds.getRepository(CustomerDesign)
@@ -46,18 +47,17 @@ export async function getCustomer(request: Request, response: Response) {
 
 export async function addEditCartItem(request: Request, response: Response) {
 
+    let customerEmail = request.params["email"]
     let id: string | null | undefined = request.body.id
-    let customerEmail: string | null | undefined = request.body.customerEmail
     let designId: number | null | undefined = request.body.designId
     let variation: string | null | undefined = request.body.variation
 
-    if (!customerEmail || !designId) {
-        throw new Error("must specify customer email and design id")
+    if (!designId) {
+        throw new Error("must specify design id")
     }
 
     let customer = await customerRepo.findOneBy({email : customerEmail})
     let design = await designRepo.findOneBy({id : designId})
-
 
     if (!customer || !design) {
         throw new Error("could not find customer or design (or both)")
@@ -79,7 +79,32 @@ async function ensureCartItem(id: string) {
         }
     }
     let cd = new CustomerDesign()
-    cd.id = cd.makeId()
+    cd.id = makeUuid()
     await cartRepo.save(cd)
     return cd
+}
+
+export async function buy(request: Request, response: Response) {
+    let customerEmail = request.params["email"]
+    let customer = await customerRepo.findOneBy({email : customerEmail})
+    let purchases = await cartRepo.findBy({customer : { email : customer.email}, purchased : null})
+    let cost = 0
+
+    purchases.forEach(purchase => {
+        cost += purchase.priceCents
+    })
+
+    const payment = new StripePayment()
+    payment.cents = cost
+    const result = await payment.go()
+    
+    if (payment.failed) {
+        log.err(`Payment Fail ${result}`)
+        return
+    }
+
+    purchases.forEach(purchase => {
+        purchase.purchased = new Date()
+        cartRepo.save(purchase)
+    })
 }

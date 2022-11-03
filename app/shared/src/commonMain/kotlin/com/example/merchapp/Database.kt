@@ -24,6 +24,7 @@ class Purchaseable : RealmObject {
     var productName: String = ""
     var thumbnail: String = ""
     var priceCents: Long = 0
+    var variations: String = ""
 }
 
 class PurchaseableView: RealmObject {
