@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <FrameLayout
-            android:id="@+id/loader"
+            android:id="@+id/merchant_list_loader"
             android:layout_width="match_parent"
             android:alpha="0.4"
             android:background="#000000"
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"/>
             <TextView
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
-                android:id="@+id/text_view"
+                android:id="@+id/merchant_list_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
             <ListView
-                android:id="@+id/list_view"
+                android:id="@+id/merchant_list_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>

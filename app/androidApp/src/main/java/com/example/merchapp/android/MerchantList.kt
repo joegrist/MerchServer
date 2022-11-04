@@ -22,8 +22,10 @@ fun greet(): String {
 
 class MerchantList : BaseFragment(), IObserver  {
 
+    var lv: ListView? = null
+    var loader: View? = null
+    var tv: TextView? = null
     private val client = ApiClient()
-    val tv get() = view?.findViewById(R.id.text_view) as? TextView?
     var itemsAdapter: ArrayAdapter<String>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -32,6 +34,10 @@ class MerchantList : BaseFragment(), IObserver  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        lv = view.findViewById(R.id.merchant_list_list_view) as? ListView
+        loader = view.findViewById(R.id.merchant_list_loader) as? View
+        tv = view.findViewById(R.id.merchant_list_text_view) as? TextView
 
         tv?.text = greet()
         itemsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ArrayList<String>())

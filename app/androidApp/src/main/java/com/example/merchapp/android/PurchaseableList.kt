@@ -16,8 +16,9 @@ import androidx.navigation.fragment.navArgs
 class PurchaseableList : BaseFragment(), IObserver {
 
     val args: PurchaseableListArgs by navArgs()
-
-    val tv get() = getView()?.findViewById(R.id.text_view) as? TextView
+    var lv: ListView? = null
+    var loader: View? = null
+    var tv: TextView? = null
     var itemsAdapter: PurchaseableListAdapter? = null
     var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
@@ -30,6 +31,10 @@ class PurchaseableList : BaseFragment(), IObserver {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        lv = view.findViewById(R.id.purchaseable_list_list_view) as? ListView
+        loader = view.findViewById(R.id.purchaseable_list_loader) as? View
+        tv = view.findViewById(R.id.purchaseable_list_list_view) as? TextView
 
         tv?.text = greet()
 
