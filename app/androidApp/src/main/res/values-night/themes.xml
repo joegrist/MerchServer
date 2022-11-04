@@ -1,9 +1,9 @@
 <resources>
 
-    <style name="Theme.App" parent="Theme.AppCompat.Light">
-        <item name="colorPrimary">@color/primaryColor</item>
+    <style name="Theme.App" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/primaryLightColor</item>
         <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
-        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondary">@color/secondaryLightColor</item>
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <!-- Using default values for colorOnPrimary, colorSurface, colorError, etc. -->
     </style>

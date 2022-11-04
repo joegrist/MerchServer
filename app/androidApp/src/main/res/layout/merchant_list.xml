@@ -10,6 +10,7 @@
     android:id="@+id/main_view">
 
     <FrameLayout
+        android:background="?android:colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <FrameLayout
@@ -29,10 +30,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"/>
             <TextView
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"
                 android:id="@+id/merchant_list_text_view"
