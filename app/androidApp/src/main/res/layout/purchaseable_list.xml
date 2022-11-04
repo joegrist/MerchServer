@@ -29,10 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"/>
             <TextView
                 android:id="@+id/purchaseable_list_text_view"
                 android:textAppearance="@android:style/TextAppearance.Material.Headline"

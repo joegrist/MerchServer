@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_item_one"
-        android:title="Camera"
+        android:title="Account"
         android:icon="@drawable/account_circle"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_item_two"
-        android:title="Send"
-        android:icon="@drawable/a"
-        app:showAsAction="always" />
+        android:title="Cart"
+        android:icon="@drawable/shopping_cart"
+        app:showAsAction="ifRoom" />
 </menu>
