@@ -3,26 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
-
+    app:startDestination="@id/merchantList">
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.merchapp.android.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
+        android:id="@+id/merchantList"
+        android:name="com.example.merchapp.android.MerchantList"
+        tools:layout="@layout/merchant_list"
+        android:label="MerchantList" >
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_merchantList_to_purchaseableList"
+            app:destination="@id/purchaseableList" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.merchapp.android.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/purchaseableList"
+        android:name="com.example.merchapp.android.PurchaseableList"
+        android:label="purchaseable_list"
+        tools:layout="@layout/purchaseable_list" >
+        <argument
+            android:name="merchantSlug"
+            app:argType="string"
+            android:defaultValue="demo" />
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_purchaseableList_to_purchaseable"
+            app:destination="@id/purchaseable" />
     </fragment>
+    <fragment
+        android:id="@+id/purchaseable"
+        android:name="com.example.merchapp.android.Purchaseable"
+        android:label="purchaseable"
+        tools:layout="@layout/purchaseable" >
+        <argument
+            android:name="purchaseableId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
+
 </navigation>
