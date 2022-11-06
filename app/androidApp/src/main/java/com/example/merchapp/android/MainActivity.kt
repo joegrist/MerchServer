@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MainActivity : AppCompatActivity()  {
 
@@ -39,6 +40,45 @@ class MainActivity : AppCompatActivity()  {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+
+        when (item.itemId) {
+            R.id.top_menu_cart -> {
+                val modalBottomSheet = CartBottomSheet()
+                modalBottomSheet.show(supportFragmentManager, CartBottomSheet.TAG)
+                return true
+            }
+            R.id.top_menu_user -> {
+                val modalBottomSheet = UserBottomSheet()
+                modalBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+                return true
+            }
+        }
+
+        return false
+    }
+}
+
+class UserBottomSheet : BottomSheetDialogFragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.user_dialog_content, container, false)
+
+    companion object {
+        const val TAG = "UserBottomSheet"
+    }
+}
+class CartBottomSheet : BottomSheetDialogFragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.cart_dialog_content, container, false)
+
+    companion object {
+        const val TAG = "CartBottomSheet"
     }
 }

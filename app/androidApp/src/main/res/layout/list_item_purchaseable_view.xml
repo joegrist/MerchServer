@@ -17,6 +17,9 @@
             android:layout_height="300dp"
             android:id="@+id/thumbnail"/>
 
+        <Space
+            android:layout_width="@dimen/default_gap"
+            android:layout_height="match_parent"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

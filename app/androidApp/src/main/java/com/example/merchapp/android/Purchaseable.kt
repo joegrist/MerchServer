@@ -35,13 +35,11 @@ class Purchaseable : BaseFragment() {
 
         purchaseableId = args.purchaseableId
 
-        title = getView()?.findViewById(R.id.title)
         list = getView()?.findViewById(R.id.view_list)
         button = getView()?.findViewById(R.id.order_button)
 
         purchaseable = client.purchaseable(purchaseableId)
 
-        title?.text = purchaseable?.name
         items = purchaseable?.views ?: arrayListOf()
         itemsAdapter = ViewListAdapter(requireActivity(), items)
         list?.adapter = itemsAdapter

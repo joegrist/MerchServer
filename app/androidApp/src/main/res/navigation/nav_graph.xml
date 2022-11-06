@@ -8,7 +8,7 @@
         android:id="@+id/merchantList"
         android:name="com.example.merchapp.android.MerchantList"
         tools:layout="@layout/merchant_list"
-        android:label="MerchantList" >
+        android:label="Shops" >
         <action
             android:id="@+id/action_merchantList_to_purchaseableList"
             app:destination="@id/purchaseableList" />
@@ -16,12 +16,16 @@
     <fragment
         android:id="@+id/purchaseableList"
         android:name="com.example.merchapp.android.PurchaseableList"
-        android:label="purchaseable_list"
+        android:label="{merchantName}"
         tools:layout="@layout/purchaseable_list" >
         <argument
             android:name="merchantSlug"
             app:argType="string"
             android:defaultValue="demo" />
+        <argument
+            android:name="merchantName"
+            app:argType="string"
+            android:defaultValue="Demo" />
         <action
             android:id="@+id/action_purchaseableList_to_purchaseable"
             app:destination="@id/purchaseable" />
@@ -29,12 +33,16 @@
     <fragment
         android:id="@+id/purchaseable"
         android:name="com.example.merchapp.android.Purchaseable"
-        android:label="purchaseable"
+        android:label="{purchaseableName}"
         tools:layout="@layout/purchaseable" >
         <argument
             android:name="purchaseableId"
             app:argType="long"
             android:defaultValue="0L" />
+        <argument
+            android:name="purchaseableName"
+            app:argType="string"
+            android:defaultValue="Item" />
     </fragment>
 
 </navigation>

@@ -18,7 +18,6 @@ class PurchaseableList : BaseFragment(), IObserver {
     val args: PurchaseableListArgs by navArgs()
     var lv: ListView? = null
     var loader: View? = null
-    var tv: TextView? = null
     var itemsAdapter: PurchaseableListAdapter? = null
     var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
@@ -34,17 +33,14 @@ class PurchaseableList : BaseFragment(), IObserver {
 
         lv = view.findViewById(R.id.purchaseable_list_list_view) as? ListView
         loader = view.findViewById(R.id.purchaseable_list_loader) as? View
-        tv = view.findViewById(R.id.purchaseable_list_list_view) as? TextView
-
-        tv?.text = greet()
 
         merchantSlug = args.merchantSlug
         itemsAdapter = PurchaseableListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
         lv?.setOnItemClickListener { parent, view, position, id ->
-            val pid = items.get(position).id
-            var action = PurchaseableListDirections.actionPurchaseableListToPurchaseable(pid)
+            val p = items.get(position)
+            var action = PurchaseableListDirections.actionPurchaseableListToPurchaseable(p.id, p.name)
             navController?.navigate(action)
         }
 
@@ -63,7 +59,6 @@ class PurchaseableList : BaseFragment(), IObserver {
 
         showCurrent()
         loader?.visibility = View.GONE
-        tv?.text = client.purchaseables(merchantSlug).count().toString()
     }
 
     private fun showCurrent() {

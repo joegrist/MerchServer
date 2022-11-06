@@ -7,7 +7,7 @@ plugins {
 
 android {
 
-    compileSdk = 32
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.example.merchapp.android"
         minSdk = 30
@@ -45,4 +45,6 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha01")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha01")
 }
