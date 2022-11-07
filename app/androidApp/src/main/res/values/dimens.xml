@@ -1,3 +1,4 @@
 <resources>
     <dimen name="default_gap">16dp</dimen>
+    <dimen name="half_gap">8dp</dimen>
 </resources>

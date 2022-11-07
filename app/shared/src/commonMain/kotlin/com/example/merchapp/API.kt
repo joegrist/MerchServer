@@ -7,6 +7,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.realm.kotlin.types.annotations.Ignore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,15 +30,16 @@ import kotlinx.serialization.json.Json
     val thumbnail: String,
     val name: String,
     val priceCents: Long,
-    var variations: ArrayList<PurchaseableVariation>,
-    val views: ArrayList<PurchaseableViewDTO>
-    )
+    var variations: ArrayList<PurchaseableVariationDTO>,
+    val views: ArrayList<PurchaseableViewDTO>)
 
-@Serializable data class PurchaseableVariation(
+@Serializable data class PurchaseableVariationDTO(
     val id: Long,
     val name: String,
-    val options: String
-)
+    val options: String) {
+    var optionsAsList = arrayOf<String>()
+        get() = options.split(",").toTypedArray()
+}
 
 @Serializable data class PurchaseableViewDTO(
     val id: Long,
@@ -136,7 +138,9 @@ class ApiClient: IObservable {
 
     // Fully populated purchaseable for the detail screen
     fun purchaseable(id: Long): PurchaseableDTO {
+
         val p = Database.purchaseable(id)
+
         val result = PurchaseableDTO(
             id,
             p?.merchantSlug ?: "",
@@ -149,6 +153,7 @@ class ApiClient: IObservable {
             p?.priceCents ?: 0,
             arrayListOf(),
             arrayListOf())
+
         Database.views(id).forEach {
             val view = PurchaseableViewDTO(
                 it.id,
@@ -157,6 +162,15 @@ class ApiClient: IObservable {
                 it.background)
             result.views.add(view)
         }
+
+        Database.variations(id).forEach {
+            val variation = PurchaseableVariationDTO(
+                it.id,
+                it.name,
+                it.options)
+            result.variations.add(variation)
+        }
+
         return result
     }
 
@@ -201,6 +215,7 @@ class ApiClient: IObservable {
             val data : Array<PurchaseableDTO> = json.decodeFromString(response.body())
             val purchasableList = ArrayList<Purchaseable>()
             val viewList = ArrayList<PurchaseableView>()
+            val variationList = ArrayList<PurchaseableVariation>()
 
             data.forEach {
                 val p = Purchaseable()
@@ -222,9 +237,18 @@ class ApiClient: IObservable {
                     v.purchaseableId = p.purchaseableId
                     viewList.add(v)
                 }
+                it.variations.forEach {
+                    var v = PurchaseableVariation()
+                    v.id = it.id
+                    v.name = it.name
+                    v.options = it.options
+                    v.purchaseableId = p.purchaseableId
+                    variationList.add(v)
+                }
             }
             Database.saveOrUpdatePurchaseables(purchasableList)
             Database.saveOrUpdateViews(viewList)
+            Database.saveOrUpdateVariations(variationList)
             onOperationCompleted()
         }
     }

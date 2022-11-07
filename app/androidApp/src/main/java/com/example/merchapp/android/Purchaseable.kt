@@ -2,15 +2,13 @@ package com.example.merchapp.android
 
 import ApiClient
 import PurchaseableDTO
+import PurchaseableVariationDTO
 import PurchaseableViewDTO
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 
 class Purchaseable : BaseFragment() {
@@ -19,12 +17,13 @@ class Purchaseable : BaseFragment() {
 
     private var purchaseableId: Long = 0
     private var purchaseable: PurchaseableDTO? = null
-    private var title: TextView? = null
-    private var list: ListView? = null
-    private var button: Button? = null
+    private var viewList: ListView? = null
+    private var variantList: ListView? = null
     private val client = ApiClient()
-    var itemsAdapter: ViewListAdapter? = null
+    var viewsAdapter: ViewListAdapter? = null
+    var variantsAdapter: VariantListAdapter? = null
     var items: ArrayList<PurchaseableViewDTO> = arrayListOf()
+    var variants: Array<String> = arrayOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.purchaseable, container, false)
@@ -34,14 +33,15 @@ class Purchaseable : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         purchaseableId = args.purchaseableId
-
-        list = getView()?.findViewById(R.id.view_list)
-        button = getView()?.findViewById(R.id.order_button)
-
         purchaseable = client.purchaseable(purchaseableId)
 
+        viewList = getView()?.findViewById(R.id.view_list)
+        variantList = getView()?.findViewById(R.id.variant_list)
         items = purchaseable?.views ?: arrayListOf()
-        itemsAdapter = ViewListAdapter(requireActivity(), items)
-        list?.adapter = itemsAdapter
+        variants = purchaseable?.variations?.firstOrNull()?.optionsAsList ?: arrayOf()
+        viewsAdapter = ViewListAdapter(requireActivity(), items)
+        variantsAdapter = VariantListAdapter(requireActivity(), variants)
+        viewList?.adapter = viewsAdapter
+        variantList?.adapter = variantsAdapter
     }
 }

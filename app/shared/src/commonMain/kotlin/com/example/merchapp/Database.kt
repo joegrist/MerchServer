@@ -29,6 +29,14 @@ class Purchaseable : RealmObject {
     var variations: String = ""
 }
 
+class PurchaseableVariation: RealmObject {
+    @PrimaryKey
+    var id: Long = 0
+    var purchaseableId: Long = 0
+    var name: String = ""
+    var options: String = ""
+}
+
 class PurchaseableView: RealmObject {
     @PrimaryKey
     var id: Long = 0
@@ -61,7 +69,8 @@ object Database {
              Purchase::class,
              Purchaseable::class,
              Customer::class,
-             PurchaseableView::class
+             PurchaseableView::class,
+             PurchaseableVariation::class
         )
     ).build()
 
@@ -103,7 +112,19 @@ object Database {
         return realm.query<PurchaseableView>("purchaseableId = $0", purchaseableId).find().toTypedArray()
     }
 
+    fun variations(purchaseableId: Long): Array<PurchaseableVariation> {
+        return realm.query<PurchaseableVariation>("purchaseableId = $0", purchaseableId).find().toTypedArray()
+    }
+
     fun saveOrUpdateViews(m: ArrayList<PurchaseableView>) {
+        realm.writeBlocking {
+            m.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
+        }
+    }
+
+    fun saveOrUpdateVariations(m: ArrayList<PurchaseableVariation>) {
         realm.writeBlocking {
             m.forEach {
                 copyToRealm(it, UpdatePolicy.ALL)
