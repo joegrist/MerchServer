@@ -1,5 +1,4 @@
 package com.merch.app
-import com.merch.app.PreferenceContext
 
 const val SP_NAME = "merch_app"
 

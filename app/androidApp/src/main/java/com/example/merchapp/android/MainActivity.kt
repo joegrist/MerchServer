@@ -1,17 +1,11 @@
 package com.merch.app.android
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MainActivity : AppCompatActivity()  {
 
@@ -65,27 +59,3 @@ class MainActivity : AppCompatActivity()  {
     }
 }
 
-class UserBottomSheet : BottomSheetDialogFragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.user_dialog_content, container, false)
-
-    companion object {
-        const val TAG = "UserBottomSheet"
-    }
-}
-class CartBottomSheet : BottomSheetDialogFragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.cart_dialog_content, container, false)
-
-    companion object {
-        const val TAG = "CartBottomSheet"
-    }
-}
