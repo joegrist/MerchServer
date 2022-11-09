@@ -1,4 +1,4 @@
-package com.example.merchapp.android
+package com.merch.app.android
 
 import android.os.Bundle
 import android.view.LayoutInflater

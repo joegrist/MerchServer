@@ -6,7 +6,7 @@
     app:startDestination="@id/merchantList">
     <fragment
         android:id="@+id/merchantList"
-        android:name="com.example.merchapp.android.MerchantList"
+        android:name="com.merch.app.android.MerchantList"
         tools:layout="@layout/merchant_list"
         android:label="Shops" >
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/purchaseableList"
-        android:name="com.example.merchapp.android.PurchaseableList"
+        android:name="com.merch.app.android.PurchaseableList"
         android:label="{merchantName}"
         tools:layout="@layout/purchaseable_list" >
         <argument
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/purchaseable"
-        android:name="com.example.merchapp.android.Purchaseable"
+        android:name="com.merch.app.android.Purchaseable"
         android:label="{purchaseableName}"
         tools:layout="@layout/purchaseable" >
         <argument

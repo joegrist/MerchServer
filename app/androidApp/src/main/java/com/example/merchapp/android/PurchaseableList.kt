@@ -1,4 +1,4 @@
-package com.example.merchapp.android
+package com.merch.app.android
 
 import ApiClient
 import IObserver

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:name="com.example.merchapp.android.MerchantList"
+    android:name="com.merch.app.android.MerchantList"
     tools:context=".MainActivity"
     android:id="@+id/main_view"
     android:background="?android:colorBackground"

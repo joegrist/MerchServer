@@ -9,7 +9,7 @@ android {
 
     compileSdk = 33
     defaultConfig {
-        applicationId = "com.example.merchapp.android"
+        applicationId = "com.merch.app.android"
         minSdk = 30
         targetSdk = 32
         versionCode = 1
