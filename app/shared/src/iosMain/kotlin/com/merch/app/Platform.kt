@@ -1,4 +1,4 @@
-package com.example.merchapp
+package com.merch.app
 
 import platform.UIKit.UIDevice
 

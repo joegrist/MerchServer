@@ -1,4 +1,4 @@
-package com.example.merchapp
+package com.merch.app
 
 import kotlin.test.Test
 import kotlin.test.assertTrue
