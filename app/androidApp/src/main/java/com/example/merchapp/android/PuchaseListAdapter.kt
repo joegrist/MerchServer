@@ -1,25 +1,19 @@
 package com.merch.app.android
 
-import ApiClient
 import PurchaseDTO
-import PurchaseableDTO
 import android.app.Activity
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.InputStream
-import java.net.URL
 
 class PurchaseListAdapter(private val context: Activity, list: ArrayList<PurchaseDTO>): ArrayAdapter<PurchaseDTO>(context, 0, list) {
+
+    var incClick: ((Int, String) -> Unit)? = null
+    var decClick: ((Int, String) -> Unit)? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
@@ -42,11 +36,11 @@ class PurchaseListAdapter(private val context: Activity, list: ArrayList<Purchas
         qty?.text = p.quantity.toString()
 
         inc?.setOnClickListener {
-
+            incClick?.invoke(position, p.id)
         }
 
         dec?.setOnClickListener {
-
+            decClick?.invoke(position, p.id)
         }
 
         return view ?: View(context)

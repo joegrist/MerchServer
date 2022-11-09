@@ -12,4 +12,12 @@ open class BaseFragment: Fragment() {
         get() = activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
     protected val navController
         get() = navHostFragment?.navController
+
+    fun showLoader() {
+        (activity as MainActivity).loader(true)
+    }
+
+    fun hideLoader() {
+        (activity as MainActivity).loader(false)
+    }
 }

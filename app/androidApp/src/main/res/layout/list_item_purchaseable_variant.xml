@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingLeft="@dimen/default_gap"
+    android:paddingRight="@dimen/default_gap"
+    android:paddingTop="@dimen/half_gap"
+    android:paddingBottom="@dimen/half_gap"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingLeft="@dimen/default_gap"
-        android:paddingRight="@dimen/default_gap"
-        android:paddingTop="@dimen/half_gap"
-        android:paddingBottom="@dimen/half_gap"
-        android:orientation="horizontal">
+        android:layout_weight="99"
+        android:textAlignment="textEnd"
+        android:id="@+id/variant_name"
+        tools:text="Variant Name"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="99"
-            android:textAlignment="textEnd"
-            android:id="@+id/variant_name"
-            tools:text="Variant Name"/>
+    <Space
+        android:layout_width="@dimen/default_gap"
+        android:layout_height="match_parent"/>
 
-        <Space
-            android:layout_width="@dimen/default_gap"
-            android:layout_height="match_parent"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_circle"
+        android:id="@+id/variant_add"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/add_circle"/>
-
-    </LinearLayout>
-</android.widget.RelativeLayout>
+</LinearLayout>

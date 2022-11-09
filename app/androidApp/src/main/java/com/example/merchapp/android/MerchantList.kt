@@ -20,7 +20,6 @@ fun greet(): String {
 class MerchantList : BaseFragment(), IObserver  {
 
     var lv: ListView? = null
-    var loader: View? = null
     private val client = ApiClient()
     var itemsAdapter: ArrayAdapter<String>? = null
 
@@ -32,8 +31,6 @@ class MerchantList : BaseFragment(), IObserver  {
         super.onViewCreated(view, savedInstanceState)
 
         lv = view.findViewById(R.id.merchant_list_list_view) as? ListView
-        loader = view.findViewById(R.id.merchant_list_loader) as? View
-
         itemsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ArrayList<String>())
         lv?.adapter = itemsAdapter
 
@@ -51,13 +48,13 @@ class MerchantList : BaseFragment(), IObserver  {
 
     override fun update() {
         if (client.operationInProgress) {
-            loader?.visibility = VISIBLE
+            showLoader()
             showCurrent()
             return
         }
 
         showCurrent()
-        loader?.visibility = GONE
+        hideLoader()
     }
 
     private fun showCurrent() {

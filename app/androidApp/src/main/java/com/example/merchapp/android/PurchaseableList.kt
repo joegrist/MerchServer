@@ -17,7 +17,6 @@ class PurchaseableList : BaseFragment(), IObserver {
 
     val args: PurchaseableListArgs by navArgs()
     var lv: ListView? = null
-    var loader: View? = null
     var itemsAdapter: PurchaseableListAdapter? = null
     var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
@@ -32,8 +31,6 @@ class PurchaseableList : BaseFragment(), IObserver {
         super.onViewCreated(view, savedInstanceState)
 
         lv = view.findViewById(R.id.purchaseable_list_list_view) as? ListView
-        loader = view.findViewById(R.id.purchaseable_list_loader) as? View
-
         merchantSlug = args.merchantSlug
         itemsAdapter = PurchaseableListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
@@ -52,13 +49,13 @@ class PurchaseableList : BaseFragment(), IObserver {
 
     override fun update() {
         if (client.operationInProgress) {
-            loader?.visibility = View.VISIBLE
+            showLoader()
             showCurrent()
             return
         }
 
         showCurrent()
-        loader?.visibility = View.GONE
+        hideLoader()
     }
 
     private fun showCurrent() {

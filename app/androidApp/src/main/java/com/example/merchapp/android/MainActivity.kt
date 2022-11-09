@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MainActivity : AppCompatActivity()  {
 
+    private var loader: View? = null
+
     fun getNavigationController(res: Int): NavController {
         val navHostFragment = supportFragmentManager.findFragmentById(res) as NavHostFragment
         return navHostFragment.navController
@@ -22,10 +24,11 @@ class MainActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            setContentView(R.layout.main)
-            setSupportActionBar(findViewById(R.id.action_bar))
-            val navController = getNavigationController(R.id.nav_host_fragment)
-            NavigationUI.setupActionBarWithNavController(this, navController)
+        setContentView(R.layout.main)
+        setSupportActionBar(findViewById(R.id.action_bar))
+        val navController = getNavigationController(R.id.nav_host_fragment)
+        NavigationUI.setupActionBarWithNavController(this, navController)
+        loader = findViewById(R.id.loader) as? View
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -55,6 +58,10 @@ class MainActivity : AppCompatActivity()  {
         }
 
         return false
+    }
+
+    fun loader(visible: Boolean) {
+        loader?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 }
 
