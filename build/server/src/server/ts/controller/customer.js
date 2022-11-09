@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.buy = exports.addEditCartItem = exports.getCustomer = void 0;
+exports.login = exports.buy = exports.addEditCartItem = exports.getCustomer = void 0;
 var dataSource_1 = require("../../../common/dataSource");
 var customer_1 = require("../../../common/entity/customer");
 var customerDesign_1 = require("../../../common/entity/customerDesign");
@@ -195,3 +195,27 @@ function buy(request, response) {
     });
 }
 exports.buy = buy;
+function login(request, response) {
+    return __awaiter(this, void 0, void 0, function () {
+        var customerEmail, password, customer, token;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    customerEmail = request.body.email;
+                    password = request.body.password;
+                    return [4 /*yield*/, customerRepo.findOneBy({ email: customerEmail })];
+                case 1:
+                    customer = _a.sent();
+                    if (!customer) {
+                        throw new Error("could not find customer");
+                    }
+                    token = {
+                        "token": customer.email
+                    };
+                    response.send(token);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.login = login;

@@ -3,7 +3,7 @@ import {version} from '../../../../package.json';
 
 export async function appInfo(request: Request, response: Response) {
     response.setHeader('content-type', 'application/json');
-    var appInfo = {
+    const appInfo = {
         "name" : "Merch Server",
         "version" : version
     }

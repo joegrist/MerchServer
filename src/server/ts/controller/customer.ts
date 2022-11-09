@@ -116,3 +116,19 @@ export async function buy(request: Request, response: Response) {
 
     return getCustomer(request, response)
 }
+
+export async function login(request: Request, response: Response) {
+    let customerEmail: string | null | undefined = request.body.email
+    let password: string | null | undefined = request.body.password
+    let customer = await customerRepo.findOneBy({email : customerEmail})
+
+    if (!customer) {
+        throw new Error("could not find customer")
+    }
+
+    const token = {
+        "token" : customer.email
+    }
+
+    response.send(token);
+}

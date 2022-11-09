@@ -85,6 +85,11 @@ dataSource_1.ds.initialize().then(function () { return __awaiter(void 0, void 0,
             (0, customer_1.buy)(request, response)
                 .then(function () { return next; })["catch"](function (err) { return next(err); });
         });
+        app.post("/customer/login", function (request, response, next) {
+            config_1.log.log("".concat(request.path, " -> login"));
+            (0, customer_1.login)(request, response)
+                .then(function () { return next; })["catch"](function (err) { return next(err); });
+        });
         // run app
         app.listen(3000);
         console.log("Express application is up and running on port 3000");
