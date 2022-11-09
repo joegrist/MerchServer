@@ -1,4 +1,4 @@
-package com.example.merchapp
+package com.merch.app
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy

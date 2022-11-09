@@ -1,4 +1,4 @@
-import com.example.merchapp.*
+import com.merch.app.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -7,13 +7,14 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.realm.kotlin.types.annotations.Ignore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+
+var token = ""
 
 @Serializable data class MerchantDTO(
     val slug: String,
@@ -37,7 +38,7 @@ import kotlinx.serialization.json.Json
     val id: Long,
     val name: String,
     val options: String) {
-    var optionsAsList = arrayOf<String>()
+    val optionsAsList
         get() = options.split(",").toTypedArray()
 }
 
@@ -57,6 +58,8 @@ import kotlinx.serialization.json.Json
 @Serializable data class PurchaseDTO(
     val id: String,
     val purchaseableId: String,
+    val purchaseableName: String,
+    val purchaseableVariations: String,
     var quantity: Long,
     var variation: String
 )
@@ -238,7 +241,7 @@ class ApiClient: IObservable {
                     viewList.add(v)
                 }
                 it.variations.forEach {
-                    var v = PurchaseableVariation()
+                    val v = PurchaseableVariation()
                     v.id = it.id
                     v.name = it.name
                     v.options = it.options
@@ -253,11 +256,28 @@ class ApiClient: IObservable {
         }
     }
 
-    fun onOperationCompleted() {
+    private fun onOperationCompleted() {
         CoroutineScope(Dispatchers.Main).launch {
             operationInProgress = false
             client.close()
             sendUpdateEvent()
         }
+    }
+
+    fun login() {
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.post("$apiEndpoint/shopper")
+            } catch (e: Exception) {
+                log("Error loading purchaseables: ", e)
+                onOperationCompleted()
+                return@launch
+            }
+            sendUpdateEvent()
+        }
+    }
+
+    fun getUser() {
+
     }
 }

@@ -6,7 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -19,17 +21,19 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Design Name"
-                android:id="@+id/design_text_view"/>
+                android:id="@+id/design_text_view"
+                style="@style/ListText"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Product Name"
-                android:id="@+id/product_text_view"/>
+                android:id="@+id/product_text_view"
+                style="@style/ListSubText"/>
         </LinearLayout>
 
     </LinearLayout>

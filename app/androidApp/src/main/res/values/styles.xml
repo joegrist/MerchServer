@@ -16,4 +16,14 @@
         <item name="android:divider">@null</item>
         <item name="android:dividerHeight">0dp</item>
     </style>
+
+    <style name="ListText">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyLarge</item>
+    </style>
+
+    <style name="ListSubText">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodySmall</item>
+        <item name="android:color">@color/primaryLightColor</item>
+    </style>
+
 </resources>

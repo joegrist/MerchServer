@@ -1,4 +1,4 @@
-package com.example.merchapp
+package com.merch.app
 
 class Greeting {
     fun greeting(): String {
