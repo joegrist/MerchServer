@@ -73,9 +73,9 @@ ds.initialize().then(async () => {
     })
 
     // run app
-    app.listen(3000);
+    app.listen(3333);
 
-    console.log("Express application is up and running on port 3000")
+    console.log("Express application is up and running on port 3333")
 
 }).catch((err: Error) => {
     log.err(`Error on startup`, err)

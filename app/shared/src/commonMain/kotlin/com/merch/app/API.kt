@@ -116,7 +116,7 @@ object ApiClient: IObservable {
     var prefs: SharedPreference? = null
     const val baseEndpoint = "http://merch.zapto.org"
     const val imagesEndpoint = "$baseEndpoint:8888"
-    const val apiEndpoint = "$baseEndpoint:3000"
+    const val apiEndpoint = "$baseEndpoint:3333"
 
     fun log(prefix: String, e: Exception) {
         println("${prefix}: ${e.message}")
