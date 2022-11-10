@@ -12,6 +12,7 @@
     <ListView
         android:id="@+id/purchaseable_list_list_view"
         android:layout_width="match_parent"
+        tools:listitem="@layout/list_item_purchaseable"
         android:layout_height="match_parent"/>
 
 </FrameLayout>

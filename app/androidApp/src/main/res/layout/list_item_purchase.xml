@@ -5,6 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:paddingTop="@dimen/half_gap"
+    android:paddingBottom="@dimen/half_gap"
+    android:paddingStart="@dimen/default_gap"
+    android:paddingEnd="@dimen/default_gap"
+
     android:orientation="horizontal">
     <LinearLayout
         android:layout_width="0dp"
@@ -28,12 +33,11 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/inc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/dec"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:background="@android:color/transparent"
-        android:padding="5dp"
-        tools:src="@drawable/add_circle" />
+        android:src="@drawable/subtract_circle" />
 
     <TextView
         android:id="@+id/purchase_qty"
@@ -44,13 +48,10 @@
         tools:text="1" />
 
     <ImageButton
-        android:id="@+id/dec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/inc"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:background="@android:color/transparent"
-        android:padding="5dp"
-        tools:src="@drawable/subtract_circle" />
-
-
+        android:src="@drawable/add_circle" />
 
 </LinearLayout>

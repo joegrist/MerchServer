@@ -6,6 +6,7 @@ import io.realm.kotlin.ext.query
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import kotlinx.serialization.Serializable
+import kotlin.math.max
 
 @Serializable
 
@@ -92,6 +93,28 @@ object Database {
 
     fun purchases(): Array<Purchase> {
         return realm.query<Purchase>().find().toTypedArray()
+    }
+
+    fun purchase(id: String): Purchase? {
+        return realm.query<Purchase>("id = '$id'").first().find()
+    }
+
+    fun incQuantity(purchaseId: String) {
+        var p = purchase(purchaseId) ?: return println("Asked to increment qty on invalid purchase $purchaseId")
+        realm.writeBlocking {
+            val pp = findLatest(p) ?: return@writeBlocking
+            pp?.quantity = p.quantity + 1
+            copyToRealm(pp, UpdatePolicy.ALL)
+        }
+    }
+
+    fun decQuantity(purchaseId: String) {
+        var p = purchase(purchaseId) ?: return println("Asked to decrement qty on invalid purchase $purchaseId")
+        realm.writeBlocking {
+            val pp = findLatest(p) ?: return@writeBlocking
+            pp.quantity = max(p.quantity - 1, 0)
+            copyToRealm(pp, UpdatePolicy.ALL)
+        }
     }
 
     fun saveOrUpdatePurchaseables(p: ArrayList<Purchaseable>) {

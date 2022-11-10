@@ -26,7 +26,16 @@ var token = ""
 @Serializable data class PurchaseableMiniDTO(
     val id: Long,
     val name: String,
-)
+) {
+    companion object {
+        fun from(p: Purchaseable): PurchaseableMiniDTO {
+            return PurchaseableMiniDTO(
+                id = p.id,
+                name = p.name
+            )
+        }
+    }
+}
 
 @Serializable data class PurchaseableDTO (
     val id: Long,
@@ -137,15 +146,29 @@ object ApiClient: IObservable {
         val result = ArrayList<PurchaseableDTO>()
         Database.purchaseables(merchantSlug).forEach {
             result.add(PurchaseableDTO(
-                it.id,
-                it.name,
-                merchantSlug,
-                it.productId,
-                it.productName,
-                it.thumbnail,
-                it.priceCents,
-                arrayListOf(),
-                arrayListOf()))
+                id = it.id,
+                name = it.name,
+                merchantSlug = merchantSlug,
+                productId = it.productId,
+                productName = it.productName,
+                thumbnail = it.thumbnail,
+                priceCents = it.priceCents,
+                variations = arrayListOf(),
+                views = arrayListOf()))
+        }
+        return result
+    }
+
+    fun purchases() : ArrayList<PurchaseDTO> {
+        val result = ArrayList<PurchaseDTO>()
+        Database.purchases().forEach {
+            val purchaseable = Database.purchaseable(it.purchaseableId) ?: return@forEach
+            result.add(PurchaseDTO(
+                id = it.id,
+                quantity = it.quantity,
+                variation = it.variation ?: "",
+                purchaseable = PurchaseableMiniDTO.from(purchaseable)
+            ))
         }
         return result
     }
@@ -261,6 +284,14 @@ object ApiClient: IObservable {
             Database.saveOrUpdateVariations(variationList)
             onOperationCompleted()
         }
+    }
+
+    fun incQuantity(p: PurchaseDTO) {
+        Database.incQuantity(p.id)
+    }
+
+    fun decQuantity(p: PurchaseDTO) {
+        Database.decQuantity(p.id)
     }
 
     private fun onOperationStarted() {
