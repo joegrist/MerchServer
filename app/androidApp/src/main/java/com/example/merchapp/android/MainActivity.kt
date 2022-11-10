@@ -1,15 +1,19 @@
 package com.merch.app.android
 
+import ApiClient
+import IObserver
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.merch.app.SharedPreference
 
-class MainActivity : AppCompatActivity()  {
+class MainActivity : AppCompatActivity(), IObserver  {
 
     private var loader: View? = null
+    private var prefs: SharedPreference? = null
 
     fun getNavigationController(res: Int): NavController {
         val navHostFragment = supportFragmentManager.findFragmentById(res) as NavHostFragment
@@ -18,6 +22,9 @@ class MainActivity : AppCompatActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        prefs = SharedPreference(application)
+        ApiClient.prefs = prefs
+        ApiClient.add(this)
         setContentView(R.layout.main)
         setSupportActionBar(findViewById(R.id.action_bar))
         val navController = getNavigationController(R.id.nav_host_fragment)
@@ -56,6 +63,14 @@ class MainActivity : AppCompatActivity()  {
 
     fun loader(visible: Boolean) {
         loader?.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    override fun onCall() {
+        loader(true)
+    }
+
+    override fun onCallEnd() {
+        loader(false)
     }
 }
 

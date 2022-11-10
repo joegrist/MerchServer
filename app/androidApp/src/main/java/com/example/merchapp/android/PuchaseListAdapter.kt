@@ -1,11 +1,12 @@
 package com.merch.app.android
 
+import ApiClient
 import PurchaseDTO
+import PurchaseableDTO
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
@@ -17,7 +18,9 @@ class PurchaseListAdapter(private val context: Activity, list: ArrayList<Purchas
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val p = getItem(position) ?: return View(context)
+        val purchase = getItem(position) ?: return View(context)
+        val purchaseable: PurchaseableDTO = ApiClient.purchaseable(purchase.purchaseable.id)
+
         var view = convertView
 
         if (view == null) {
@@ -31,16 +34,16 @@ class PurchaseListAdapter(private val context: Activity, list: ArrayList<Purchas
         val inc: ImageButton? = view?.findViewById(R.id.inc)
         val dec: ImageButton? = view?.findViewById(R.id.dec)
 
-        title?.text = p.purchaseableName
-        sub?.text = p.purchaseableVariations
-        qty?.text = p.quantity.toString()
+        title?.text = purchaseable.name
+        sub?.text = purchase.variation
+        qty?.text = purchase.quantity.toString()
 
         inc?.setOnClickListener {
-            incClick?.invoke(position, p.id)
+            incClick?.invoke(position, purchase.id)
         }
 
         dec?.setOnClickListener {
-            decClick?.invoke(position, p.id)
+            decClick?.invoke(position, purchase.id)
         }
 
         return view ?: View(context)

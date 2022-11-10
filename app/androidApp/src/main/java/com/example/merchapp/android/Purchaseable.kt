@@ -19,7 +19,6 @@ class Purchaseable : BaseFragment() {
     private var purchaseable: PurchaseableDTO? = null
     private var viewList: ListView? = null
     private var variantList: ListView? = null
-    private val client = ApiClient()
     var viewsAdapter: ViewListAdapter? = null
     var variantsAdapter: VariantListAdapter? = null
     var items: ArrayList<PurchaseableViewDTO> = arrayListOf()
@@ -33,7 +32,7 @@ class Purchaseable : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         purchaseableId = args.purchaseableId
-        purchaseable = client.purchaseable(purchaseableId)
+        purchaseable = ApiClient.purchaseable(purchaseableId)
 
         viewList = getView()?.findViewById(R.id.view_list)
         variantList = getView()?.findViewById(R.id.variant_list)

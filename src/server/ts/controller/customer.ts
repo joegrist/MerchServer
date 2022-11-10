@@ -30,7 +30,7 @@ export async function getCustomer(request: Request, response: Response) {
         relations: ["design", "customer"]
     })
 
-    cart.forEach(purchase => {
+    for (let purchase of cart) {
         const p = new PurchaseDTO()
         const pp = new PurchaseableDTO()
         pp.id = purchase.design.id
@@ -40,7 +40,7 @@ export async function getCustomer(request: Request, response: Response) {
         p.variation = purchase.variation
         p.purchaseable = pp
         result.cart.push(p)
-    })
+    }
 
     // return loaded posts
     response.setHeader('content-type', 'application/json')

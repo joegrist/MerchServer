@@ -13,14 +13,9 @@ import android.widget.ListView
 import com.merch.app.Greeting
 
 
-fun greet(): String {
-    return Greeting().greeting()
-}
-
-class MerchantList : BaseFragment(), IObserver  {
+class MerchantList : BaseFragment()  {
 
     var lv: ListView? = null
-    private val client = ApiClient()
     var itemsAdapter: ArrayAdapter<String>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -35,31 +30,31 @@ class MerchantList : BaseFragment(), IObserver  {
         lv?.adapter = itemsAdapter
 
         lv?.setOnItemClickListener { _, _, position, _ ->
-            val m = client.merchants()[position]
+            val m = ApiClient.merchants()[position]
             var action = MerchantListDirections.actionMerchantListToPurchaseableList(m.slug, m.name)
             navController?.navigate(action)
         }
 
-        client.add(this)
-        showCurrent()
-        client.loadMerchants()
-        update()
+        ApiClient.add(this)
+        ApiClient.loadMerchants()
     }
 
-    override fun update() {
-        if (client.operationInProgress) {
-            showLoader()
-            showCurrent()
-            return
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        ApiClient.remove(this)
+    }
 
+    override fun onCall() {
         showCurrent()
-        hideLoader()
+    }
+
+    override fun onCallEnd() {
+        showCurrent()
     }
 
     private fun showCurrent() {
         itemsAdapter?.clear()
-        client.merchants().forEach {
+        ApiClient.merchants().forEach {
             itemsAdapter?.add(it.name)
         }
         itemsAdapter?.notifyDataSetChanged()

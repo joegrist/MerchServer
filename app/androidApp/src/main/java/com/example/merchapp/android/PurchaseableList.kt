@@ -20,7 +20,6 @@ class PurchaseableList : BaseFragment(), IObserver {
     var itemsAdapter: PurchaseableListAdapter? = null
     var items: ArrayList<PurchaseableDTO> = arrayListOf()
 
-    private val client = ApiClient()
     private var merchantSlug: String = "demo"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,26 +40,21 @@ class PurchaseableList : BaseFragment(), IObserver {
             navController?.navigate(action)
         }
 
-        client.add(this)
-        showCurrent()
-        client.loadPurchaseables(merchantSlug)
-        update()
+        ApiClient.add(this)
+        ApiClient.loadPurchaseables(merchantSlug)
     }
 
-    override fun update() {
-        if (client.operationInProgress) {
-            showLoader()
-            showCurrent()
-            return
-        }
-
+    override fun onCall() {
         showCurrent()
-        hideLoader()
+    }
+
+    override fun onCallEnd() {
+        showCurrent()
     }
 
     private fun showCurrent() {
         items.clear()
-        client.purchaseables(merchantSlug).forEach {
+        ApiClient.purchaseables(merchantSlug).forEach {
             items.add(it)
         }
         itemsAdapter?.notifyDataSetChanged()

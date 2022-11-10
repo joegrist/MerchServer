@@ -6,7 +6,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,26 +23,31 @@ var token = ""
     val name: String
     )
 
-@Serializable data class PurchaseableDTO(
+@Serializable data class PurchaseableMiniDTO(
     val id: Long,
+    val name: String,
+)
+
+@Serializable data class PurchaseableDTO (
+    val id: Long,
+    val name: String,
     val merchantSlug: String,
     val productId: Long,
     val productName: String,
-    val purchaseableId: Long,
-    val purchaseableName: String,
     val thumbnail: String,
-    val name: String,
     val priceCents: Long,
     var variations: ArrayList<PurchaseableVariationDTO>,
-    val views: ArrayList<PurchaseableViewDTO>)
+    val views: ArrayList<PurchaseableViewDTO>
+    )
 
 @Serializable data class PurchaseableVariationDTO(
     val id: Long,
     val name: String,
-    val options: String) {
+    val options: String
+    ) {
     val optionsAsList
         get() = options.split(",").toTypedArray()
-}
+    }
 
 @Serializable data class PurchaseableViewDTO(
     val id: Long,
@@ -52,20 +59,24 @@ var token = ""
 @Serializable data class CustomerDTO(
     val email: String,
     val name: String,
-    val mobile: String
-)
+    val mobile: String,
+    val cart: ArrayList<PurchaseDTO>
+    )
 
 @Serializable data class PurchaseDTO(
     val id: String,
-    val purchaseableId: String,
-    val purchaseableName: String,
-    val purchaseableVariations: String,
+    val purchaseable: PurchaseableMiniDTO,
     var quantity: Long,
     var variation: String
+    )
+
+@Serializable data class LoginResponse(
+    val token: String
 )
 
 interface IObserver {
-    fun update()
+    fun onCall()
+    fun onCallEnd()
 }
 
 interface IObservable {
@@ -79,28 +90,30 @@ interface IObservable {
         observers.remove(observer)
     }
 
-    fun sendUpdateEvent() {
-        observers.forEach { it.update() }
+    fun sendStartEvent() {
+        observers.forEach { it.onCall() }
+    }
+
+    fun sendEndEvent() {
+        observers.forEach { it.onCallEnd() }
     }
 }
 
-class ApiClient: IObservable {
+object ApiClient: IObservable {
 
     private val json = Json { ignoreUnknownKeys = true }
     override val observers: ArrayList<IObserver> = ArrayList()
     var operationInProgress = false
-
-    companion object {
-        const val baseEndpoint = "http://merch.zapto.org"
-        const val imagesEndpoint = "$baseEndpoint:8888"
-        const val apiEndpoint = "$baseEndpoint:3000"
-    }
+    var prefs: SharedPreference? = null
+    const val baseEndpoint = "http://merch.zapto.org"
+    const val imagesEndpoint = "$baseEndpoint:8888"
+    const val apiEndpoint = "$baseEndpoint:3000"
 
     fun log(prefix: String, e: Exception) {
         println("${prefix}: ${e.message}")
     }
 
-    private val client: HttpClient = HttpClient(CIO) {
+    private val client: HttpClient get() = HttpClient(CIO) {
         install(ContentNegotiation) {
             json()
         }
@@ -125,13 +138,11 @@ class ApiClient: IObservable {
         Database.purchaseables(merchantSlug).forEach {
             result.add(PurchaseableDTO(
                 it.id,
+                it.name,
                 merchantSlug,
                 it.productId,
                 it.productName,
-                it.purchaseableId,
-                it.purchaseableName,
                 it.thumbnail,
-                it.name,
                 it.priceCents,
                 arrayListOf(),
                 arrayListOf()))
@@ -146,13 +157,11 @@ class ApiClient: IObservable {
 
         val result = PurchaseableDTO(
             id,
+            p?.name ?: "",
             p?.merchantSlug ?: "",
             p?.productId ?: -1,
             p?.productName ?: "",
-            p?.productId ?: 0,
-            p?.purchaseableName ?: "",
             p?.thumbnail ?: "",
-            p?.name ?: "",
             p?.priceCents ?: 0,
             arrayListOf(),
             arrayListOf())
@@ -178,7 +187,7 @@ class ApiClient: IObservable {
     }
 
     fun loadMerchants()  {
-        operationInProgress = true
+        onOperationStarted()
 
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
@@ -203,7 +212,7 @@ class ApiClient: IObservable {
     }
 
     fun loadPurchaseables(merchantSlug: String) {
-        operationInProgress = true
+        onOperationStarted()
 
         CoroutineScope(Dispatchers.Default).launch {
 
@@ -228,8 +237,6 @@ class ApiClient: IObservable {
                 p.thumbnail = it.thumbnail
                 p.merchantSlug = it.merchantSlug
                 p.productId = it.productId
-                p.purchaseableId = it.purchaseableId
-                p.purchaseableName = it.purchaseableName
                 purchasableList.add(p)
                 it.views.forEach {
                     val v = PurchaseableView()
@@ -237,7 +244,7 @@ class ApiClient: IObservable {
                     v.name = it.name
                     v.thumbnail = it.thumbnail
                     v.background = it.background
-                    v.purchaseableId = p.purchaseableId
+                    v.purchaseableId = p.id
                     viewList.add(v)
                 }
                 it.variations.forEach {
@@ -245,7 +252,7 @@ class ApiClient: IObservable {
                     v.id = it.id
                     v.name = it.name
                     v.options = it.options
-                    v.purchaseableId = p.purchaseableId
+                    v.purchaseableId = p.id
                     variationList.add(v)
                 }
             }
@@ -256,28 +263,75 @@ class ApiClient: IObservable {
         }
     }
 
-    private fun onOperationCompleted() {
+    private fun onOperationStarted() {
+        operationInProgress = true
         CoroutineScope(Dispatchers.Main).launch {
-            operationInProgress = false
+            sendStartEvent()
+        }
+    }
+    private fun onOperationCompleted() {
+        operationInProgress = false
+        CoroutineScope(Dispatchers.Main).launch {
             client.close()
-            sendUpdateEvent()
+            sendEndEvent()
         }
     }
 
-    fun login() {
+    fun login(email: String, password: String) {
+
+        onOperationStarted()
+        prefs?.email = email
+
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
-                client.post("$apiEndpoint/shopper")
+                client.submitForm (
+                    url = "$apiEndpoint/customer/login",
+                    formParameters = Parameters.build {
+                        append("email", prefs!!.email)
+                        append(password, password)
+                    }
+                )
             } catch (e: Exception) {
-                log("Error loading purchaseables: ", e)
+                log("Error logging in: ", e)
                 onOperationCompleted()
                 return@launch
             }
-            sendUpdateEvent()
+
+            val data : LoginResponse = json.decodeFromString(response.body())
+            prefs?.token = data.token
+            loadCurrentUser(prefs?.email!!)
         }
     }
 
-    fun getUser() {
+    fun loadCurrentUser(email: String) {
+        onOperationStarted()
+        prefs?.email = email
 
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.get("$apiEndpoint/customer/${prefs!!.email}")
+            } catch (e: Exception) {
+                log("Error loading customer: ", e)
+                onOperationCompleted()
+                return@launch
+            }
+
+            val data : CustomerDTO = json.decodeFromString(response.body())
+            prefs?.email = data.email
+            prefs?.name = data.name
+
+            val purchaseList = ArrayList<Purchase>()
+            data.cart.forEach {
+                val p = Purchase()
+                p.id = it.id
+                p.quantity = it.quantity
+                p.variation = it.variation
+                p.purchaseableId = it.purchaseable.id
+                purchaseList.add(p)
+            }
+
+            Database.saveOrUpdatePurchases(purchaseList)
+            onOperationCompleted()
+        }
     }
 }

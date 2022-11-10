@@ -11,7 +11,9 @@ expect fun PreferenceContext.getBool(key: String, default: Boolean): Boolean
 class SharedPreference(private val context: PreferenceContext) {
 
     companion object {
-        private val Token = "LOGIN_TOKEN"
+        private val TokenKey = "LOGIN_TOKEN"
+        private val EmailKey = "USER_EMAIL"
+        private val NameKey = "USER_NAME"
     }
 
     private fun put(key: String, value: Int) {
@@ -32,10 +34,17 @@ class SharedPreference(private val context: PreferenceContext) {
 
     private fun getBool(key: String, default: Boolean): Boolean = context.getBool(key, default)
 
-    val hasToken get() = !getString(SharedPreference.Token).isNullOrEmpty()
+    val hasToken get() = !getString(SharedPreference.TokenKey).isNullOrEmpty()
 
     var token
-        get() = getString(SharedPreference.Token) ?: ""
-        set(value) = put(SharedPreference.Token, value)
+        get() = getString(SharedPreference.TokenKey) ?: ""
+        set(value) = put(SharedPreference.TokenKey, value)
 
+    var email: String
+        get() = getString(SharedPreference.EmailKey) ?: ""
+        set(value) = put(SharedPreference.EmailKey, value)
+
+    var name: String
+        get() = getString(SharedPreference.NameKey) ?: ""
+        set(value) = put(SharedPreference.NameKey, value)
 }

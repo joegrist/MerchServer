@@ -19,8 +19,6 @@ class Purchaseable : RealmObject {
     @PrimaryKey
     var id: Long = 0
     var merchantSlug: String = ""
-    var purchaseableId: Long = 0
-    var purchaseableName: String = ""
     var productId: Long = 0
     var productName: String = ""
     var name: String = ""
@@ -92,9 +90,21 @@ object Database {
         return realm.query<Merchant>().find().toTypedArray()
     }
 
-    fun saveOrUpdatePurchaseables(m: ArrayList<Purchaseable>) {
+    fun purchases(): Array<Purchase> {
+        return realm.query<Purchase>().find().toTypedArray()
+    }
+
+    fun saveOrUpdatePurchaseables(p: ArrayList<Purchaseable>) {
         realm.writeBlocking {
-            m.forEach {
+            p.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
+        }
+    }
+
+    fun saveOrUpdatePurchases(p: ArrayList<Purchase>) {
+        realm.writeBlocking {
+            p.forEach {
                 copyToRealm(it, UpdatePolicy.ALL)
             }
         }
