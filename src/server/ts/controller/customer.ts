@@ -59,6 +59,12 @@ export async function addEditCartItem(request: Request, response: Response) {
         throw new Error("must specify design id")
     }
 
+    storeCartItem(customerEmail, id, designId, quantity, variation)
+
+    return getCustomer(request, response)
+}
+
+async function storeCartItem(customerEmail: string, id: string, designId: number, quantity: number, variation: string) {
     let customer = await customerRepo.findOneBy({email : customerEmail})
     let design = await designRepo.findOneBy({id : designId})
 
@@ -66,6 +72,7 @@ export async function addEditCartItem(request: Request, response: Response) {
         throw new Error("could not find customer or design (or both)")
     }
 
+    log.log(`Add/Update Cart Item for ${customerEmail}: ${design.name} ${variation} ${quantity}`)
     const item = await ensureCartItem(id)
     item.design = design
     item.customer = customer
@@ -74,7 +81,6 @@ export async function addEditCartItem(request: Request, response: Response) {
     if (variation) item.variation = variation
 
     await cartRepo.save(item)
-    return getCustomer(request, response)
 }
 
 async function ensureCartItem(id: string) {
@@ -131,4 +137,18 @@ export async function login(request: Request, response: Response) {
     }
 
     response.send(token);
+}
+
+export async function updateCart(request: Request, response: Response) {
+
+    let email = request.params["email"]
+    if (!email) throw new Error("email parameter was not found")
+
+    let purchases = request.body as PurchaseDTO[]
+    
+    for (let purchase of purchases) {
+        await storeCartItem(email, purchase.id, purchase.purchaseable.id, purchase.quantity, purchase.variation)
+    }
+
+    return getCustomer(request, response)
 }

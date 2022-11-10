@@ -48,6 +48,9 @@ class MainActivity : AppCompatActivity(), IObserver  {
         when (item.itemId) {
             R.id.top_menu_cart -> {
                 val modalBottomSheet = CartBottomSheet()
+                modalBottomSheet.onDismiss = {
+                    ApiClient.postCart()
+                }
                 modalBottomSheet.show(supportFragmentManager, CartBottomSheet.TAG)
                 return true
             }

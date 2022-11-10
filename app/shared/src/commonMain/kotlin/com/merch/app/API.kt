@@ -8,6 +8,7 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
+import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -286,12 +287,52 @@ object ApiClient: IObservable {
         }
     }
 
+    fun purchase() {
+
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.submitForm {
+                    "$apiEndpoint/customer/${prefs?.email!!}/cart/update") {
+                    contentType(ContentType.Application.Json)
+                    setBody(Database.getCart())
+                }
+                }
+            } catch (e: Exception) {
+                log("Error posting changes to cart: ", e)
+                onOperationCompleted()
+                return@launch
+            }
+
+
+
+            "/customer/:email/purchase"
+    }
+
     fun incQuantity(p: PurchaseDTO) {
         Database.incQuantity(p.id)
     }
 
     fun decQuantity(p: PurchaseDTO) {
         Database.decQuantity(p.id)
+    }
+
+    fun postCart() {
+        onOperationStarted()
+
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.post ("$apiEndpoint/customer/${prefs?.email!!}/cart/update") {
+                    contentType(ContentType.Application.Json)
+                    setBody(Database.getCart())
+                }
+            } catch (e: Exception) {
+                log("Error posting changes to cart: ", e)
+                onOperationCompleted()
+                return@launch
+            }
+
+            loadCurrentUser(prefs?.email!!)
+        }
     }
 
     private fun onOperationStarted() {

@@ -6,7 +6,7 @@ import * as bodyParser from "body-parser"
 import { appInfo } from "./controller/info"
 import { listAllMerchants } from "./controller/merchant"
 import { listDesignsForMerchant } from "./controller/designs"
-import { getCustomer, addEditCartItem, buy, login } from "./controller/customer"
+import { getCustomer, addEditCartItem, updateCart, buy, login } from "./controller/customer"
 import { log } from "../../config/config"
 
 ds.initialize().then(async () => {
@@ -53,6 +53,13 @@ ds.initialize().then(async () => {
     app.post("/customer/:email/purchase", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> addEditCartItem`)
         addEditCartItem(request, response)
+        .then(() => next)
+        .catch(err => next(err))
+    })
+
+    app.post("/customer/:email/cart/update", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> updateCart`)
+        updateCart(request, response)
         .then(() => next)
         .catch(err => next(err))
     })

@@ -1,4 +1,6 @@
 package com.merch.app
+import PurchaseDTO
+import PurchaseableMiniDTO
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
@@ -115,6 +117,24 @@ object Database {
             pp.quantity = max(p.quantity - 1, 0)
             copyToRealm(pp, UpdatePolicy.ALL)
         }
+    }
+
+    fun getCart(): ArrayList<PurchaseDTO> {
+        var output = ArrayList<PurchaseDTO>()
+        purchases().forEach {
+            val pp = purchaseable(it.purchaseableId) ?: return@forEach
+            val p = PurchaseDTO(
+                id = it.id,
+                quantity = it.quantity,
+                variation = it.variation ?: "",
+                purchaseable = PurchaseableMiniDTO(
+                    id = pp.id,
+                    name = pp.name
+                )
+            )
+            output.add(p)
+        }
+        return output
     }
 
     fun saveOrUpdatePurchaseables(p: ArrayList<Purchaseable>) {

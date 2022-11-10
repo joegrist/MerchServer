@@ -2,6 +2,7 @@ package com.merch.app.android
 
 import ApiClient
 import PurchaseDTO
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
     var itemsAdapter: PurchaseListAdapter? = null
     var emptyMessage: TextView? = null
     var items: ArrayList<PurchaseDTO> = arrayListOf()
+    var onDismiss: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +49,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "com.example.merchapp.android.CartBottomSheet"
+        const val TAG = "com.merch.app.android.CartBottomSheet"
     }
 
     private fun showCurrent() {
@@ -57,5 +59,10 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         }
         itemsAdapter?.notifyDataSetChanged()
         emptyMessage?.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismiss?.invoke()
     }
 }
