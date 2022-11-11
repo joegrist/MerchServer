@@ -45,8 +45,12 @@ class Purchaseable : BaseFragment() {
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
         variantList?.setOnItemClickListener { _, _, position, _ ->
-            val variant = variantList?.get(position) ?: 0
-            ApiClient.addPurchase()
+            val variant = variants?.getOrNull(position)
+            ApiClient.purchase(
+                purchasableId = purchaseableId,
+                variation = variant ?: "",
+                quantity = 1
+            )
         }
     }
 }

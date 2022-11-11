@@ -11,6 +11,11 @@ const customerRepo = ds.getRepository(Customer)
 const cartRepo = ds.getRepository(CustomerDesign)
 const designRepo = ds.getRepository(Design)
 
+enum QuantityOperation {
+    ADD = "ADD",
+    SET = "SET"
+}
+
 export async function getCustomer(request: Request, response: Response) {
 
     let email = request.params["email"]
@@ -44,6 +49,8 @@ export async function getCustomer(request: Request, response: Response) {
 
     // return loaded posts
     response.setHeader('content-type', 'application/json')
+
+    console.log(result)
     response.send(result)
 }
 
@@ -51,20 +58,20 @@ export async function addEditCartItem(request: Request, response: Response) {
 
     let customerEmail = request.params["email"]
     let id: string | null | undefined = request.body.id
-    let designId: number | null | undefined = request.body.designId
+    let designId: number | null | undefined = parseInt(request.body.designId)
     let variation: string | null | undefined = request.body.variation
-    let quantity: number = request.body.quantity ?? 0
+    let quantity: number = parseInt(request.body.quantity) ?? 0
 
     if (!designId) {
         throw new Error("must specify design id")
     }
 
-    storeCartItem(customerEmail, id, designId, quantity, variation)
+    await storeCartItem(customerEmail, id, designId, quantity, QuantityOperation.ADD, variation)
 
     return getCustomer(request, response)
 }
 
-async function storeCartItem(customerEmail: string, id: string, designId: number, quantity: number, variation: string) {
+async function storeCartItem(customerEmail: string, id: string, designId: number, quantity: number, quantityOperation: QuantityOperation, variation: string) {
     let customer = await customerRepo.findOneBy({email : customerEmail})
     let design = await designRepo.findOneBy({id : designId})
 
@@ -73,27 +80,44 @@ async function storeCartItem(customerEmail: string, id: string, designId: number
     }
 
     log.log(`Add/Update Cart Item for ${customerEmail}: ${design.name} ${variation} ${quantity}`)
-    const item = await ensureCartItem(id)
+    const item = await ensureCartItem(id, customer, design, variation)
     item.design = design
     item.customer = customer
-    item.quantity = quantity
+
+    if (quantityOperation == QuantityOperation.ADD) {
+        item.quantity = item.quantity + quantity
+    } else {
+        item.quantity = quantity
+    }
+
+    log.log(`${design.name} ${quantityOperation} qty ${quantity} => new qty ${item.quantity}`)
+    
     item.priceCents = design.priceCents
     if (variation) item.variation = variation
 
     await cartRepo.save(item)
 }
 
-async function ensureCartItem(id: string) {
+async function ensureCartItem(id: string | null, customer: Customer, design: Design, variation: string) {
+
     if (id) {
         let cd = await cartRepo.findOneBy({id : id})
+        log.log(`Found existing cart item with id ${id} for ${customer.email}`)
         if (cd) {
             return cd
         }
     }
-    let cd = new CustomerDesign()
-    cd.id = makeUuid()
-    await cartRepo.save(cd)
-    return cd
+    
+    let cd = await cartRepo.findOneBy({design: design, variation: variation, customer: customer})
+    if (cd) {
+        log.log(`Found existing cart item with design ${design.name} variation ${variation} for ${customer.email}`)
+        return cd
+    }
+
+    let newCd = new CustomerDesign()
+    newCd.id = makeUuid()
+    await cartRepo.save(newCd)
+    return newCd
 }
 
 export async function buy(request: Request, response: Response) {
@@ -147,7 +171,7 @@ export async function updateCart(request: Request, response: Response) {
     let purchases = request.body as PurchaseDTO[]
     
     for (let purchase of purchases) {
-        await storeCartItem(email, purchase.id, purchase.purchaseable.id, purchase.quantity, purchase.variation)
+        await storeCartItem(email, purchase.id, purchase.purchaseable.id, purchase.quantity, QuantityOperation.SET, purchase.variation)
     }
 
     return getCustomer(request, response)

@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer"
 import {Entity, Column, PrimaryColumn, ManyToOne, JoinColumn} from "typeorm"
 import {Address} from "./address"
 
@@ -28,9 +29,11 @@ export class Customer {
 
     @Column()
     password: string
+}
 
-    correctPassword(candidate: string) {
-        const hash = crypto.pbkdf2Sync(candidate, this.salt, 1000, 64, `sha512`).toString(`hex`)
-        return this.password === hash
+export class CustomerHelper {
+    correctPassword(customer: Customer, candidate: string) {
+        const hash = crypto.pbkdf2Sync(candidate, customer.salt, 1000, 64, `sha512`).toString(`hex`)
+        return customer.password === hash
     }
 }

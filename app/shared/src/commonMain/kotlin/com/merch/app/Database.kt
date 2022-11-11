@@ -61,6 +61,7 @@ class Purchase : RealmObject {
     var purchaseableId: Long = 0
     var quantity: Long = 0
     var variation: String? = null
+    var customerEmail: String = ""
 }
 
 object Database {
@@ -135,6 +136,15 @@ object Database {
             output.add(p)
         }
         return output
+    }
+
+    fun clearPurchases(email: String) {
+        val p = realm.query<Purchase>("customerEmail = '${email}'").find()
+        realm.writeBlocking {
+            p.forEach {
+                findLatest(it)?.let { delete(it) }
+            }
+        }
     }
 
     fun saveOrUpdatePurchaseables(p: ArrayList<Purchaseable>) {

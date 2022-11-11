@@ -24,7 +24,7 @@ struct PurchaseableList: View {
             .navigationDestination(for: PurchaseableDTO.self) { purchaseable in
                 Purchaseable(purchaseableId: purchaseable.id)
             }
-            .refreshable {viewModel.update()}
+            .refreshable {viewModel.refresh()}
         }
     }
 }
@@ -35,7 +35,7 @@ struct PurchaseableRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage( url: URL(string: "\(ApiClient.Companion().imagesEndpoint)/\(purchaseable.thumbnail)")) {
+            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(purchaseable.thumbnail)")) {
                 image in image
                     .resizable()
                     .aspectRatio(contentMode: .fit)

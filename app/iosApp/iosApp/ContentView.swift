@@ -20,7 +20,7 @@ struct ContentView: View {
                     }
                 }
                 .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantSlug: merchant.slug) }
-                .refreshable { viewModel.update() }
+                .refreshable { viewModel.refresh() }
             }
         }
 	}

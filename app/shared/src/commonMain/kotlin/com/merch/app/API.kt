@@ -287,25 +287,28 @@ object ApiClient: IObservable {
         }
     }
 
-    fun purchase() {
+    fun purchase(purchasableId: Long, variation: String, quantity: Long) {
 
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
-                client.submitForm {
-                    "$apiEndpoint/customer/${prefs?.email!!}/cart/update") {
-                    contentType(ContentType.Application.Json)
-                    setBody(Database.getCart())
-                }
-                }
+                client.submitForm (
+                    url = "$apiEndpoint/customer/${prefs?.email!!}/purchase",
+                    formParameters = Parameters.build {
+                        append("email", prefs!!.email)
+                        append("designId", purchasableId.toString())
+                        append("quantity", quantity.toString())
+                        append("variation", variation)
+                    }
+                )
             } catch (e: Exception) {
                 log("Error posting changes to cart: ", e)
                 onOperationCompleted()
                 return@launch
             }
 
+            storeCustomerDTO(response.body())
+            onOperationCompleted()
         }
-
-            "/customer/:email/purchase"
     }
 
     fun incQuantity(p: PurchaseDTO) {
@@ -331,7 +334,8 @@ object ApiClient: IObservable {
                 return@launch
             }
 
-            loadCurrentUser(prefs?.email!!)
+            storeCustomerDTO(response.body())
+            onOperationCompleted()
         }
     }
 
@@ -341,6 +345,7 @@ object ApiClient: IObservable {
             sendStartEvent()
         }
     }
+
     private fun onOperationCompleted() {
         operationInProgress = false
         CoroutineScope(Dispatchers.Main).launch {
@@ -388,22 +393,30 @@ object ApiClient: IObservable {
                 return@launch
             }
 
-            val data : CustomerDTO = json.decodeFromString(response.body())
-            prefs?.email = data.email
-            prefs?.name = data.name
-
-            val purchaseList = ArrayList<Purchase>()
-            data.cart.forEach {
-                val p = Purchase()
-                p.id = it.id
-                p.quantity = it.quantity
-                p.variation = it.variation
-                p.purchaseableId = it.purchaseable.id
-                purchaseList.add(p)
-            }
-
-            Database.saveOrUpdatePurchases(purchaseList)
+            storeCustomerDTO(response.body())
             onOperationCompleted()
         }
+    }
+
+    private fun storeCustomerDTO(body: String) {
+
+        val data : CustomerDTO = json.decodeFromString(body)
+        prefs?.email = data.email
+        prefs?.name = data.name
+
+        Database.clearPurchases(data.email);
+
+        val purchaseList = ArrayList<Purchase>()
+        data.cart.forEach {
+            val p = Purchase()
+            p.id = it.id
+            p.quantity = it.quantity
+            p.variation = it.variation
+            p.purchaseableId = it.purchaseable.id
+            p.customerEmail = data.email
+            purchaseList.add(p)
+        }
+
+        Database.saveOrUpdatePurchases(purchaseList)
     }
 }

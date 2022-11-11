@@ -2,6 +2,7 @@ import Foundation
 import shared
 
 class PurchaseablesViewModel: ObservableObject, IObserver {
+
     
     @Published private(set) var purchaseables = [PurchaseableDTO]()
     @Published private(set) var purchaseablesLoading = false
@@ -13,24 +14,25 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
     init(merchantSlug: String) {
         self.merchantSlug = merchantSlug
         client.add(observer: self)
-        update()
+        refresh()
+    }
+    
+    func refresh() {
         client.loadPurchaseables(merchantSlug: merchantSlug)
     }
     
-    @objc func update() {
-        
-        func showCurrent() {
-            purchaseables = client.purchaseables(merchantSlug: merchantSlug) as? [PurchaseableDTO] ?? []
-        }
-        
-        guard !client.operationInProgress else {
-            purchaseablesLoading = true
-            showCurrent()
-            return
-        }
-        
+    func onCall() {
+        purchaseablesLoading = true
+        showCurrent()
+    }
+    
+    func onCallEnd() {        
         purchaseablesLoading = false
         greet = "Count: \(client.purchaseables(merchantSlug: merchantSlug).count)"
         showCurrent()
+    }
+    
+    func showCurrent() {
+        purchaseables = client.purchaseables(merchantSlug: merchantSlug) as? [PurchaseableDTO] ?? []
     }
 }

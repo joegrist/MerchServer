@@ -14,7 +14,7 @@ struct Purchaseable: View {
         ScrollView(.horizontal) {
             VStack(spacing: 20) {
                 ForEach(viewModel.thumbnails, id: \.id) { t in
-                    AsyncImage( url: URL(string: "\(ApiClient.Companion().imagesEndpoint)/\(t.thumbnail)")) {
+                    AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) {
                         image in image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
