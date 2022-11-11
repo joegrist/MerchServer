@@ -1,11 +1,12 @@
 import Foundation
+import SwiftUI
 import shared
 
 class MerchantsViewModel: ObservableObject, IObserver {
         
     @Published private(set) var merchants = [MerchantDTO]()
     @Published private(set) var merchantsLoading = false
-    @Published var greet = Greeting().greeting()
+    @Published var title = "Shops"
     
     private let client = ApiClient()
     
@@ -25,7 +26,6 @@ class MerchantsViewModel: ObservableObject, IObserver {
     
     func onCallEnd() {
         merchantsLoading = false
-        greet = "Count: \(client.merchants().count)"
         showCurrent()
     }
     

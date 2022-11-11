@@ -6,13 +6,15 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
     
     @Published private(set) var purchaseables = [PurchaseableDTO]()
     @Published private(set) var purchaseablesLoading = false
-    @Published var greet = Greeting().greeting()
+    @Published var title: String
     var merchantSlug: String
     
     private let client = ApiClient()
     
     init(merchantSlug: String) {
         self.merchantSlug = merchantSlug
+        let merchant = ApiClient.shared.merchant(slug: merchantSlug)
+        title = merchant?.name ?? "Purchaseables"
         client.add(observer: self)
         refresh()
     }
@@ -28,7 +30,6 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
     
     func onCallEnd() {        
         purchaseablesLoading = false
-        greet = "Count: \(client.purchaseables(merchantSlug: merchantSlug).count)"
         showCurrent()
     }
     

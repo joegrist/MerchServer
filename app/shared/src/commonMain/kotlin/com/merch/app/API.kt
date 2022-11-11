@@ -137,7 +137,7 @@ object ApiClient: IObservable {
     fun merchants(): ArrayList<MerchantDTO> {
         val result = ArrayList<MerchantDTO>()
         Database.merchants().forEach {
-            result.add(MerchantDTO(it.slug, it.name))
+            result.add(merchantDTOFromMerchant(it))
         }
         return result
     }
@@ -285,6 +285,18 @@ object ApiClient: IObservable {
             Database.saveOrUpdateVariations(variationList)
             onOperationCompleted()
         }
+    }
+
+    fun merchant(slug: String) : MerchantDTO? {
+        val m = Database.merchant(slug) ?: return null
+        return MerchantDTO(
+            slug = m.slug,
+            name = m.name
+        )
+    }
+
+    fun merchantDTOFromMerchant(m: Merchant): MerchantDTO {
+        return MerchantDTO(m.slug, m.name)
     }
 
     fun purchase(purchasableId: Long, variation: String, quantity: Long) {

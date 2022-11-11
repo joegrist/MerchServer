@@ -4,28 +4,30 @@ import shared
 struct PurchaseableList: View {
     
     @StateObject var viewModel: PurchaseablesViewModel
+    @EnvironmentObject private var globalState: GlobalState
     
     init(merchantSlug: String) {
         self._viewModel = StateObject(wrappedValue: PurchaseablesViewModel(merchantSlug: merchantSlug))
     }
     
     var body: some View {
-        VStack {
-            Text(viewModel.greet)
-            List {
-                ForEach (viewModel.purchaseables, id: \.id) { purchaseable in
-                    NavigationLink(value: purchaseable) {
-                        PurchaseableRow(purchaseable: purchaseable)
-                    }
-                    .disabled(viewModel.purchaseablesLoading)
-                    .opacity(viewModel.purchaseablesLoading ? 0.5 : 1)
+        List {
+            ForEach (viewModel.purchaseables, id: \.id) { purchaseable in
+                NavigationLink(value: purchaseable) {
+                    PurchaseableRow(purchaseable: purchaseable)
                 }
+                .disabled(viewModel.purchaseablesLoading)
+                .opacity(viewModel.purchaseablesLoading ? 0.5 : 1)
             }
-            .navigationDestination(for: PurchaseableDTO.self) { purchaseable in
-                Purchaseable(purchaseableId: purchaseable.id)
-            }
-            .refreshable {viewModel.refresh()}
         }
+        .navigationDestination(for: PurchaseableDTO.self) { purchaseable in
+            Purchaseable(purchaseableId: purchaseable.id)
+        }
+        .refreshable {viewModel.refresh()}
+        .toolbar {
+            toolBarContent(state: globalState)
+        }
+        .navigationTitle(viewModel.title)
     }
 }
 

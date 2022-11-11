@@ -86,8 +86,8 @@ object Database {
         }
     }
 
-    fun merchant(id: Long): Merchant? {
-        return realm.query<Merchant>("id = $id").first().find()
+    fun merchant(slug: String): Merchant? {
+        return realm.query<Merchant>("slug = '$slug'").first().find()
     }
 
     fun merchants(): Array<Merchant> {

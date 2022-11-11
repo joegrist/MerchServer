@@ -9,15 +9,14 @@ struct Thumbnail {
 
 class PurchaseableViewModel: ObservableObject {
     var purchaseableId: Int64
-    @Published var name: String
     @Published var thumbnails: [Thumbnail] = []
-    
+    @Published var title: String
     private let client = ApiClient()
     
     init(purchaseableId: Int64) {
         self.purchaseableId = purchaseableId
         let p = client.purchaseable(id: purchaseableId)
-        name = p.name
+        title = p.name
         p.views.forEach { view in
             guard let v = view as? PurchaseableViewDTO else { return }
             thumbnails.append(Thumbnail(name: v.name, thumbnail: v.thumbnail, id: v.id))

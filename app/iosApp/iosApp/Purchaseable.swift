@@ -4,13 +4,13 @@ import shared
 struct Purchaseable: View {
     
     @StateObject private var viewModel: PurchaseableViewModel
+    @EnvironmentObject private var globalState: GlobalState
     
     init(purchaseableId: Int64) {
         self._viewModel = StateObject(wrappedValue: PurchaseableViewModel(purchaseableId: purchaseableId))
     }
     
     var body: some View {
-        Text(viewModel.name)
         ScrollView(.horizontal) {
             VStack(spacing: 20) {
                 ForEach(viewModel.thumbnails, id: \.id) { t in
@@ -27,5 +27,9 @@ struct Purchaseable: View {
                 }
             }
         }
+        .toolbar {
+            toolBarContent(state: globalState)
+        }
+        .navigationTitle(viewModel.title)
     }
 }
