@@ -1,36 +1,48 @@
 import SwiftUI
 import shared
 
-
 struct ContentView: View {
     
     @EnvironmentObject private var globalState: GlobalState
     @StateObject private var viewModel = MerchantsViewModel()
     
-	var body: some View {
+    var body: some View {
         
-        NavigationStack {
-            List {
-                ForEach (viewModel.merchants, id: \.slug) { merchant in
-                    NavigationLink(value: merchant) {
-                        MerchantRow(merchant: merchant)
+        ZStack {
+            
+            NavigationStack {
+                List {
+                    ForEach (viewModel.merchants, id: \.slug) { merchant in
+                        NavigationLink(value: merchant) {
+                            MerchantRow(merchant: merchant)
+                        }
                     }
-                    .disabled(viewModel.merchantsLoading)
-                    .opacity(viewModel.merchantsLoading ? 0.5 : 1)
                 }
+                .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantSlug: merchant.slug) }
+                .refreshable { viewModel.refresh() }
+                .toolbar {
+                    toolBarContent(state: globalState)
+                }
+                .navigationTitle(viewModel.title)
             }
-            .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantSlug: merchant.slug) }
-            .refreshable { viewModel.refresh() }
-            .toolbar {
-                toolBarContent(state: globalState)
+            .sheet(isPresented: $globalState.showingUserSheet) {
+                UserView()
             }
-            .navigationTitle(viewModel.title)
-        }
-        .sheet(isPresented: $globalState.showingUserSheet) {
-            UserView()
-        }
-        .sheet(isPresented: $globalState.showingCartSheet) {
-            UserView()
+            .sheet(isPresented: $globalState.showingCartSheet) {
+                CartView()
+            }
+            
+            if (viewModel.loading) {
+                HStack() {
+                    ProgressView().tint(Color(UIColor.label))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .background(
+                    Color(UIColor.systemBackground).opacity(0.9)
+                )
+                .ignoresSafeArea()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
 	}
 }
@@ -71,15 +83,3 @@ struct ContentView_Previews: PreviewProvider {
 	}
 }
 
-struct UserView: View {
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        Button("Press to dismiss") {
-            dismiss()
-        }
-        .font(.title)
-        .padding()
-        .background(.black)
-    }
-}

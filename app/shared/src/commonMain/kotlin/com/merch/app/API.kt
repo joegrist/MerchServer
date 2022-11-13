@@ -3,13 +3,12 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
-import io.ktor.client.utils.EmptyContent.contentType
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -261,6 +260,7 @@ object ApiClient: IObservable {
                 p.thumbnail = it.thumbnail
                 p.merchantSlug = it.merchantSlug
                 p.productId = it.productId
+                p.priceCents = it.priceCents
                 purchasableList.add(p)
                 it.views.forEach {
                     val v = PurchaseableView()
@@ -369,7 +369,7 @@ object ApiClient: IObservable {
     fun login(email: String, password: String) {
 
         onOperationStarted()
-        prefs?.email = email
+        prefs?.email = email.lowercase()
 
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
@@ -392,6 +392,12 @@ object ApiClient: IObservable {
         }
     }
 
+    fun logOut() {
+        prefs?.token = ""
+    }
+
+    val isLoggedIn get() = (prefs?.token ?: "") != ""
+
     fun loadCurrentUser(email: String) {
         onOperationStarted()
         prefs?.email = email
@@ -408,6 +414,17 @@ object ApiClient: IObservable {
             storeCustomerDTO(response.body())
             onOperationCompleted()
         }
+    }
+
+    fun cartValueCents(): Long {
+        val purchases = Database.getCart()
+        var cents = 0L
+        purchases.forEach {
+            val p = Database.purchaseable(it.purchaseable.id) ?: return@forEach
+            val value = it.quantity * p.priceCents
+            cents += value
+        }
+        return cents
     }
 
     private fun storeCustomerDTO(body: String) {

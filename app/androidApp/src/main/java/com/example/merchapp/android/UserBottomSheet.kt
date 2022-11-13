@@ -75,7 +75,7 @@ class UserBottomSheet : BaseBottomSheetDialogFragment() {
     }
 
     private fun logOut() {
-        prefs?.token = ""
+        ApiClient.logOut()
         update()
     }
 

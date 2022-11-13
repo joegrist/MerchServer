@@ -1,7 +1,7 @@
 import Foundation
 import shared
 
-class PurchaseablesViewModel: ObservableObject, IObserver {
+class PurchaseablesViewModel: BaseViewModel {
 
     
     @Published private(set) var purchaseables = [PurchaseableDTO]()
@@ -12,10 +12,13 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
     private let client = ApiClient()
     
     init(merchantSlug: String) {
+        
         self.merchantSlug = merchantSlug
         let merchant = ApiClient.shared.merchant(slug: merchantSlug)
         title = merchant?.name ?? "Purchaseables"
-        client.add(observer: self)
+        
+        super.init()
+        
         refresh()
     }
     
@@ -23,12 +26,14 @@ class PurchaseablesViewModel: ObservableObject, IObserver {
         client.loadPurchaseables(merchantSlug: merchantSlug)
     }
     
-    func onCall() {
+    override func onCall() {
+        super.onCall()
         purchaseablesLoading = true
         showCurrent()
     }
     
-    func onCallEnd() {        
+    override func onCallEnd() {
+        super.onCallEnd()
         purchaseablesLoading = false
         showCurrent()
     }

@@ -17,6 +17,11 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		4DF906933E9F47E1459A6544 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F527FF52356FA252F5508F0 /* Pods_iosApp.framework */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		A04C23AE291FAC310043FD7E /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23AD291FAC310043FD7E /* UserView.swift */; };
+		A04C23B0291FAC410043FD7E /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23AF291FAC410043FD7E /* CartView.swift */; };
+		A04C23B2291FB24B0043FD7E /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B1291FB24B0043FD7E /* CartViewModel.swift */; };
+		A04C23B4291FB2730043FD7E /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B3291FB2730043FD7E /* UserViewModel.swift */; };
+		A04C23B62920A51E0043FD7E /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B52920A51E0043FD7E /* BaseViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +38,11 @@
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F527FF52356FA252F5508F0 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A04C23AD291FAC310043FD7E /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
+		A04C23AF291FAC410043FD7E /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		A04C23B1291FB24B0043FD7E /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
+		A04C23B3291FB2730043FD7E /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
+		A04C23B52920A51E0043FD7E /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		A74D5E8C6726793C5DCAFF30 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,6 +106,11 @@
 				10DFBA6C2911BF650043A062 /* PurchaseablesViewModel.swift */,
 				10DFBA702911F2160043A062 /* Purchaseable.swift */,
 				10DFBA722911F50F0043A062 /* PurchaseableViewModel.swift */,
+				A04C23AD291FAC310043FD7E /* UserView.swift */,
+				A04C23AF291FAC410043FD7E /* CartView.swift */,
+				A04C23B1291FB24B0043FD7E /* CartViewModel.swift */,
+				A04C23B3291FB2730043FD7E /* UserViewModel.swift */,
+				A04C23B52920A51E0043FD7E /* BaseViewModel.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -204,10 +219,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A04C23B0291FAC410043FD7E /* CartView.swift in Sources */,
+				A04C23B4291FB2730043FD7E /* UserViewModel.swift in Sources */,
 				10DFBA6B2911BC3C0043A062 /* PurchaseableList.swift in Sources */,
 				10DFBA69290F4F800043A062 /* MerchantViewModel.swift in Sources */,
 				10DFBA712911F2160043A062 /* Purchaseable.swift in Sources */,
+				A04C23B62920A51E0043FD7E /* BaseViewModel.swift in Sources */,
+				A04C23AE291FAC310043FD7E /* UserView.swift in Sources */,
 				10DFBA732911F50F0043A062 /* PurchaseableViewModel.swift in Sources */,
+				A04C23B2291FB24B0043FD7E /* CartViewModel.swift in Sources */,
 				10DFBA6D2911BF650043A062 /* PurchaseablesViewModel.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,

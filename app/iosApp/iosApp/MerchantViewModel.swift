@@ -2,34 +2,35 @@ import Foundation
 import SwiftUI
 import shared
 
-class MerchantsViewModel: ObservableObject, IObserver {
+class MerchantsViewModel: BaseViewModel {
         
     @Published private(set) var merchants = [MerchantDTO]()
-    @Published private(set) var merchantsLoading = false
     @Published var title = "Shops"
+    @Published var loading = false
     
-    private let client = ApiClient()
-    
-    init() {
-        client.add(observer: self)
+    override init() {
+        super.init()
         refresh()
+        ApiClient.shared.prefs = SharedPreference(context: NSObject())
     }
     
     func refresh() {
-        client.loadMerchants()
+        ApiClient.shared.loadMerchants()
     }
     
-    func onCall() {
-        merchantsLoading = true
+    override func onCall() {
+        super.onCall()
+        loading = true
         showCurrent()
     }
     
-    func onCallEnd() {
-        merchantsLoading = false
+    override func onCallEnd() {
+        super.onCallEnd()
+        loading = false
         showCurrent()
     }
     
     func showCurrent() {
-        merchants = client.merchants() as? [MerchantDTO] ?? []
+        merchants = ApiClient.shared.merchants() as? [MerchantDTO] ?? []
     }
 }

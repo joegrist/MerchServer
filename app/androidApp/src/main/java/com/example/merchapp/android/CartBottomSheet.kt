@@ -1,6 +1,7 @@
 package com.merch.app.android
 
 import ApiClient
+import ApiClient.cartValueCents
 import PurchaseDTO
 import android.content.DialogInterface
 import android.os.Bundle
@@ -10,14 +11,14 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.merch.app.android.R
-import java.lang.Long.max
+import java.text.NumberFormat
 
 class CartBottomSheet : BottomSheetDialogFragment() {
 
     var lv: ListView? = null
     var itemsAdapter: PurchaseListAdapter? = null
     var emptyMessage: TextView? = null
+    var cartValue: TextView? = null
     var items: ArrayList<PurchaseDTO> = arrayListOf()
     var onDismiss: (() -> Unit)? = null
 
@@ -29,6 +30,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         val view =  inflater.inflate(R.layout.cart_dialog_content, container, false)
         lv = view.findViewById(R.id.cart_contents)
         emptyMessage = view.findViewById(R.id.cart_empty)
+        cartValue = view.findViewById(R.id.cart_value)
         itemsAdapter = PurchaseListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
@@ -59,6 +61,8 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         }
         itemsAdapter?.notifyDataSetChanged()
         emptyMessage?.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+        val format = NumberFormat.getCurrencyInstance()
+        cartValue?.text = format.format(cartValueCents() / 100)
     }
 
     override fun onDismiss(dialog: DialogInterface) {

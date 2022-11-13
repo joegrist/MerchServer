@@ -26,4 +26,8 @@
         <item name="android:color">@color/primaryLightColor</item>
     </style>
 
+    <style name="Title">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.TitleLarge</item>
+    </style>
+
 </resources>
