@@ -11,19 +11,43 @@ struct Purchaseable: View {
     }
     
     var body: some View {
-        ScrollView(.horizontal) {
-            VStack(spacing: 20) {
-                ForEach(viewModel.thumbnails, id: \.id) { t in
-                    AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) {
-                        image in image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
+        VStack {
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    ForEach(viewModel.thumbnails, id: \.id) { t in
+                        VStack {
+                            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) { phase in
+                                if let image = phase.image {
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .cornerRadius(10)
+                                } else if phase.error != nil {
+                                    ZStack {
+                                        Color(UIColor.secondarySystemBackground)
+                                            .cornerRadius(10)
+                                        Text("No Image")
+                                    }
+                                } else {
+                                    ZStack {
+                                        Color(UIColor.secondarySystemBackground)
+                                            .cornerRadius(10)
+                                        ProgressView()
+                                    }
+                                }
+                            }
                             .frame(width: 300, height: 450)
-                    } placeholder: {
-                        ProgressView()
+                            Text(t.name)
+                        }
                     }
-                    .cornerRadius(10)
-                    Text(t.name)
+                }
+            }
+            List {
+                ForEach(viewModel.variants, id: \.id) { v in
+                    HStack {
+                        Text(v.name)
+                        Image(systemName: "plus.circle")
+                    }
                 }
             }
         }

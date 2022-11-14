@@ -37,15 +37,27 @@ struct PurchaseableRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(purchaseable.thumbnail)")) {
-                image in image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
-            } placeholder: {
-                ProgressView()
+            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(purchaseable.thumbnail)")) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(10)
+                } else if phase.error != nil {
+                    ZStack {
+                        Color(UIColor.secondarySystemBackground)
+                            .cornerRadius(10)
+                        Text("-")
+                    }
+                } else {
+                    ZStack {
+                        Color(UIColor.secondarySystemBackground)
+                            .cornerRadius(10)
+                        ProgressView()
+                    }
+                }
             }
-            .cornerRadius(10)
+            .frame(width: 100, height: 100)
             Text(purchaseable.name)
         }
     }
