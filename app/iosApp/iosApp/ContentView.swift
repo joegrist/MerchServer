@@ -30,6 +30,7 @@ struct ContentView: View {
             }
             .sheet(isPresented: $globalState.showingCartSheet) {
                 CartView()
+                    .interactiveDismissDisabled()
             }
             
             if (viewModel.loading) {

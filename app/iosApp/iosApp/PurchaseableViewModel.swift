@@ -16,17 +16,16 @@ class PurchaseableViewModel: BaseViewModel {
     var purchaseableId: Int64
     @Published var thumbnails: [Thumbnail] = []
     @Published var variants: [Variant] = []
-    @Published var title: String
+    @Published var title: String = ""
     private let client = ApiClient()
     
     init(purchaseableId: Int64) {
         
         self.purchaseableId = purchaseableId
-        let p = client.purchaseable(id: purchaseableId)
+        super.init()
         title = p.name
         let variation = p.variations.firstObject as? PurchaseableVariationDTO
         let options = variation?.options.components(separatedBy: ",")
-        super.init()
         
         p.views.forEach { view in
             guard let v = view as? PurchaseableViewDTO else { return }
@@ -38,5 +37,16 @@ class PurchaseableViewModel: BaseViewModel {
                 variants.append(Variant(name: item, id: Int64(index)))
             }
         }
+    }
+    
+    var p: PurchaseableDTO {
+        get {
+            return client.purchaseable(id: purchaseableId)
+        }
+    }
+    
+    func add(variant: String) {
+        let p = ApiClient.shared.purchaseable(id: purchaseableId)
+        ApiClient.shared.purchase(purchasableId: p.id, variation: variant, quantity: 1)
     }
 }

@@ -32,7 +32,7 @@ class CartViewModel: BaseViewModel {
     }
     
     func saveCart() {
-        
+        ApiClient.shared.postCart()
     }
     
     func update() {
@@ -42,9 +42,5 @@ class CartViewModel: BaseViewModel {
         purchases = ApiClient.shared.purchases() as? [PurchaseDTO] ?? []
         let cents = ApiClient.shared.cartValueCents()
         cartTotal = formatter.string(from: cents / 100 as NSNumber) ?? ""
-    }
-    
-    func buy() {
-        
     }
 }

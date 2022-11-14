@@ -41,11 +41,10 @@ struct CartView: View {
                     }
                     .frame( maxWidth: .infinity)
                 }
-                Button("Buy", action: {
-                    viewModel.buy()
-                })
-                .buttonStyle(.bordered)
-                .frame(maxWidth: .infinity)
+                NavigationLink(value: "") {
+                    Text("Buy")
+                        .frame(maxWidth: .infinity)
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -54,6 +53,9 @@ struct CartView: View {
                         dismiss()
                     })
                 }
+            }
+            .navigationDestination(for: String.self) { _ in
+                CheckoutView()
             }
         }
     }

@@ -22,6 +22,8 @@
 		A04C23B2291FB24B0043FD7E /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B1291FB24B0043FD7E /* CartViewModel.swift */; };
 		A04C23B4291FB2730043FD7E /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B3291FB2730043FD7E /* UserViewModel.swift */; };
 		A04C23B62920A51E0043FD7E /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B52920A51E0043FD7E /* BaseViewModel.swift */; };
+		A04C23B82922516C0043FD7E /* CheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B72922516C0043FD7E /* CheckoutView.swift */; };
+		A04C23BA292251BC0043FD7E /* CheckoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A04C23B9292251BC0043FD7E /* CheckoutViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		A04C23B1291FB24B0043FD7E /* CartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		A04C23B3291FB2730043FD7E /* UserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewModel.swift; sourceTree = "<group>"; };
 		A04C23B52920A51E0043FD7E /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
+		A04C23B72922516C0043FD7E /* CheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutView.swift; sourceTree = "<group>"; };
+		A04C23B9292251BC0043FD7E /* CheckoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutViewModel.swift; sourceTree = "<group>"; };
 		A74D5E8C6726793C5DCAFF30 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +115,8 @@
 				A04C23B1291FB24B0043FD7E /* CartViewModel.swift */,
 				A04C23B3291FB2730043FD7E /* UserViewModel.swift */,
 				A04C23B52920A51E0043FD7E /* BaseViewModel.swift */,
+				A04C23B72922516C0043FD7E /* CheckoutView.swift */,
+				A04C23B9292251BC0043FD7E /* CheckoutViewModel.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -221,6 +227,7 @@
 			files = (
 				A04C23B0291FAC410043FD7E /* CartView.swift in Sources */,
 				A04C23B4291FB2730043FD7E /* UserViewModel.swift in Sources */,
+				A04C23B82922516C0043FD7E /* CheckoutView.swift in Sources */,
 				10DFBA6B2911BC3C0043A062 /* PurchaseableList.swift in Sources */,
 				10DFBA69290F4F800043A062 /* MerchantViewModel.swift in Sources */,
 				10DFBA712911F2160043A062 /* Purchaseable.swift in Sources */,
@@ -231,6 +238,7 @@
 				10DFBA6D2911BF650043A062 /* PurchaseablesViewModel.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				A04C23BA292251BC0043FD7E /* CheckoutViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

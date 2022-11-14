@@ -11,6 +11,7 @@ struct iOSApp: App {
 		WindowGroup {
 			ContentView()
                 .environmentObject(GlobalState())
+                .tint(Color("SecondaryAccentColor"))
 		}
 	}
 }

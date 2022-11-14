@@ -50,7 +50,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         }
 
         cartBuy?.setOnClickListener {
-            
+
         }
 
         showCurrent()

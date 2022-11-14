@@ -11,42 +11,53 @@ struct Purchaseable: View {
     }
     
     var body: some View {
-        VStack {
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(viewModel.thumbnails, id: \.id) { t in
-                        VStack {
-                            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) { phase in
-                                if let image = phase.image {
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .cornerRadius(10)
-                                } else if phase.error != nil {
-                                    ZStack {
-                                        Color(UIColor.secondarySystemBackground)
+        ScrollView {
+            VStack {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(viewModel.thumbnails, id: \.id) { t in
+                            VStack {
+                                AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) { phase in
+                                    if let image = phase.image {
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
                                             .cornerRadius(10)
-                                        Text("No Image")
-                                    }
-                                } else {
-                                    ZStack {
-                                        Color(UIColor.secondarySystemBackground)
-                                            .cornerRadius(10)
-                                        ProgressView()
+                                    } else if phase.error != nil {
+                                        ZStack {
+                                            Color(UIColor.secondarySystemBackground)
+                                                .cornerRadius(10)
+                                            Text("No Image")
+                                        }
+                                    } else {
+                                        ZStack {
+                                            Color(UIColor.secondarySystemBackground)
+                                                .cornerRadius(10)
+                                            ProgressView()
+                                        }
                                     }
                                 }
+                                .frame(width: 300, height: 450)
+                                Text(t.name)
                             }
-                            .frame(width: 300, height: 450)
-                            Text(t.name)
                         }
                     }
                 }
-            }
-            List {
-                ForEach(viewModel.variants, id: \.id) { v in
-                    HStack {
-                        Text(v.name)
-                        Image(systemName: "plus.circle")
+                VStack {
+                    ForEach(viewModel.variants, id: \.id) { v in
+                        HStack {
+                            Text(v.name)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                            Button(action: {
+                                viewModel.add(variant: v.name)
+                            }) {
+                                Image(systemName: "plus.circle")
+                            }
+                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 30))
+                        }.frame(maxWidth: .infinity)
+                        if viewModel.variants.last?.id != v.id  {
+                            Divider()
+                        }
                     }
                 }
             }
