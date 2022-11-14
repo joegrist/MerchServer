@@ -7,7 +7,7 @@ struct CartView: View {
     @StateObject private var viewModel = CartViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Text(viewModel.cartTotal).font(.title)
                 List {
@@ -41,10 +41,15 @@ struct CartView: View {
                     }
                     .frame( maxWidth: .infinity)
                 }
-                NavigationLink(value: "") {
-                    Text("Buy")
-                        .frame(maxWidth: .infinity)
+                VStack {
+                    NavigationLink(value: "") {
+                        Text("Buy")
+                            .padding(10)
+                            .frame(maxWidth: .infinity)
+                            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondaryAccent, lineWidth: 1))
+                    }
                 }
+                .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -57,6 +62,7 @@ struct CartView: View {
             .navigationDestination(for: String.self) { _ in
                 CheckoutView()
             }
+            .navigationTitle("Cart")
         }
     }
 }

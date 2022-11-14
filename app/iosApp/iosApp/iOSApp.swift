@@ -11,7 +11,15 @@ struct iOSApp: App {
 		WindowGroup {
 			ContentView()
                 .environmentObject(GlobalState())
-                .tint(Color("SecondaryAccentColor"))
+                .tint(Color.secondaryAccent)
 		}
 	}
+}
+
+extension Color {
+    static var secondaryAccent: Color {
+        get {
+            return Color("SecondaryAccentColor")
+        }
+    }
 }
