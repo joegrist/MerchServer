@@ -41,6 +41,11 @@ struct CartView: View {
                     }
                     .frame( maxWidth: .infinity)
                 }
+                Button("Buy", action: {
+                    viewModel.buy()
+                })
+                .buttonStyle(.bordered)
+                .frame(maxWidth: .infinity)
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

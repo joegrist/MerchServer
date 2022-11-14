@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,6 +20,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
     var itemsAdapter: PurchaseListAdapter? = null
     var emptyMessage: TextView? = null
     var cartValue: TextView? = null
+    var cartBuy: Button? = null
     var items: ArrayList<PurchaseDTO> = arrayListOf()
     var onDismiss: (() -> Unit)? = null
 
@@ -31,6 +33,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         lv = view.findViewById(R.id.cart_contents)
         emptyMessage = view.findViewById(R.id.cart_empty)
         cartValue = view.findViewById(R.id.cart_value)
+        cartBuy = view.findViewById(R.id.cart_buy)
         itemsAdapter = PurchaseListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
@@ -44,6 +47,10 @@ class CartBottomSheet : BottomSheetDialogFragment() {
             val purchase = items.get(position)
             ApiClient.decQuantity(purchase)
             showCurrent()
+        }
+
+        cartBuy?.setOnClickListener {
+            
         }
 
         showCurrent()

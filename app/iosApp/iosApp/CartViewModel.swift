@@ -43,4 +43,8 @@ class CartViewModel: BaseViewModel {
         let cents = ApiClient.shared.cartValueCents()
         cartTotal = formatter.string(from: cents / 100 as NSNumber) ?? ""
     }
+    
+    func buy() {
+        
+    }
 }
