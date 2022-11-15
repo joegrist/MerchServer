@@ -86,6 +86,7 @@ var token = ""
 interface IObserver {
     fun onCall()
     fun onCallEnd()
+    fun onEvent(event: AppEvent)
 }
 
 interface IObservable {
@@ -99,13 +100,21 @@ interface IObservable {
         observers.remove(observer)
     }
 
-    fun sendStartEvent() {
+    fun sendOnCall() {
         observers.forEach { it.onCall() }
     }
 
-    fun sendEndEvent() {
+    fun sendOnCallEnd() {
         observers.forEach { it.onCallEnd() }
     }
+
+    fun sendEvent(event: AppEvent) {
+        observers.forEach { it.onEvent(event) }
+    }
+}
+
+enum class AppEvent {
+    LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed
 }
 
 object ApiClient: IObservable {
@@ -351,10 +360,36 @@ object ApiClient: IObservable {
         }
     }
 
+    fun checkout() {
+        onOperationStarted()
+
+        val email = prefs?.email ?: return
+
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.submitForm (
+                    url = "$apiEndpoint/customer/${email}/buy",
+                    formParameters = Parameters.build {
+                        // add card
+                    }
+                )
+            } catch (e: Exception) {
+                log("Error at checkout: ", e)
+                onOperationCompleted()
+                sendEvent(AppEvent.PurchaseFailed)
+                return@launch
+            }
+
+            storeCustomerDTO(response.body())
+            onOperationCompleted()
+            sendEvent(AppEvent.PurchaseCompleted)
+        }
+    }
+
     private fun onOperationStarted() {
         operationInProgress = true
         CoroutineScope(Dispatchers.Main).launch {
-            sendStartEvent()
+            sendOnCall()
         }
     }
 
@@ -362,7 +397,7 @@ object ApiClient: IObservable {
         operationInProgress = false
         CoroutineScope(Dispatchers.Main).launch {
             client.close()
-            sendEndEvent()
+            sendOnCallEnd()
         }
     }
 
@@ -389,11 +424,13 @@ object ApiClient: IObservable {
             val data : LoginResponse = json.decodeFromString(response.body())
             prefs?.token = data.token
             loadCurrentUser(prefs?.email!!)
+            sendEvent(AppEvent.LoggedIn)
         }
     }
 
     fun logOut() {
         prefs?.token = ""
+        sendEvent(AppEvent.LoggedOut)
     }
 
     val isLoggedIn get() = (prefs?.token ?: "") != ""

@@ -14,13 +14,14 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.NumberFormat
 
-class CartBottomSheet : BottomSheetDialogFragment() {
+class CartBottomSheet : BaseBottomSheetDialogFragment() {
 
     var lv: ListView? = null
     var itemsAdapter: PurchaseListAdapter? = null
     var emptyMessage: TextView? = null
     var cartValue: TextView? = null
     var cartBuy: Button? = null
+    var done: Button? = null
     var items: ArrayList<PurchaseDTO> = arrayListOf()
     var onDismiss: (() -> Unit)? = null
 
@@ -34,6 +35,7 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         emptyMessage = view.findViewById(R.id.cart_empty)
         cartValue = view.findViewById(R.id.cart_value)
         cartBuy = view.findViewById(R.id.cart_buy)
+        done = view.findViewById(R.id.cart_done)
         itemsAdapter = PurchaseListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
@@ -50,7 +52,12 @@ class CartBottomSheet : BottomSheetDialogFragment() {
         }
 
         cartBuy?.setOnClickListener {
+            mainActivity.triggerCheckout = true // UGLY!! FIX
+            dismiss()
+        }
 
+        done?.setOnClickListener {
+            dismiss()
         }
 
         showCurrent()

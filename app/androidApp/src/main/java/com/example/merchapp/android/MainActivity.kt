@@ -1,9 +1,11 @@
 package com.merch.app.android
 
 import ApiClient
+import AppEvent
 import IObserver
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +16,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
     private var loader: View? = null
     private var prefs: SharedPreference? = null
+    var triggerCheckout = false // YUCK smudgy state eww
 
     fun getNavigationController(res: Int): NavController {
         val navHostFragment = supportFragmentManager.findFragmentById(res) as NavHostFragment
@@ -47,21 +50,36 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
         when (item.itemId) {
             R.id.top_menu_cart -> {
-                val modalBottomSheet = CartBottomSheet()
-                modalBottomSheet.onDismiss = {
-                    ApiClient.postCart()
-                }
-                modalBottomSheet.show(supportFragmentManager, CartBottomSheet.TAG)
+                showCart()
                 return true
             }
             R.id.top_menu_user -> {
-                val modalBottomSheet = UserBottomSheet()
-                modalBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+                showLogin()
                 return true
             }
         }
 
         return false
+    }
+
+    fun showCart() {
+        val modalBottomSheet = CartBottomSheet()
+        modalBottomSheet.onDismiss = {
+            ApiClient.postCart()
+            if (triggerCheckout) showCheckout()
+        }
+        modalBottomSheet.show(supportFragmentManager, CartBottomSheet.TAG)
+    }
+
+    fun showLogin() {
+        val modalBottomSheet = UserBottomSheet()
+        modalBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+    }
+
+    fun showCheckout() {
+        triggerCheckout = false
+        val modalBottomSheet = CheckoutBottomSheet()
+        modalBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
     }
 
     fun loader(visible: Boolean) {
@@ -74,6 +92,19 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
     override fun onCallEnd() {
         loader(false)
+    }
+
+    override fun onEvent(event: AppEvent) {
+        when(event) {
+            AppEvent.LoggedIn -> {}
+            AppEvent.LoggedOut -> {}
+            AppEvent.PurchaseCompleted -> {
+                AlertDialog.Builder(this).setTitle("Purchase Failed").setMessage("Try again later").setNegativeButton(android.R.string.ok, null)
+            }
+            AppEvent.PurchaseFailed -> {
+                AlertDialog.Builder(this).setTitle("All Done").setMessage("We have your order!").setNegativeButton(android.R.string.ok, null)
+            }
+        }
     }
 }
 

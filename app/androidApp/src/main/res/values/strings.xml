@@ -11,4 +11,5 @@
     <string name="title_activity_purchaseable">Purchaseable</string>
     <string name="order">Order</string>
     <string name="view_of_product">View of product</string>
+    <string name="done">Done</string>
 </resources>

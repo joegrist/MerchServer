@@ -6,38 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
+    <Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="?android:actionBarSize"
+        android:gravity="end">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:visibility="invisible"
-            android:text="Done"/>
+            style="@style/ToolbarButton"
+            android:id="@+id/cart_done"
+            android:layout_gravity="end"
+            android:text="@string/done"/>
+    </Toolbar>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/cart_value"
-            android:padding="@dimen/default_gap"
-            android:layout_weight="1"
-            android:gravity="center"
-            style="@style/Title"
-            tools:text="$100.00"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:text="Done"/>
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cart_value"
+        android:padding="@dimen/default_gap"
+        android:gravity="center"
+        style="@style/Title"
+        tools:text="$100.00"/>
 
     <TextView android:id="@+id/cart_empty"
         android:layout_width="match_parent"
@@ -58,6 +47,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cart_buy"
+        style="@style/AppButton"
+        android:layout_margin="@dimen/half_gap"
         android:text="Buy"/>
+
 
 </LinearLayout>

@@ -2,9 +2,8 @@ import SwiftUI
 import shared
 
 struct CartView: View {
-    @Environment(\.dismiss) var dismiss
-
     @StateObject private var viewModel = CartViewModel()
+    @EnvironmentObject private var globalState: GlobalState
     
     var body: some View {
         NavigationStack {
@@ -40,29 +39,26 @@ struct CartView: View {
                         .buttonStyle(.borderless)
                     }
                     .frame( maxWidth: .infinity)
-                }
+                }.listStyle(.plain)
                 VStack {
-                    NavigationLink(value: "") {
-                        Text("Buy")
-                            .padding(10)
-                            .frame(maxWidth: .infinity)
-                            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondaryAccent, lineWidth: 1))
-                    }
+                    Button("Buy", action: {
+                        globalState.showingCartSheet = false
+                        globalState.triggerCheckoutSheet = true
+                    })
                 }
                 .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                .buttonStyle(AppButtonStyle())
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done", action: {
                         ApiClient.shared.postCart()
-                        dismiss()
+                        globalState.showingCartSheet = false
+                        globalState.triggerCheckoutSheet = false
                     })
                 }
             }
-            .navigationDestination(for: String.self) { _ in
-                CheckoutView()
-            }
-            .navigationTitle("Cart")
+            .navigationTitle("Cart").navigationBarTitleDisplayMode(.inline)
         }
     }
 }

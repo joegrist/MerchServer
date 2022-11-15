@@ -8,45 +8,46 @@ struct CheckoutView: View {
     @State var viewModel = CheckoutViewModel()
     
     var body: some View {
-        VStack {
-            HStack {
-                TextField("XXXX", text: $viewModel.cardNumber1)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-                TextField("XXXX", text: $viewModel.cardNumber2)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-                TextField("XXXX", text: $viewModel.cardNumber3)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-                TextField("XXXX", text: $viewModel.cardNumber4)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-            }
-            HStack {
-                TextField("MM", text: $viewModel.expiry1)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-                TextField("YY", text: $viewModel.expiry2)
-                    .keyboardType(.numberPad)
-                    .textFieldStyle(.roundedBorder)
-            }
-            TextField("XXX", text: $viewModel.cvv)
-                .keyboardType(.numberPad)
+        NavigationStack {
+            VStack {
+                VStack(alignment: .leading) {
+                    Text(viewModel.cartTotal).font(.title)
+                    Text("Card Number").font(.caption)
+                    HStack {
+                        TextField("XXXX", text: $viewModel.cardNumber1)
+                            .keyboardType(.numberPad)
+                        TextField("XXXX", text: $viewModel.cardNumber2)
+                            .keyboardType(.numberPad)
+                        TextField("XXXX", text: $viewModel.cardNumber3)
+                            .keyboardType(.numberPad)
+                        TextField("XXXX", text: $viewModel.cardNumber4)
+                            .keyboardType(.numberPad)
+                    }
+                    Text("Expiry").font(.caption)
+                    HStack {
+                        TextField("MM", text: $viewModel.expiry1)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(.roundedBorder)
+                        TextField("YY", text: $viewModel.expiry2)
+                            .keyboardType(.numberPad)
+                    }
+                    Text("CVV").font(.caption)
+                    TextField("XXX", text: $viewModel.cvv)
+                        .keyboardType(.numberPad)
+                    Button("Buy", action: { viewModel.buy() })
+                }
                 .textFieldStyle(.roundedBorder)
-            Button("Buy", action: { viewModel.buy() })
-                .padding(10)
-                .frame(maxWidth: .infinity)
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondaryAccent, lineWidth: 1))
-        }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Done", action: {
-                    presentationMode.wrappedValue.dismiss()
-                })
+                .buttonStyle(AppButtonStyle())
             }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done", action: {
+                        presentationMode.wrappedValue.dismiss()
+                    })
+                }
+            }
+            .navigationTitle("Checkout").navigationBarTitleDisplayMode(.inline)
+            .padding()
         }
-        .navigationTitle("Checkout")
-        .padding()
     }
 }

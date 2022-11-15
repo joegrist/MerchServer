@@ -1,5 +1,6 @@
 package com.merch.app.android
 
+import AppEvent
 import IObserver
 import android.os.Bundle
 import android.view.View
@@ -18,10 +19,12 @@ open class BaseFragment: Fragment(), IObserver {
     val mainActivity get() = activity as MainActivity
     override fun onCall() {}
     override fun onCallEnd() {}
+    override fun onEvent(event: AppEvent) {}
 }
 
 open class BaseBottomSheetDialogFragment: BottomSheetDialogFragment(), IObserver {
     val mainActivity get() = activity as MainActivity
     override fun onCall() {}
     override fun onCallEnd() {}
+    override fun onEvent(event: AppEvent) {}
 }
