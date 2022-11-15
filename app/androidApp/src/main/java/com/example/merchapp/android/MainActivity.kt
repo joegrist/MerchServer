@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.merch.app.AlertStore
 import com.merch.app.SharedPreference
 
 class MainActivity : AppCompatActivity(), IObserver  {
@@ -99,11 +100,13 @@ class MainActivity : AppCompatActivity(), IObserver  {
             AppEvent.LoggedIn -> {}
             AppEvent.LoggedOut -> {}
             AppEvent.PurchaseCompleted -> {
-                AlertDialog.Builder(this).setTitle("Purchase Failed").setMessage("Try again later").setNegativeButton(android.R.string.ok, null)
+                AlertDialog.Builder(this).setTitle(AlertStore.checkoutSucceeded.title).setMessage(AlertStore.checkoutSucceeded.message).setNegativeButton(android.R.string.ok, null)
             }
             AppEvent.PurchaseFailed -> {
-                AlertDialog.Builder(this).setTitle("All Done").setMessage("We have your order!").setNegativeButton(android.R.string.ok, null)
+                AlertDialog.Builder(this).setTitle(AlertStore.checkoutFailed.title).setMessage(AlertStore.checkoutFailed.message).setNegativeButton(android.R.string.ok, null)
             }
+            AppEvent.LoginFailed -> {}
+            AppEvent.UserDataUpdated -> {}
         }
     }
 }

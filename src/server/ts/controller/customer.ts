@@ -6,6 +6,7 @@ import { Design } from "../../../common/entity/design"
 import { PurchaseDTO, CustomerDTO, PurchaseableDTO } from "./dto"
 import { log, makeUuid } from "../../../config/config"
 import { StripePayment } from "../stripe"
+import { IsNull } from "typeorm"
 
 const customerRepo = ds.getRepository(Customer)
 const cartRepo = ds.getRepository(CustomerDesign)
@@ -31,7 +32,10 @@ export async function getCustomer(request: Request, response: Response) {
     result.mobile = customer.mobile
 
     const cart = await cartRepo.find({
-        where: {customer : { email : customer.email } }, 
+        where: {
+            customer : { email : customer.email },
+            purchased : IsNull()
+        }, 
         relations: ["design", "customer"]
     })
 
@@ -101,14 +105,14 @@ async function storeCartItem(customerEmail: string, id: string, designId: number
 async function ensureCartItem(id: string | null, customer: Customer, design: Design, variation: string) {
 
     if (id) {
-        let cd = await cartRepo.findOneBy({id : id})
+        let cd = await cartRepo.findOneBy({id : id, purchased : IsNull()})
         log.log(`Found existing cart item with id ${id} for ${customer.email}`)
         if (cd) {
             return cd
         }
     }
     
-    let cd = await cartRepo.findOneBy({design: design, variation: variation, customer: customer})
+    let cd = await cartRepo.findOneBy({design: design, variation: variation, customer: customer, purchased: IsNull()})
     if (cd) {
         log.log(`Found existing cart item with design ${design.name} variation ${variation} for ${customer.email}`)
         return cd

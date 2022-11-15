@@ -17,4 +17,7 @@ class BaseViewModel: ObservableObject, IObserver {
     
     func onCallEnd() {
     }
+    
+    func onEvent(event: AppEvent) {
+    }
 }

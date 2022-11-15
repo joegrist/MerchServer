@@ -74,7 +74,9 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
             items.add(it)
         }
         itemsAdapter?.notifyDataSetChanged()
-        emptyMessage?.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+        val empty = items.isEmpty()
+        emptyMessage?.visibility = if (empty) View.VISIBLE else View.GONE
+        cartBuy?.visibility = if (empty) View.GONE else View.VISIBLE
         val format = NumberFormat.getCurrencyInstance()
         cartValue?.text = format.format(cartValueCents() / 100)
     }

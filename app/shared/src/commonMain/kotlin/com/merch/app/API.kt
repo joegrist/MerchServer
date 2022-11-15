@@ -114,7 +114,7 @@ interface IObservable {
 }
 
 enum class AppEvent {
-    LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed
+    LoginFailed, LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed, UserDataUpdated
 }
 
 object ApiClient: IObservable {
@@ -218,7 +218,14 @@ object ApiClient: IObservable {
         return result
     }
 
-    fun loadMerchants()  {
+    fun initialLoad() {
+        loadMerchants(andCustomer = true)
+    }
+
+    fun loadMerchants() {
+        loadMerchants(andCustomer = false)
+    }
+    private fun loadMerchants(andCustomer: Boolean)  {
         onOperationStarted()
 
         CoroutineScope(Dispatchers.Default).launch {
@@ -226,7 +233,7 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/merchants")
             } catch (e: Exception) {
                 log("Error loading merchants: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
@@ -239,7 +246,12 @@ object ApiClient: IObservable {
                 list.add(m)
             }
             Database.saveOrUpdateMerchants(list)
-            onOperationCompleted()
+
+            if (andCustomer && isLoggedIn) {
+                loadCurrentUser(prefs!!.email)
+            } else {
+                onOperationCompleted(null)
+            }
         }
     }
 
@@ -252,7 +264,7 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/merchant/$merchantSlug/designs")
             } catch (e: Exception) {
                 log("Error loading purchaseables: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
@@ -292,7 +304,7 @@ object ApiClient: IObservable {
             Database.saveOrUpdatePurchaseables(purchasableList)
             Database.saveOrUpdateViews(viewList)
             Database.saveOrUpdateVariations(variationList)
-            onOperationCompleted()
+            onOperationCompleted(null)
         }
     }
 
@@ -323,12 +335,12 @@ object ApiClient: IObservable {
                 )
             } catch (e: Exception) {
                 log("Error posting changes to cart: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(null)
         }
     }
 
@@ -351,12 +363,12 @@ object ApiClient: IObservable {
                 }
             } catch (e: Exception) {
                 log("Error posting changes to cart: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(null)
         }
     }
 
@@ -375,14 +387,13 @@ object ApiClient: IObservable {
                 )
             } catch (e: Exception) {
                 log("Error at checkout: ", e)
-                onOperationCompleted()
-                sendEvent(AppEvent.PurchaseFailed)
+                onOperationCompleted(AppEvent.PurchaseFailed)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
-            sendEvent(AppEvent.PurchaseCompleted)
+            onOperationCompleted(AppEvent.PurchaseCompleted)
+
         }
     }
 
@@ -393,11 +404,14 @@ object ApiClient: IObservable {
         }
     }
 
-    private fun onOperationCompleted() {
+    private fun onOperationCompleted(event: AppEvent?) {
         operationInProgress = false
         CoroutineScope(Dispatchers.Main).launch {
             client.close()
             sendOnCallEnd()
+            event?.let { e ->
+                sendEvent(e)
+            }
         }
     }
 
@@ -417,14 +431,17 @@ object ApiClient: IObservable {
                 )
             } catch (e: Exception) {
                 log("Error logging in: ", e)
-                onOperationCompleted()
+                onOperationCompleted(AppEvent.LoginFailed)
                 return@launch
             }
 
             val data : LoginResponse = json.decodeFromString(response.body())
             prefs?.token = data.token
             loadCurrentUser(prefs?.email!!)
-            sendEvent(AppEvent.LoggedIn)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                sendEvent(AppEvent.LoggedIn)
+            }
         }
     }
 
@@ -444,12 +461,12 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/customer/${prefs!!.email}")
             } catch (e: Exception) {
                 log("Error loading customer: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(AppEvent.UserDataUpdated)
         }
     }
 

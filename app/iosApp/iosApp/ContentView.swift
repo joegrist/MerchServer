@@ -36,6 +36,16 @@ struct ContentView: View {
             .sheet(isPresented: $globalState.showingCheckoutSheet) {
                 CheckoutView().environmentObject(globalState)
             }
+            .alert(AlertStore.shared.checkoutFailed.title, isPresented: $viewModel.showingCheckoutFailed) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(AlertStore.shared.checkoutFailed.message)
+            }
+            .alert(AlertStore.shared.checkoutSucceeded.title, isPresented: $viewModel.showingCheckoutSucceeded) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(AlertStore.shared.checkoutSucceeded.message)
+            }
             
             if (viewModel.loading) {
                 HStack() {

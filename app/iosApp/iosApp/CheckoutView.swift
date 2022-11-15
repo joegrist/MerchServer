@@ -4,7 +4,7 @@ import shared
 struct CheckoutView: View {
     
     @Environment(\.presentationMode) var presentationMode
-    
+    @EnvironmentObject private var globalState: GlobalState
     @State var viewModel = CheckoutViewModel()
     
     var body: some View {
@@ -34,7 +34,10 @@ struct CheckoutView: View {
                     Text("CVV").font(.caption)
                     TextField("XXX", text: $viewModel.cvv)
                         .keyboardType(.numberPad)
-                    Button("Buy", action: { viewModel.buy() })
+                    Button("Buy", action: {
+                        viewModel.checkout()
+                        globalState.showingCheckoutSheet = false
+                    })
                 }
                 .textFieldStyle(.roundedBorder)
                 .buttonStyle(AppButtonStyle())

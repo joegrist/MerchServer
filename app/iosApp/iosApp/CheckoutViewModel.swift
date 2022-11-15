@@ -18,7 +18,7 @@ class CheckoutViewModel: BaseViewModel {
         super.init()
     }
     
-    func buy() {
-        
+    func checkout() {
+        ApiClient.shared.checkout()
     }
 }

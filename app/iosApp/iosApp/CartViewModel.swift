@@ -7,7 +7,7 @@ class CartViewModel: BaseViewModel {
     @Published private(set) var purchases: [PurchaseDTO] = []
     @Published var title = "Cart"
     @Published var cartTotal = "$0.00"
-
+    @Published var empty = true
     
     override init() {
         super.init()
@@ -39,5 +39,6 @@ class CartViewModel: BaseViewModel {
     func update() {
         purchases = ApiClient.shared.purchases() as? [PurchaseDTO] ?? []
         cartTotal = iosApp.cartTotal()
+        empty = purchases.isEmpty
     }
 }

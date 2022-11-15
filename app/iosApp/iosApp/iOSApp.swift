@@ -10,12 +10,17 @@ class GlobalState: ObservableObject {
 
 @main
 struct iOSApp: App {
+    
+    init() {
+        config()
+    }
+    
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
                 .environmentObject(GlobalState())
                 .tint(Color.secondaryAccent)
-		}
+        }
 	}
 }
 
@@ -25,6 +30,10 @@ extension Color {
             return Color("SecondaryAccentColor")
         }
     }
+}
+
+func config() {
+    ApiClient.shared.prefs = SharedPreference(context: NSObject())
 }
 
 func cartTotal() -> String {
