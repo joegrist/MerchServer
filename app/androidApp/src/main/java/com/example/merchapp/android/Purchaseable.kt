@@ -30,6 +30,10 @@ class Purchaseable : BaseFragment() {
         return inflater.inflate(R.layout.purchaseable, container, false)
     }
 
+    fun qty(variation: String): Long {
+        return ApiClient.cartVariantQuantity(purchaseableId, variation).toLong()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,15 +45,24 @@ class Purchaseable : BaseFragment() {
         items = purchaseable?.views ?: arrayListOf()
         variants = purchaseable?.variations?.firstOrNull()?.optionsAsList ?: arrayOf()
         viewsAdapter = ViewListAdapter(requireActivity(), items)
-        variantsAdapter = VariantListAdapter(requireActivity(), variants)
+        variantsAdapter = VariantListAdapter(requireActivity(), variants, purchaseableId)
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
-        variantList?.setOnItemClickListener { _, _, position, _ ->
-            val variant = variants?.getOrNull(position)
+
+        variantsAdapter?.incClick = { variation ->
+
             ApiClient.purchase(
                 purchasableId = purchaseableId,
-                variation = variant ?: "",
-                quantity = 1
+                variation = variation ?: "",
+                quantity = qty(variation) + 1
+            )
+        }
+
+        variantsAdapter?.decClick = { variation ->
+            ApiClient.purchase(
+                purchasableId = purchaseableId,
+                variation = variation ?: "",
+                quantity = qty(variation) - 1
             )
         }
     }

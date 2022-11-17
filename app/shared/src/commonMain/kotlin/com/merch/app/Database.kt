@@ -179,6 +179,10 @@ object Database {
         return realm.query<PurchaseableVariation>("purchaseableId = $0", purchaseableId).find().toTypedArray()
     }
 
+    fun cartVariationQuantity(purchaseableId: Long, variant: String): Int {
+        return realm.query<Purchase>("purchaseableId = $0 AND variation = $1", purchaseableId, variant).find().count()
+    }
+
     fun saveOrUpdateViews(m: ArrayList<PurchaseableView>) {
         realm.writeBlocking {
             m.forEach {

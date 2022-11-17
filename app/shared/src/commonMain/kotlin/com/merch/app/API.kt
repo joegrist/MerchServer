@@ -494,6 +494,10 @@ object ApiClient: IObservable {
     }
 
     val cartItemCount get() = Database.getCart().size
+    
+    fun cartVariantQuantity(purchaseableId: Long, variant: String): Int {
+        return Database.cartVariationQuantity(purchaseableId, variant)
+    }
 
     private fun storeCustomerDTO(body: String) {
 
