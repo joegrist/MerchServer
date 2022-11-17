@@ -3,7 +3,7 @@ import shared
 
 struct ContentView: View {
     
-    @EnvironmentObject private var globalState: GlobalState
+    @EnvironmentObject var globalState: GlobalState
     @StateObject private var viewModel = MerchantsViewModel()
     
     var body: some View {
@@ -26,11 +26,25 @@ struct ContentView: View {
                 .navigationTitle(viewModel.title)
             }
             .sheet(isPresented: $globalState.showingUserSheet) {
-                UserView()
+                UserView().environmentObject(globalState)
             }
-            .sheet(isPresented: $globalState.showingCartSheet) {
-                CartView()
-                    .interactiveDismissDisabled()
+            .sheet(isPresented: $globalState.showingCartSheet, onDismiss: {
+                globalState.showingCheckoutSheet = globalState.triggerCheckoutSheet
+            }) {
+                CartView().environmentObject(globalState)
+            }
+            .sheet(isPresented: $globalState.showingCheckoutSheet) {
+                CheckoutView().environmentObject(globalState)
+            }
+            .alert(AlertStore.shared.checkoutFailed.title, isPresented: $viewModel.showingCheckoutFailed) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(AlertStore.shared.checkoutFailed.message)
+            }
+            .alert(AlertStore.shared.checkoutSucceeded.title, isPresented: $viewModel.showingCheckoutSucceeded) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(AlertStore.shared.checkoutSucceeded.message)
             }
             
             if (viewModel.loading) {

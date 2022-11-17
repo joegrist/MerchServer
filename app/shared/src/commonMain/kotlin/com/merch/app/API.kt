@@ -86,6 +86,7 @@ var token = ""
 interface IObserver {
     fun onCall()
     fun onCallEnd()
+    fun onEvent(event: AppEvent)
 }
 
 interface IObservable {
@@ -99,13 +100,21 @@ interface IObservable {
         observers.remove(observer)
     }
 
-    fun sendStartEvent() {
+    fun sendOnCall() {
         observers.forEach { it.onCall() }
     }
 
-    fun sendEndEvent() {
+    fun sendOnCallEnd() {
         observers.forEach { it.onCallEnd() }
     }
+
+    fun sendEvent(event: AppEvent) {
+        observers.forEach { it.onEvent(event) }
+    }
+}
+
+enum class AppEvent {
+    LoginFailed, LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed, UserDataUpdated
 }
 
 object ApiClient: IObservable {
@@ -209,7 +218,14 @@ object ApiClient: IObservable {
         return result
     }
 
-    fun loadMerchants()  {
+    fun initialLoad() {
+        loadMerchants(andCustomer = true)
+    }
+
+    fun loadMerchants() {
+        loadMerchants(andCustomer = false)
+    }
+    private fun loadMerchants(andCustomer: Boolean)  {
         onOperationStarted()
 
         CoroutineScope(Dispatchers.Default).launch {
@@ -217,7 +233,7 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/merchants")
             } catch (e: Exception) {
                 log("Error loading merchants: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
@@ -230,7 +246,12 @@ object ApiClient: IObservable {
                 list.add(m)
             }
             Database.saveOrUpdateMerchants(list)
-            onOperationCompleted()
+
+            if (andCustomer && isLoggedIn) {
+                loadCurrentUser(prefs!!.email)
+            } else {
+                onOperationCompleted(null)
+            }
         }
     }
 
@@ -243,7 +264,7 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/merchant/$merchantSlug/designs")
             } catch (e: Exception) {
                 log("Error loading purchaseables: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
@@ -283,7 +304,7 @@ object ApiClient: IObservable {
             Database.saveOrUpdatePurchaseables(purchasableList)
             Database.saveOrUpdateViews(viewList)
             Database.saveOrUpdateVariations(variationList)
-            onOperationCompleted()
+            onOperationCompleted(null)
         }
     }
 
@@ -314,12 +335,12 @@ object ApiClient: IObservable {
                 )
             } catch (e: Exception) {
                 log("Error posting changes to cart: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(null)
         }
     }
 
@@ -342,27 +363,55 @@ object ApiClient: IObservable {
                 }
             } catch (e: Exception) {
                 log("Error posting changes to cart: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(null)
+        }
+    }
+
+    fun checkout() {
+        onOperationStarted()
+
+        val email = prefs?.email ?: return
+
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.submitForm (
+                    url = "$apiEndpoint/customer/${email}/buy",
+                    formParameters = Parameters.build {
+                        // add card
+                    }
+                )
+            } catch (e: Exception) {
+                log("Error at checkout: ", e)
+                onOperationCompleted(AppEvent.PurchaseFailed)
+                return@launch
+            }
+
+            storeCustomerDTO(response.body())
+            onOperationCompleted(AppEvent.PurchaseCompleted)
+
         }
     }
 
     private fun onOperationStarted() {
         operationInProgress = true
         CoroutineScope(Dispatchers.Main).launch {
-            sendStartEvent()
+            sendOnCall()
         }
     }
 
-    private fun onOperationCompleted() {
+    private fun onOperationCompleted(event: AppEvent?) {
         operationInProgress = false
         CoroutineScope(Dispatchers.Main).launch {
             client.close()
-            sendEndEvent()
+            sendOnCallEnd()
+            event?.let { e ->
+                sendEvent(e)
+            }
         }
     }
 
@@ -382,18 +431,23 @@ object ApiClient: IObservable {
                 )
             } catch (e: Exception) {
                 log("Error logging in: ", e)
-                onOperationCompleted()
+                onOperationCompleted(AppEvent.LoginFailed)
                 return@launch
             }
 
             val data : LoginResponse = json.decodeFromString(response.body())
             prefs?.token = data.token
             loadCurrentUser(prefs?.email!!)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                sendEvent(AppEvent.LoggedIn)
+            }
         }
     }
 
     fun logOut() {
         prefs?.token = ""
+        sendEvent(AppEvent.LoggedOut)
     }
 
     val isLoggedIn get() = (prefs?.token ?: "") != ""
@@ -407,12 +461,12 @@ object ApiClient: IObservable {
                 client.get("$apiEndpoint/customer/${prefs!!.email}")
             } catch (e: Exception) {
                 log("Error loading customer: ", e)
-                onOperationCompleted()
+                onOperationCompleted(null)
                 return@launch
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted()
+            onOperationCompleted(AppEvent.UserDataUpdated)
         }
     }
 

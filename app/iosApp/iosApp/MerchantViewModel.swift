@@ -7,11 +7,16 @@ class MerchantsViewModel: BaseViewModel {
     @Published private(set) var merchants = [MerchantDTO]()
     @Published var title = "Shops"
     @Published var loading = false
+    @Published var showingCheckoutFailed = false
+    @Published var showingCheckoutSucceeded = false
+    
+    private var initialUserLoadNeeded = false
+    
+    private var prefs = SharedPreference(context: NSObject())
     
     override init() {
         super.init()
-        refresh()
-        ApiClient.shared.prefs = SharedPreference(context: NSObject())
+        ApiClient.shared.initialLoad()
     }
     
     func refresh() {
@@ -26,8 +31,29 @@ class MerchantsViewModel: BaseViewModel {
     
     override func onCallEnd() {
         super.onCallEnd()
-        loading = false
+        if (initialUserLoadNeeded) {
+            
+        } else {
+            loading = false
+        }
         showCurrent()
+    }
+    
+    override func onEvent(event: AppEvent) {
+        switch(event) {
+        case AppEvent.loggedin:
+            break
+        case AppEvent.loggedout:
+            break
+        case AppEvent.purchasefailed:
+            showingCheckoutFailed = true
+        case AppEvent.purchasecompleted:
+            showingCheckoutSucceeded = true
+        case AppEvent.userdataupdated:
+            break
+        default:
+            break
+        }
     }
     
     func showCurrent() {

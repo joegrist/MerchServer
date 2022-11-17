@@ -16,9 +16,7 @@ struct UserView: View {
                     
                     if viewModel.loggedIn {
                         Text(viewModel.title).font(.title)
-                        Button("Log Out", action: {
-                            viewModel.logOut()
-                        }).buttonStyle(.bordered)
+                        Button("Log Out", action: { viewModel.logOut() })
                     } else {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Email")
@@ -27,7 +25,6 @@ struct UserView: View {
                                 "somebody@somewhere.com",
                                 text: $viewModel.email
                             )
-                            .textFieldStyle(.roundedBorder)
                         }
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Password")
@@ -35,15 +32,14 @@ struct UserView: View {
                             SecureField(
                                 "Password",
                                 text: $viewModel.password
-                            ).textFieldStyle(.roundedBorder)
+                            )
                         }
-                        Button("Log In", action: {
-                            viewModel.logIn()
-                        })
-                        .buttonStyle(.bordered)
+                        Button("Log In", action: { viewModel.logIn() })
                     }
                 }
                 .padding()
+                .buttonStyle(AppButtonStyle())
+                .textFieldStyle(.roundedBorder)
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

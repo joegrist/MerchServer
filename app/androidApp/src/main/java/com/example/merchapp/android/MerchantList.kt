@@ -36,7 +36,7 @@ class MerchantList : BaseFragment()  {
         }
 
         ApiClient.add(this)
-        ApiClient.loadMerchants()
+        ApiClient.initialLoad()
     }
 
     override fun onDestroyView() {

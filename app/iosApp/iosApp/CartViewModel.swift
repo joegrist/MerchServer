@@ -7,6 +7,7 @@ class CartViewModel: BaseViewModel {
     @Published private(set) var purchases: [PurchaseDTO] = []
     @Published var title = "Cart"
     @Published var cartTotal = "$0.00"
+    @Published var empty = true
     
     override init() {
         super.init()
@@ -36,11 +37,8 @@ class CartViewModel: BaseViewModel {
     }
     
     func update() {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
         purchases = ApiClient.shared.purchases() as? [PurchaseDTO] ?? []
-        let cents = ApiClient.shared.cartValueCents()
-        cartTotal = formatter.string(from: cents / 100 as NSNumber) ?? ""
+        cartTotal = iosApp.cartTotal()
+        empty = purchases.isEmpty
     }
 }
