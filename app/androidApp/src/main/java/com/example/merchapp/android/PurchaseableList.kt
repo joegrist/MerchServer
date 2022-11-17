@@ -34,7 +34,7 @@ class PurchaseableList : BaseFragment(), IObserver {
         itemsAdapter = PurchaseableListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
-        lv?.setOnItemClickListener { parent, view, position, id ->
+        lv?.setOnItemClickListener { _, _, position, _ ->
             val p = items.get(position)
             var action = PurchaseableListDirections.actionPurchaseableListToPurchaseable(p.id, p.name)
             navController?.navigate(action)

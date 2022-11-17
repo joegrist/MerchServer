@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
 
-class VariantListAdapter(private val context: Activity, list: Array<String>, val purchaseableId: Long): ArrayAdapter<String>(context, 0, list) {
+class VariantListAdapter(private val context: Activity, list: ArrayList<String>, val purchaseableId: Long): ArrayAdapter<String>(context, 0, list) {
 
     var incClick: ((String) -> Unit)? = null
     var decClick: ((String) -> Unit)? = null

@@ -102,11 +102,15 @@ object Database {
         return realm.query<Purchase>("id = '$id'").first().find()
     }
 
+    fun purchase(purchaseableId: Long, variation: String): Purchase? {
+        return realm.query<Purchase>("purchaseableId = $purchaseableId AND variation = '$variation'").first().find()
+    }
+
     fun incQuantity(purchaseId: String) {
         var p = purchase(purchaseId) ?: return println("Asked to increment qty on invalid purchase $purchaseId")
         realm.writeBlocking {
             val pp = findLatest(p) ?: return@writeBlocking
-            pp?.quantity = p.quantity + 1
+            pp.quantity = p.quantity + 1
             copyToRealm(pp, UpdatePolicy.ALL)
         }
     }
@@ -179,8 +183,8 @@ object Database {
         return realm.query<PurchaseableVariation>("purchaseableId = $0", purchaseableId).find().toTypedArray()
     }
 
-    fun cartVariationQuantity(purchaseableId: Long, variant: String): Int {
-        return realm.query<Purchase>("purchaseableId = $0 AND variation = $1", purchaseableId, variant).find().count()
+    fun cartVariationQuantity(purchaseableId: Long, variant: String): Long {
+        return realm.query<Purchase>("purchaseableId = $0 AND variation = $1", purchaseableId, variant).first().find()?.quantity ?: 0
     }
 
     fun saveOrUpdateViews(m: ArrayList<PurchaseableView>) {

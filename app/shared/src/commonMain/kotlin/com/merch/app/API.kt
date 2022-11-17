@@ -168,18 +168,28 @@ object ApiClient: IObservable {
         return result
     }
 
+    private fun purchaseDTOFrom(purchase: Purchase): PurchaseDTO? {
+        val purchaseable = Database.purchaseable(purchase.purchaseableId) ?: return null
+        return PurchaseDTO(
+            id = purchase.id,
+            quantity = purchase.quantity,
+            variation = purchase.variation ?: "",
+            purchaseable = PurchaseableMiniDTO.from(purchaseable)
+        )
+    }
+
     fun purchases() : ArrayList<PurchaseDTO> {
         val result = ArrayList<PurchaseDTO>()
         Database.purchases().forEach {
-            val purchaseable = Database.purchaseable(it.purchaseableId) ?: return@forEach
-            result.add(PurchaseDTO(
-                id = it.id,
-                quantity = it.quantity,
-                variation = it.variation ?: "",
-                purchaseable = PurchaseableMiniDTO.from(purchaseable)
-            ))
+            val purchase = purchaseDTOFrom(it) ?: return@forEach
+            result.add(purchase)
         }
         return result
+    }
+
+    fun purchase(purchaseableId: Long, variation: String): PurchaseDTO? {
+        val p = Database.purchase(purchaseableId, variation) ?: return null
+        return purchaseDTOFrom(p)
     }
 
     // Fully populated purchaseable for the detail screen
@@ -321,7 +331,7 @@ object ApiClient: IObservable {
         return MerchantDTO(m.slug, m.name)
     }
 
-    fun purchase(purchasableId: Long, variation: String, quantity: Long) {
+    fun setCartPurchase(purchasableId: Long, variation: String, quantity: Long) {
 
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
@@ -493,9 +503,15 @@ object ApiClient: IObservable {
         return cents
     }
 
-    val cartItemCount get() = Database.getCart().size
+    val cartItemCount: Long get() {
+        var result = 0L
+        Database.getCart().forEach {
+            result += it.quantity
+        }
+        return result
+    }
     
-    fun cartVariantQuantity(purchaseableId: Long, variant: String): Int {
+    fun cartVariantQuantity(purchaseableId: Long, variant: String): Long {
         return Database.cartVariationQuantity(purchaseableId, variant)
     }
 

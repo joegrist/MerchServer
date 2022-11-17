@@ -39,12 +39,6 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val item = menu?.findItem(R.id.top_menu_cart)?.actionView
-        cartItemCount = item?.findViewById(R.id.cart_badge)
-        return true
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = getNavigationController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
@@ -52,8 +46,14 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.top, menu);
-        return true;
+        menuInflater.inflate(R.menu.top, menu)
+        val item = menu?.findItem(R.id.top_menu_cart)
+        val action = item?.actionView
+        cartItemCount = action?.findViewById(R.id.cart_badge)
+        action?.setOnClickListener{
+            onOptionsItemSelected(item)
+        }
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -57,8 +57,8 @@ class UserBottomSheet : BaseBottomSheetDialogFragment() {
     }
 
     fun logIn() {
-        val e = emailField?.text.toString() ?: return
-        val p = passwordField?.text.toString() ?: return
+        val e = emailField?.text.toString()
+        val p = passwordField?.text.toString()
 
         ApiClient.login(
             email = e,

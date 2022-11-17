@@ -39,13 +39,13 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
         itemsAdapter = PurchaseListAdapter(requireActivity(), items)
         lv?.adapter = itemsAdapter
 
-        itemsAdapter?.incClick = { position, id ->
+        itemsAdapter?.incClick = { position, _ ->
             val purchase = items.get(position)
             ApiClient.incQuantity(purchase)
             showCurrent()
         }
 
-        itemsAdapter?.decClick = { position, id->
+        itemsAdapter?.decClick = { position, _->
             val purchase = items.get(position)
             ApiClient.decQuantity(purchase)
             showCurrent()
