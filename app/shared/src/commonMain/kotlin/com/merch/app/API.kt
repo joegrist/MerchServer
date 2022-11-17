@@ -427,6 +427,10 @@ object ApiClient: IObservable {
         return cents
     }
 
+    fun cartVariantQuantity(purchaseableId: Long, variant: String): Int {
+        return Database.cartVariationQuantity(purchaseableId, variant)
+    }
+
     private fun storeCustomerDTO(body: String) {
 
         val data : CustomerDTO = json.decodeFromString(body)
