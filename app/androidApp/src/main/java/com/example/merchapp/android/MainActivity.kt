@@ -5,6 +5,7 @@ import AppEvent
 import IObserver
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
     private var loader: View? = null
     private var prefs: SharedPreference? = null
     var triggerCheckout = false // YUCK smudgy state eww
+    var cartItemCount: TextView? = null
 
     fun getNavigationController(res: Int): NavController {
         val navHostFragment = supportFragmentManager.findFragmentById(res) as NavHostFragment
@@ -34,6 +36,13 @@ class MainActivity : AppCompatActivity(), IObserver  {
         val navController = getNavigationController(R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
         loader = findViewById(R.id.loader) as? View
+
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val item = menu?.findItem(R.id.top_menu_cart)?.actionView
+        cartItemCount = item?.findViewById(R.id.cart_badge)
+        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -107,6 +116,9 @@ class MainActivity : AppCompatActivity(), IObserver  {
             }
             AppEvent.LoginFailed -> {}
             AppEvent.UserDataUpdated -> {}
+            AppEvent.CartUpdated -> {
+                cartItemCount?.text = ApiClient.cartItemCount.toString()
+            }
         }
     }
 }

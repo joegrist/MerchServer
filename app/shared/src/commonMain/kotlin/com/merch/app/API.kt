@@ -114,7 +114,7 @@ interface IObservable {
 }
 
 enum class AppEvent {
-    LoginFailed, LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed, UserDataUpdated
+    LoginFailed, LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed, UserDataUpdated, CartUpdated
 }
 
 object ApiClient: IObservable {
@@ -225,6 +225,7 @@ object ApiClient: IObservable {
     fun loadMerchants() {
         loadMerchants(andCustomer = false)
     }
+
     private fun loadMerchants(andCustomer: Boolean)  {
         onOperationStarted()
 
@@ -340,16 +341,18 @@ object ApiClient: IObservable {
             }
 
             storeCustomerDTO(response.body())
-            onOperationCompleted(null)
+            onCartUpdated()
         }
     }
 
     fun incQuantity(p: PurchaseDTO) {
         Database.incQuantity(p.id)
+        onCartUpdated()
     }
 
     fun decQuantity(p: PurchaseDTO) {
         Database.decQuantity(p.id)
+        onCartUpdated()
     }
 
     fun postCart() {
@@ -369,6 +372,7 @@ object ApiClient: IObservable {
 
             storeCustomerDTO(response.body())
             onOperationCompleted(null)
+            onCartUpdated()
         }
     }
 
@@ -393,7 +397,7 @@ object ApiClient: IObservable {
 
             storeCustomerDTO(response.body())
             onOperationCompleted(AppEvent.PurchaseCompleted)
-
+            onCartUpdated()
         }
     }
 
@@ -412,6 +416,12 @@ object ApiClient: IObservable {
             event?.let { e ->
                 sendEvent(e)
             }
+        }
+    }
+
+    private fun onCartUpdated() {
+        CoroutineScope(Dispatchers.Main).launch {
+            sendEvent(AppEvent.CartUpdated)
         }
     }
 
@@ -441,6 +451,7 @@ object ApiClient: IObservable {
 
             CoroutineScope(Dispatchers.Main).launch {
                 sendEvent(AppEvent.LoggedIn)
+                onCartUpdated()
             }
         }
     }
@@ -467,6 +478,7 @@ object ApiClient: IObservable {
 
             storeCustomerDTO(response.body())
             onOperationCompleted(AppEvent.UserDataUpdated)
+            onCartUpdated()
         }
     }
 
@@ -480,6 +492,8 @@ object ApiClient: IObservable {
         }
         return cents
     }
+
+    val cartItemCount get() = Database.getCart().size
 
     private fun storeCustomerDTO(body: String) {
 
