@@ -49,7 +49,14 @@ struct Purchaseable: View {
                             Text(v.name)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                             Button(action: {
-                                viewModel.add(variant: v.name)
+                                viewModel.dec(purchase: v.purchase)
+                            })  {
+                                Image(systemName: "minus.circle")
+                            }
+                            Text(v.purchase.quantity.description)
+                                .frame(minWidth: 40)
+                            Button(action: {
+                                viewModel.inc(purchase: v.purchase)
                             }) {
                                 Image(systemName: "plus.circle")
                             }
@@ -63,7 +70,7 @@ struct Purchaseable: View {
             }
         }
         .toolbar {
-            toolBarContent(state: globalState)
+            toolBarContent(state: globalState, cartCount: viewModel.cartCount)
         }
         .navigationTitle(viewModel.title)
     }

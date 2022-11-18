@@ -21,7 +21,7 @@ struct ContentView: View {
                 .navigationDestination(for: MerchantDTO.self) { merchant in PurchaseableList(merchantSlug: merchant.slug) }
                 .refreshable { viewModel.refresh() }
                 .toolbar {
-                    toolBarContent(state: globalState)
+                    toolBarContent(state: globalState, cartCount: viewModel.cartCount)
                 }
                 .navigationTitle(viewModel.title)
             }
@@ -73,7 +73,7 @@ struct MerchantRow: View {
 
 
 @ToolbarContentBuilder
-func toolBarContent(state: GlobalState) -> some ToolbarContent {
+func toolBarContent(state: GlobalState, cartCount: Int64) -> some ToolbarContent {
     
     ToolbarItem(placement: .navigationBarTrailing) {
         Button(action: {
@@ -83,10 +83,23 @@ func toolBarContent(state: GlobalState) -> some ToolbarContent {
         }
     }
     ToolbarItem(placement: .navigationBarTrailing) {
-        Button(action: {
-            state.showingCartSheet.toggle()
-        }) {
-            Image(systemName: "cart")
+        ZStack {
+            Button(action: {
+                state.showingCartSheet.toggle()
+            }) {
+                Image(systemName: "cart")
+            }
+            if (cartCount > 0) {
+                Text(cartCount.description)
+                    .frame(minWidth: 4)
+                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                    .background(Color.primary)
+                    .foregroundColor(.white)
+                    .cornerRadius(6)
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(.white, lineWidth: 1))
+                    .font(.caption2)
+                    .transformEffect(CGAffineTransform(translationX: 16, y: -12))
+            }
         }
     }
 }

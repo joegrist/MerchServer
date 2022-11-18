@@ -40,17 +40,12 @@ class MerchantsViewModel: BaseViewModel {
     }
     
     override func onEvent(event: AppEvent) {
+        super.onEvent(event: event)
         switch(event) {
-        case AppEvent.loggedin:
-            break
-        case AppEvent.loggedout:
-            break
         case AppEvent.purchasefailed:
             showingCheckoutFailed = true
         case AppEvent.purchasecompleted:
             showingCheckoutSucceeded = true
-        case AppEvent.userdataupdated:
-            break
         default:
             break
         }

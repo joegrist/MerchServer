@@ -23,12 +23,12 @@ class CartViewModel: BaseViewModel {
     }
     
     func inc(purchase: PurchaseDTO) {
-        ApiClient.shared.incQuantity(p: purchase)
+        ApiClient.shared.incQuantity(purchase: purchase)
         update()
     }
     
     func dec(purchase: PurchaseDTO) {
-        ApiClient.shared.decQuantity(p: purchase)
+        ApiClient.shared.decQuantity(purchase: purchase)
         update()
     }
     

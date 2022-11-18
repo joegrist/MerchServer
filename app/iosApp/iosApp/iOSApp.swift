@@ -6,6 +6,7 @@ class GlobalState: ObservableObject {
     @Published var showingCartSheet = false
     @Published var showingCheckoutSheet = false
     @Published var triggerCheckoutSheet = false
+    @Published var cartItemCount = 0
 }
 
 @main

@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
         val navController = getNavigationController(R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
         loader = findViewById(R.id.loader) as? View
-
+        updateCartCount()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -70,6 +70,12 @@ class MainActivity : AppCompatActivity(), IObserver  {
         }
 
         return false
+    }
+
+    private fun updateCartCount() {
+        val count = ApiClient.cartItemCount
+        cartItemCount?.text = count.toString()
+        cartItemCount?.visibility = if (count > 1) View.INVISIBLE else View.VISIBLE
     }
 
     fun showCart() {
@@ -117,7 +123,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
             AppEvent.LoginFailed -> {}
             AppEvent.UserDataUpdated -> {}
             AppEvent.CartUpdated -> {
-                cartItemCount?.text = ApiClient.cartItemCount.toString()
+                updateCartCount()
             }
         }
     }

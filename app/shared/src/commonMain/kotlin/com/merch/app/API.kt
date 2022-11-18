@@ -355,13 +355,13 @@ object ApiClient: IObservable {
         }
     }
 
-    fun incQuantity(p: PurchaseDTO) {
-        Database.incQuantity(p.id)
+    fun incQuantity(purchase: PurchaseDTO) {
+        Database.incQuantity(purchase.id)
         onCartUpdated()
     }
 
-    fun decQuantity(p: PurchaseDTO) {
-        Database.decQuantity(p.id)
+    fun decQuantity(purchase: PurchaseDTO) {
+        Database.decQuantity(purchase.id)
         onCartUpdated()
     }
 

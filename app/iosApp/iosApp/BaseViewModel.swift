@@ -4,8 +4,11 @@ import shared
 
 class BaseViewModel: ObservableObject, IObserver {
     
+    @Published var cartCount: Int64 = 0
+    
     init() {
         ApiClient.shared.add(observer: self)
+        updateCartBadge()
     }
     
     deinit {
@@ -19,5 +22,16 @@ class BaseViewModel: ObservableObject, IObserver {
     }
     
     func onEvent(event: AppEvent) {
+        switch(event) {
+        case AppEvent.cartupdated:
+            updateCartBadge()
+        default:
+            break
+        }
     }
+    
+    func updateCartBadge() {
+        cartCount = ApiClient.shared.cartItemCount
+    }
+
 }

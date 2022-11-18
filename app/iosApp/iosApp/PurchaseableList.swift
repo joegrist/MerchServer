@@ -25,7 +25,7 @@ struct PurchaseableList: View {
         }
         .refreshable {viewModel.refresh()}
         .toolbar {
-            toolBarContent(state: globalState)
+            toolBarContent(state: globalState, cartCount: viewModel.cartCount)
         }
         .navigationTitle(viewModel.title)
     }
