@@ -49,14 +49,20 @@ class Purchaseable : BaseFragment() {
         showCurrent()
 
         variantsAdapter?.incClick = { variation ->
-            val purchase = ApiClient.purchase(purchaseableId, variation)?.let {
+            ApiClient.purchase(purchaseableId, variation)?.let {
                 ApiClient.incQuantity(it)
-                ApiClient.postCart()
+            } ?: run {
+                ApiClient.setCartPurchase(
+                    purchaseableId = purchaseableId,
+                    variation = variation,
+                    quantity = 1
+                )
             }
+            ApiClient.postCart()
         }
 
         variantsAdapter?.decClick = { variation ->
-            val purchase = ApiClient.purchase(purchaseableId, variation)?.let {
+            ApiClient.purchase(purchaseableId, variation)?.let {
                 ApiClient.decQuantity(it)
                 ApiClient.postCart()
             }

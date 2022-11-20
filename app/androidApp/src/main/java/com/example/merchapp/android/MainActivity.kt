@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
     private fun updateCartCount() {
         val count = ApiClient.cartItemCount
         cartItemCount?.text = count.toString()
-        cartItemCount?.visibility = if (count > 1) View.INVISIBLE else View.VISIBLE
+        cartItemCount?.visibility = if (count > 1) View.VISIBLE else View.GONE
     }
 
     fun showCart() {

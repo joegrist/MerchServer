@@ -49,14 +49,14 @@ struct Purchaseable: View {
                             Text(v.name)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                             Button(action: {
-                                viewModel.dec(purchase: v.purchase)
+                                viewModel.dec(purchaseableId: v.purchaseableId, variation: v.name)
                             })  {
                                 Image(systemName: "minus.circle")
                             }
-                            Text(v.purchase.quantity.description)
+                            Text(v.quantity.description)
                                 .frame(minWidth: 40)
                             Button(action: {
-                                viewModel.inc(purchase: v.purchase)
+                                viewModel.inc(purchaseableId: v.purchaseableId, variation: v.name)
                             }) {
                                 Image(systemName: "plus.circle")
                             }

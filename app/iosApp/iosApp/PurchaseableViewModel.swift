@@ -10,7 +10,8 @@ struct Thumbnail {
 struct Variant {
     var name: String
     var id: Int64
-    var purchase: PurchaseDTO
+    var quantity: Int64
+    var purchaseableId: Int64
 }
 
 class PurchaseableViewModel: BaseViewModel {
@@ -32,15 +33,20 @@ class PurchaseableViewModel: BaseViewModel {
         }
     }
     
-    func inc(purchase: PurchaseDTO) {
-        ApiClient.shared.incQuantity(purchase: purchase)
+    func inc(purchaseableId: Int64, variation: String) {
+        if let purchase = ApiClient.shared.purchase(purchaseableId: purchaseableId, variation: variation) {
+            ApiClient.shared.incQuantity(purchase: purchase)
+        } else {
+            ApiClient.shared.setCartPurchase(purchaseableId: purchaseableId, variation: variation, quantity: 1)
+        }
         ApiClient.shared.postCart()
-
     }
     
-    func dec(purchase: PurchaseDTO) {
-        ApiClient.shared.decQuantity(purchase: purchase)
-        ApiClient.shared.postCart()
+    func dec(purchaseableId: Int64, variation: String) {
+        if let purchase = ApiClient.shared.purchase(purchaseableId: purchaseableId, variation: variation) {
+            ApiClient.shared.decQuantity(purchase: purchase)
+            ApiClient.shared.postCart()
+        }
     }
     
     override func onCallEnd() {
@@ -61,13 +67,13 @@ class PurchaseableViewModel: BaseViewModel {
         
         if let o = options {
             for (index, item) in o.enumerated() {
-                if let p = ApiClient.shared.purchase(purchaseableId: purchaseableId, variation: item) {
-                    variants.append(Variant(
-                        name: item,
-                        id: Int64(index),
-                        purchase: p)
-                    )
-                }
+                let qty = ApiClient.shared.cartVariantQuantity(purchaseableId: purchaseableId, variant: item)
+                variants.append(Variant(
+                    name: item,
+                    id: Int64(index),
+                    quantity: qty,
+                    purchaseableId: purchaseableId)
+                )
             }
         }
     }

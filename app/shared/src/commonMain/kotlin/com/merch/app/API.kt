@@ -331,7 +331,7 @@ object ApiClient: IObservable {
         return MerchantDTO(m.slug, m.name)
     }
 
-    fun setCartPurchase(purchasableId: Long, variation: String, quantity: Long) {
+    fun setCartPurchase(purchaseableId: Long, variation: String, quantity: Long) {
 
         CoroutineScope(Dispatchers.Default).launch {
             val response: HttpResponse = try {
@@ -339,7 +339,7 @@ object ApiClient: IObservable {
                     url = "$apiEndpoint/customer/${prefs?.email!!}/purchase",
                     formParameters = Parameters.build {
                         append("email", prefs!!.email)
-                        append("designId", purchasableId.toString())
+                        append("designId", purchaseableId.toString())
                         append("quantity", quantity.toString())
                         append("variation", variation)
                     }
