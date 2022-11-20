@@ -1,4 +1,7 @@
 import "reflect-metadata";
+import * as fs from "fs"
+import * as https from "https"
+import * as http from "http"
 import { ds } from "../../common/dataSource"
 import { Request, Response } from "express"
 import * as express from "express"
@@ -8,6 +11,11 @@ import { listAllMerchants } from "./controller/merchant"
 import { listDesignsForMerchant } from "./controller/designs"
 import { getCustomer, addEditCartItem, updateCart, buy, login } from "./controller/customer"
 import { log } from "../../config/config"
+
+const credentials = {
+    key: fs.readFileSync('ssl/key.pem', 'utf8'),
+    cert: fs.readFileSync('ssl/cert.pem', 'utf8')
+}
 
 ds.initialize().then(async () => {
     log.log("Database Connected")
@@ -80,7 +88,8 @@ ds.initialize().then(async () => {
     })
 
     // run app
-    app.listen(3333);
+    http.createServer(app).listen(3333);
+    https.createServer(credentials, app).listen(4444);
 
     console.log("Express application is up and running on port 3333")
 
