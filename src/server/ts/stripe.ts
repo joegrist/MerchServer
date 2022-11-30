@@ -1,6 +1,80 @@
 const { v4: uuidv4} = require('uuid')
 import Stripe from "stripe"
-import {makeUuid, stripe, log} from "../../config/config"
+import { Customer } from "../../common/entity/customer"
+import { makeUuid, stripe, log } from "../../config/globals"
+
+export class StripePaymentIntent {
+
+    static make(cents: number) {
+        return new Promise<Stripe.PaymentIntent>((resolve, reject) => {
+            stripe.paymentIntents.create({
+                amount: cents,
+                currency: 'aud',
+                automatic_payment_methods: {
+                    enabled: true,
+                }
+            }).then((pi) => {
+                resolve(pi)
+            }).catch((err) => {
+                reject(err)
+                log.err("Failure creating payment intent", err)
+            })
+        })
+    }
+}
+
+export class StripeCustomer {
+
+    key = makeUuid()
+
+    constructor(private customer: Customer) {
+    }
+
+    async ensure() {
+        return new Promise<Stripe.Customer>((resolve, reject) => {
+
+            let make = () => {
+                this.create().then((c) => {
+                    log.log(`Stripe: Created customer for ${this.customer.email}: ${c.id}`)
+                    resolve(c)
+                }).catch((error) => {
+                    reject(error)
+                    log.err("Could not create customer", error)
+                })
+            }
+
+            if (this.customer.stripeId.length > 0) {
+                log.log(`Customer ${this.customer.email} has a stripe ID: ${this.customer.stripeId}`)
+                this.retrieve().then((c) => {
+                    log.log(`Stripe: Found existing customer for ${this.customer.email}: ${c.id})`)
+                    if (c.deleted) {
+                        log.log(`Customer ${c.id} is deleted.  Need to make a new one.`)
+                        make()
+                    } else {
+                        resolve(c as Stripe.Customer)
+                    }
+                }).catch((err) => {
+                    make()
+                })
+            }
+
+        })
+    }
+
+    private retrieve() {
+        return stripe.customers.retrieve(this.customer.stripeId)
+    }
+
+    private create() {
+        return stripe.customers.create({
+            description: `Auto Created for ${this.customer.name} ${this.customer.email}`,
+            name: this.customer.name,
+            email: this.customer.email
+        }, {
+            idempotencyKey: this.key
+        })
+    }
+}
 
 export class StripePayment {
 
@@ -9,17 +83,19 @@ export class StripePayment {
     key = makeUuid()
     cents = 0
     failed = false
+    customer = ""
     
     async go() {
         return this.process()
     }
 
     private process() {
-        return new Promise((resolve, reject) => {
+        return new Promise<Stripe.Charge>((resolve, reject) => {
             stripe.charges.create({
                 amount: this.cents / 100,
                 currency: this.currency,
                 source: this.source,
+                customer: this.customer,
                 description: "My First Test Charge (created for API docs at https://www.stripe.com/docs/api)"
             }, {
                 idempotencyKey: this.key

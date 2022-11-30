@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.NumberFormat
 
 class CartBottomSheet : BaseBottomSheetDialogFragment() {
@@ -23,7 +22,7 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
     var cartBuy: Button? = null
     var done: Button? = null
     var items: ArrayList<PurchaseDTO> = arrayListOf()
-    var onDismiss: (() -> Unit)? = null
+    var onProceedWithPurchase: (() -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +51,7 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
         }
 
         cartBuy?.setOnClickListener {
-            mainActivity.triggerCheckout = true // UGLY!! FIX
+            onProceedWithPurchase?.invoke()
             dismiss()
         }
 
@@ -79,10 +78,5 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
         cartBuy?.visibility = if (empty) View.GONE else View.VISIBLE
         val format = NumberFormat.getCurrencyInstance()
         cartValue?.text = format.format(cartValueCents() / 100)
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        onDismiss?.invoke()
     }
 }

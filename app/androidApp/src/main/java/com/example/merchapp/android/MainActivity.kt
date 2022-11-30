@@ -13,13 +13,16 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.merch.app.AlertStore
 import com.merch.app.SharedPreference
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 
 class MainActivity : AppCompatActivity(), IObserver  {
 
     private var loader: View? = null
     private var prefs: SharedPreference? = null
-    var triggerCheckout = false // YUCK smudgy state eww
     var cartItemCount: TextView? = null
+    lateinit var paymentSheet: PaymentSheet
 
     fun getNavigationController(res: Int): NavController {
         val navHostFragment = supportFragmentManager.findFragmentById(res) as NavHostFragment
@@ -37,6 +40,24 @@ class MainActivity : AppCompatActivity(), IObserver  {
         NavigationUI.setupActionBarWithNavController(this, navController)
         loader = findViewById(R.id.loader) as? View
         updateCartCount()
+        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
+    }
+
+    private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                print("Payment Canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                AlertDialog.Builder(this).setTitle(AlertStore.checkoutFailed.title).setMessage(AlertStore.checkoutFailed.message).setNegativeButton(android.R.string.ok, null).show()
+                print("Payment Error: ${paymentSheetResult.error}")
+            }
+            is PaymentSheetResult.Completed -> {
+                AlertDialog.Builder(this).setTitle(AlertStore.checkoutSucceeded.title).setMessage(AlertStore.checkoutSucceeded.message).setNegativeButton(android.R.string.ok, null).show()
+                print("Payment Completed")
+                ApiClient.afterPurchaseCompleted()
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -75,14 +96,13 @@ class MainActivity : AppCompatActivity(), IObserver  {
     private fun updateCartCount() {
         val count = ApiClient.cartItemCount
         cartItemCount?.text = count.toString()
-        cartItemCount?.visibility = if (count > 1) View.VISIBLE else View.GONE
+        cartItemCount?.visibility = if (count > 0) View.VISIBLE else View.GONE
     }
 
     fun showCart() {
         val modalBottomSheet = CartBottomSheet()
-        modalBottomSheet.onDismiss = {
-            ApiClient.postCart()
-            if (triggerCheckout) showCheckout()
+        modalBottomSheet.onProceedWithPurchase = {
+            ApiClient.ensurePaymentIntent()
         }
         modalBottomSheet.show(supportFragmentManager, CartBottomSheet.TAG)
     }
@@ -93,9 +113,16 @@ class MainActivity : AppCompatActivity(), IObserver  {
     }
 
     fun showCheckout() {
-        triggerCheckout = false
-        val modalBottomSheet = CheckoutBottomSheet()
-        modalBottomSheet.show(supportFragmentManager, UserBottomSheet.TAG)
+        ApiClient.paymentIntent?.let {
+            PaymentConfiguration.init(this, it.publishableKey)
+            paymentSheet.presentWithPaymentIntent(
+                it.paymentIntent,
+                PaymentSheet.Configuration(
+                    merchantDisplayName = "Masters Of Merch",
+                    allowsDelayedPaymentMethods = true
+                )
+            )
+        }
     }
 
     fun loader(visible: Boolean) {
@@ -114,17 +141,15 @@ class MainActivity : AppCompatActivity(), IObserver  {
         when(event) {
             AppEvent.LoggedIn -> {}
             AppEvent.LoggedOut -> {}
-            AppEvent.PurchaseCompleted -> {
-                AlertDialog.Builder(this).setTitle(AlertStore.checkoutSucceeded.title).setMessage(AlertStore.checkoutSucceeded.message).setNegativeButton(android.R.string.ok, null)
-            }
-            AppEvent.PurchaseFailed -> {
-                AlertDialog.Builder(this).setTitle(AlertStore.checkoutFailed.title).setMessage(AlertStore.checkoutFailed.message).setNegativeButton(android.R.string.ok, null)
-            }
             AppEvent.LoginFailed -> {}
             AppEvent.UserDataUpdated -> {}
             AppEvent.CartUpdated -> {
                 updateCartCount()
             }
+            AppEvent.PaymentIntentUpdated -> {
+                showCheckout()
+            }
+            AppEvent.PurchaseCompleted -> {}
         }
     }
 }

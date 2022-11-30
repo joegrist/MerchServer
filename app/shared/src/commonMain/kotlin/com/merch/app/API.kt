@@ -83,6 +83,11 @@ var token = ""
     val token: String
 )
 
+@Serializable data class PaymentIntent(
+    val paymentIntent: String,
+    val publishableKey: String
+)
+
 interface IObserver {
     fun onCall()
     fun onCallEnd()
@@ -114,7 +119,7 @@ interface IObservable {
 }
 
 enum class AppEvent {
-    LoginFailed, LoggedIn, LoggedOut, PurchaseCompleted, PurchaseFailed, UserDataUpdated, CartUpdated
+    LoginFailed, LoggedIn, LoggedOut, UserDataUpdated, CartUpdated, PaymentIntentUpdated, PurchaseCompleted
 }
 
 object ApiClient: IObservable {
@@ -126,6 +131,7 @@ object ApiClient: IObservable {
     const val baseEndpoint = "http://merch.zapto.org"
     const val imagesEndpoint = "$baseEndpoint:8888"
     const val apiEndpoint = "$baseEndpoint:3333"
+    var paymentIntent: PaymentIntent? = null
 
     fun log(prefix: String, e: Exception) {
         println("${prefix}: ${e.message}")
@@ -386,25 +392,42 @@ object ApiClient: IObservable {
         }
     }
 
-    fun checkout() {
-        onOperationStarted()
+    fun ensurePaymentIntent() {
 
         val email = prefs?.email ?: return
 
+        onOperationStarted()
         CoroutineScope(Dispatchers.Default).launch {
+
             val response: HttpResponse = try {
                 client.submitForm (
-                    url = "$apiEndpoint/customer/${email}/buy",
+                    url = "$apiEndpoint/customer/${email}/paymentIntent",
                     formParameters = Parameters.build {
-                        // add card
+                        append("cents", cartValueCents().toString())
                     }
                 )
             } catch (e: Exception) {
-                log("Error at checkout: ", e)
-                onOperationCompleted(AppEvent.PurchaseFailed)
+                log("Error creating Stripe payment intent: ", e)
+                onOperationCompleted(null)
                 return@launch
             }
 
+            paymentIntent = json.decodeFromString(response.body())
+            onOperationCompleted(AppEvent.PaymentIntentUpdated)
+        }
+    }
+
+    fun afterPurchaseCompleted() {
+        onOperationStarted()
+        val email = prefs?.email ?: return
+        CoroutineScope(Dispatchers.Default).launch {
+            val response: HttpResponse = try {
+                client.get ("$apiEndpoint/customer/${email}/afterPurchase")
+            } catch (e: Exception) {
+                log("Error clearing cart: ", e)
+                onOperationCompleted(AppEvent.PurchaseCompleted)
+                return@launch
+            }
             storeCustomerDTO(response.body())
             onOperationCompleted(AppEvent.PurchaseCompleted)
             onCartUpdated()

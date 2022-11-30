@@ -9,8 +9,9 @@ import * as bodyParser from "body-parser"
 import { appInfo } from "./controller/info"
 import { listAllMerchants } from "./controller/merchant"
 import { listDesignsForMerchant } from "./controller/designs"
-import { getCustomer, addEditCartItem, updateCart, buy, login } from "./controller/customer"
-import { log } from "../../config/config"
+import { getCustomer, addEditCartItem, updateCart, login } from "./controller/customer"
+import { afterPurchase, getPaymentIntent } from "./controller/checkout"
+import { log } from "../../config/globals"
 
 const credentials = {
     key: fs.readFileSync('ssl/key.pem', 'utf8'),
@@ -72,13 +73,19 @@ ds.initialize().then(async () => {
         .catch(err => next(err))
     })
 
-    app.post("/customer/:email/buy", (request: Request, response: Response, next: Function) => {
-        log.log(`${request.path} -> buy`)
-        buy(request, response)
+    app.post("/customer/:email/paymentIntent", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> getPaymentIntent`)
+        getPaymentIntent(request, response)
         .then(() => next)
         .catch(err => next(err))
     })
 
+    app.get("/customer/:email/afterPurchase", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> buy`)
+        afterPurchase(request, response)
+        .then(() => next)
+        .catch(err => next(err))
+    })
 
     app.post("/customer/login", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> login`)
@@ -91,7 +98,7 @@ ds.initialize().then(async () => {
     http.createServer(app).listen(3333);
     https.createServer(credentials, app).listen(4444);
 
-    console.log("Express application is up and running on port 3333")
+    log.log("Express application is up and running on ports 3333 (http) / 4444 (https)")
 
 }).catch((err: Error) => {
     log.err(`Error on startup`, err)

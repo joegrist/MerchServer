@@ -29,6 +29,9 @@ export class Customer {
 
     @Column()
     password: string
+
+    @Column()
+    stripeId: string
 }
 
 export class CustomerHelper {

@@ -4,8 +4,7 @@ import { Customer } from "../../../common/entity/customer"
 import { CustomerDesign } from "../../../common/entity/customerDesign"
 import { Design } from "../../../common/entity/design"
 import { PurchaseDTO, CustomerDTO, PurchaseableDTO } from "./dto"
-import { log, makeUuid } from "../../../config/config"
-import { StripePayment } from "../stripe"
+import { log, makeUuid } from "../../../config/globals"
 import { IsNull } from "typeorm"
 
 const customerRepo = ds.getRepository(Customer)
@@ -54,7 +53,7 @@ export async function getCustomer(request: Request, response: Response) {
     // return loaded posts
     response.setHeader('content-type', 'application/json')
 
-    console.log(result)
+    log.obj(result)
     response.send(result)
 }
 
@@ -122,33 +121,6 @@ async function ensureCartItem(id: string | null, customer: Customer, design: Des
     newCd.id = makeUuid()
     await cartRepo.save(newCd)
     return newCd
-}
-
-export async function buy(request: Request, response: Response) {
-    let customerEmail = request.params["email"]
-    let customer = await customerRepo.findOneBy({email : customerEmail})
-    let purchases = await cartRepo.findBy({customer : { email : customer.email}, purchased : null})
-    let cost = 0
-
-    purchases.forEach(purchase => {
-        cost += purchase.priceCents
-    })
-
-    const payment = new StripePayment()
-    payment.cents = cost
-    const result = await payment.go()
-    
-    if (payment.failed) {
-        log.err(`Payment Fail: ${result}`)
-        return
-    }
-
-    purchases.forEach(purchase => {
-        purchase.purchased = new Date()
-        cartRepo.save(purchase)
-    })
-
-    return getCustomer(request, response)
 }
 
 export async function login(request: Request, response: Response) {

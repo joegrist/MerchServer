@@ -25,10 +25,10 @@ struct CheckoutView: View {
                     }
                     Text("Expiry").font(.caption)
                     HStack {
-                        TextField("MM", text: $viewModel.expiry1)
+                        TextField("MM", text: $viewModel.expiryMonth)
                             .keyboardType(.numberPad)
                             .textFieldStyle(.roundedBorder)
-                        TextField("YY", text: $viewModel.expiry2)
+                        TextField("YY", text: $viewModel.expiryYear)
                             .keyboardType(.numberPad)
                     }
                     Text("CVV").font(.caption)

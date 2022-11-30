@@ -1,22 +1,13 @@
-import { Logger } from "../common/logger"
-import Stripe from 'stripe'
-
-const { v4: uuidv4} = require('uuid')
 const root = "img/"
 
-export const log = new Logger()
-export const IMAGE_VIEW = `${root}view`
-export const IMAGE_DESIGN = `${root}design`
-export const DB_USERNAME = "root"
-export const DB_PASSWORD = "root"
-export const DB_NAME = "merch_server"
-export const DB_HOST = "localhost"
-export const DB_PORT = 8889
-export const STRIPE_BASE = "https://api.stripe.com"
-const STRIPE_TEST_SK = 'sk_test_51LzAupLTMDQ2GHFnvQW4fi7Mt8TxOpbxyuyURKS3ZGiEbEbvKCYNdDBEhA8IuYQr2XTCyJrsQrAwDZqUATqpO9Bk00uozWlXiI'
-const STRIPE_API_VERSION = '2022-08-01'
-export const stripe = new Stripe(STRIPE_TEST_SK, { apiVersion: STRIPE_API_VERSION })
-
-export function makeUuid() {
-    return uuidv4()
+export class Config {    
+    IMAGE_VIEW = `${root}view`
+    IMAGE_DESIGN = `${root}design`
+    DB_USERNAME = "root"
+    DB_PASSWORD = "root"
+    DB_NAME = "merch_server"
+    DB_HOST = "localhost"
+    DB_PORT = 8889
+    STRIPE_BASE = "https://api.stripe.com"
+    STRIPE_TEST_KEY_PUBLISHABLE = 'pk_test_51LzAupLTMDQ2GHFnsXfghCBaf16RmTpnIui6sqdnEKsxvl3BjSrLl6XFi7R0f9zGSNqb5qj4JOjPxIPdtikd3hI900jtmCgSON'
 }

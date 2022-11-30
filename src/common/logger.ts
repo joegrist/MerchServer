@@ -4,6 +4,10 @@ export class Logger {
         console.log(message)
     }
 
+    obj(object: any) {
+        console.log(object)
+    }
+
     err(message: string, error: Error | null = null) {
         if (!error) {
             console.error(message)

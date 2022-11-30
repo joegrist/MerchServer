@@ -1,7 +1,29 @@
 <html>
     <body>
-        <form action="http://merch.zapto.org:3333/customer/joe@joe.com/buy" method="post">
-            <input type="text" name="hello" value="hello"/>
+        <h1>Payment Intent</h1>
+        <form action="https://merch.zapto.org:4444/customer/joe@joe.com/paymentIntent" method="post">
+            <input type="number" name="cents" value="1001"/> 
+            <input type="submit">
+        </form>
+        
+        <h1>Buy</h1>
+        <form action="https://merch.zapto.org:4444/customer/joe@joe.com/buy" method="post">
+            <div>
+                CC
+                <input type="number" name="cc_1" value="1111"/> 
+                <input type="number" name="cc_2" value="2222"/>
+                <input type="number" name="cc_3" value="3333"/>
+                <input type="number" name="cc_4" value="4444"/> 
+            </div>
+            <div>
+                EXP
+                <input type="number" name="exp_mm" value="01"/> 
+                <input type="number" name="exp_yy" value="28"/>
+            </div>
+            <div>
+                CVV
+                <input type="number" name="cvv" value="123"/> 
+            </div>
             <input type="submit">
         </form>
     </body>

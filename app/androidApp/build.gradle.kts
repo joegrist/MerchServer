@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "com.merch.app.android"
         minSdk = 30
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
     }
@@ -45,6 +45,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha01")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha01")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha02")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha02")
+    implementation("com.stripe:stripe-android:20.16.1")
 }
