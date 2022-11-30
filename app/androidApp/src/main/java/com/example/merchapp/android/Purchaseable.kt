@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ListView
 import androidx.navigation.fragment.navArgs
+import coil.load
 
 class Purchaseable : BaseFragment() {
 
@@ -18,6 +20,7 @@ class Purchaseable : BaseFragment() {
     private var purchaseable: PurchaseableDTO? = null
     private var viewList: ListView? = null
     private var variantList: ListView? = null
+    private var supplierLogo: ImageView? = null
     var viewsAdapter: ViewListAdapter? = null
     var variantsAdapter: VariantListAdapter? = null
     var items: ArrayList<PurchaseableViewDTO> = arrayListOf()
@@ -41,11 +44,13 @@ class Purchaseable : BaseFragment() {
 
         viewList = getView()?.findViewById(R.id.view_list)
         variantList = getView()?.findViewById(R.id.variant_list)
+        supplierLogo = getView()?.findViewById(R.id.supplier_logo)
         items = purchaseable?.views ?: arrayListOf()
         viewsAdapter = ViewListAdapter(requireActivity(), items)
         variantsAdapter = VariantListAdapter(requireActivity(), arrayListOf(), purchaseableId)
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
+        supplierLogo?.load("http://127.0.0.1:8888/supplier/ID.svg")
         showCurrent()
 
         variantsAdapter?.incClick = { variation ->

@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.imageLoader
 import com.merch.app.AlertStore
 import com.merch.app.SharedPreference
 import com.stripe.android.PaymentConfiguration

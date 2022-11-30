@@ -48,4 +48,6 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0-alpha02")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha02")
     implementation("com.stripe:stripe-android:20.16.1")
+    implementation("io.coil-kt:coil:2.2.2")
+    implementation("io.coil-kt:coil-svg:2.2.2")
 }

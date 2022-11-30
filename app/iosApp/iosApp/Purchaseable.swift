@@ -1,5 +1,6 @@
 import SwiftUI
 import shared
+import SDWebImageSwiftUI
 
 struct Purchaseable: View {
     
@@ -13,6 +14,7 @@ struct Purchaseable: View {
     var body: some View {
         ScrollView {
             VStack {
+                WebImage(url: URL(string: "http://127.0.0.1:8888/supplier/ID.svg"))
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         ForEach(viewModel.thumbnails, id: \.id) { t in

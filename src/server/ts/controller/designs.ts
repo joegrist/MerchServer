@@ -16,7 +16,7 @@ export async function listDesignsForMerchant(request: Request, response: Respons
 
     const designList = await designs.find({
         where: { merchant: { slug: slug } },
-        relations: ["merchant", "product"]
+        relations: ["merchant", "product", "product.supplier"]
     })
 
     let result = new Array<PurchaseableDTO>()
