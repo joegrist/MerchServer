@@ -4,7 +4,6 @@ import shared
 class GlobalState: ObservableObject {
     @Published var showingUserSheet = false
     @Published var showingCartSheet = false
-    @Published var showingCheckoutSheet = false
     @Published var triggerCheckoutSheet = false
     @Published var cartItemCount = 0
 }
@@ -18,7 +17,7 @@ struct iOSApp: App {
     
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			RootView()
                 .environmentObject(GlobalState())
                 .tint(Color.secondaryAccent)
         }

@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
             paymentSheet.presentWithPaymentIntent(
                 it.paymentIntent,
                 PaymentSheet.Configuration(
-                    merchantDisplayName = "Masters Of Merch",
+                    merchantDisplayName = ApiClient.displayName,
                     allowsDelayedPaymentMethods = true
                 )
             )

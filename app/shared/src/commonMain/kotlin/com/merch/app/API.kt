@@ -16,8 +16,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-var token = ""
-
 @Serializable data class MerchantDTO(
     val slug: String,
     val name: String
@@ -124,6 +122,7 @@ enum class AppEvent {
 
 object ApiClient: IObservable {
 
+    const val displayName = "Masters of Merch"
     private val json = Json { ignoreUnknownKeys = true }
     override val observers: ArrayList<IObserver> = ArrayList()
     var operationInProgress = false

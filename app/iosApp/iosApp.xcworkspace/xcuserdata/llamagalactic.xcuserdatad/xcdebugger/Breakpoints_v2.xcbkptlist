@@ -7,49 +7,81 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0E23D825-E926-4F64-B79C-A2EA99F9B90B"
+            uuid = "36A75134-DC38-476A-AA6B-B44FF6E23AE1"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "iosApp/Purchaseable.swift"
+            filePath = "iosApp/RootViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "11"
-            endingLineNumber = "11"
-            landmarkName = "init(purchaseableId:)"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "setupPaymentSheet()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AE54C713-D68C-43D4-BF7B-14435131C4B3"
+            uuid = "6ECF239D-D709-4613-B167-266EC5C44A3F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "iosApp/CheckoutViewModel.swift"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/iosApp-coztntszsnxnptcrjfmzxbrsnusf/SourcePackages/checkouts/stripe-ios-spm/StripePaymentSheet/StripePaymentSheet/PaymentSheet/PaymentSheet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "checkout()"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "present(from:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6B3E731E-43AE-4FA3-8C7E-F535B6520EFD"
+            uuid = "593ECD2D-F515-42A3-8949-CBB31D4FBF8B"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "iosApp/ContentView.swift"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/iosApp-coztntszsnxnptcrjfmzxbrsnusf/SourcePackages/checkouts/stripe-ios-spm/StripePaymentSheet/StripePaymentSheet/PaymentSheet/PaymentSheet.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "present(from:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F4E31C4F-0254-43B9-AB31-63B39CF08EFE"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/iosApp-coztntszsnxnptcrjfmzxbrsnusf/SourcePackages/checkouts/stripe-ios-spm/StripePaymentSheet/StripePaymentSheet/PaymentSheet/PaymentSheet.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "present(from:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "902EDD84-90B0-4B9E-A070-7C8CBA0DFCD6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "iosApp/RootViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "onEvent(event:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

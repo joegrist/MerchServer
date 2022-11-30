@@ -1,10 +1,12 @@
 import SwiftUI
 import shared
+import StripePaymentSheet
 
-struct ContentView: View {
+struct RootView: View {
     
     @EnvironmentObject var globalState: GlobalState
-    @StateObject private var viewModel = MerchantsViewModel()
+    @StateObject private var viewModel = RootViewModel()
+    var paymentSheet: PaymentSheet?
     
     var body: some View {
         
@@ -29,13 +31,15 @@ struct ContentView: View {
                 UserView().environmentObject(globalState)
             }
             .sheet(isPresented: $globalState.showingCartSheet, onDismiss: {
-                globalState.showingCheckoutSheet = globalState.triggerCheckoutSheet
+                if globalState.triggerCheckoutSheet {
+                    ApiClient.shared.ensurePaymentIntent()
+                }
             }) {
                 CartView().environmentObject(globalState)
             }
-            .sheet(isPresented: $globalState.showingCheckoutSheet) {
-                CheckoutView().environmentObject(globalState)
-            }
+            .paymentSheet(isPresented: $viewModel.showingPaymentSheet, paymentSheet: viewModel.paymentSheet, onCompletion: { result in
+                viewModel.handle(paymentResult: result)
+            })
             .alert(AlertStore.shared.checkoutFailed.title, isPresented: $viewModel.showingCheckoutFailed) {
                 Button("OK", role: .cancel) { }
             } message: {
@@ -107,7 +111,7 @@ func toolBarContent(state: GlobalState, cartCount: Int64) -> some ToolbarContent
 
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
-		ContentView()
+		RootView()
 	}
 }
 
