@@ -5,9 +5,10 @@ import { View } from "../../common/entity/view"
 import { CustomerDesign } from "../../common/entity/customerDesign"
 import { DesignView } from "../../common/entity/designView"
 import { DataSource, Repository } from "typeorm"
-import { log, makeUuid } from "../../config/config"
+import { log, makeUuid } from "../../config/globals"
 import { Customer } from "../../common/entity/customer"
 import { ProductVariation } from "../../common/entity/productVariation"
+import { Supplier } from "../../common/entity/supplier"
 
 var crypto = require('crypto'); 
 
@@ -21,12 +22,17 @@ export class DemoDataLoader {
     foundationDesignName = "Gang Member Mens Hoodie"
     demoDesignName = "Cursor Hoodie"
     foundationCustomerEmail = "joe@joe.com"
+    supplierName = "ID Clothing"
+    supplierSlug = "ID"
 
     public async loadDemoData(ds: DataSource) {
 
         await this.ensureMerchant(ds, this.demoMerchantName, this.demoMerchantSlug)
         await this.ensureMerchant(ds, this.foundationMerchantName, this.foundationMerchantSlug)
-        await this.ensureProduct(ds, this.foundationProductName)
+        await this.ensureSupplier(ds, this.supplierName, this.supplierSlug)
+
+        const supplier = await ds.getRepository(Supplier).findOneBy({slug: this.supplierSlug})
+        await this.ensureProduct(ds, this.foundationProductName, supplier)
         
         const product = await ds.getRepository(Product).findOneBy({name: this.foundationProductName})
         await this.ensureView(ds, product, "Front")
@@ -57,13 +63,14 @@ export class DemoDataLoader {
         await merchants.save(merchant)
     }
 
-    async ensureProduct(ds: DataSource, name: string) {
+    async ensureProduct(ds: DataSource, name: string, supplier: Supplier) {
         const products = ds.getRepository(Product)
         const p = await products.findOneBy({name: name})
         if (p) return
         log.log(`Adding Product ${name}`)
         const product = new Product()
         product.name = name
+        product.supplier = supplier
         await products.save(product)
     }
 
@@ -153,5 +160,16 @@ export class DemoDataLoader {
         purchase.priceCents = design.priceCents
         purchase.id = makeUuid()
         await purchases.save(purchase)
+    }
+
+    async ensureSupplier(ds: DataSource, name: string, slug: string) {
+        const suppliers = ds.getRepository(Supplier)
+        const s = await suppliers.findOneBy({slug: slug})
+        if (s) return
+        log.log(`Adding SUpplier ${name}`)
+        const supplier = new Merchant()
+        supplier.slug = slug
+        supplier.name = name
+        await suppliers.save(supplier)
     }
 }

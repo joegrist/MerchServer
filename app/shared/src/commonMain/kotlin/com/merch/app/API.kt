@@ -45,6 +45,8 @@ import kotlinx.serialization.json.Json
     val priceCents: Long,
     var variations: ArrayList<PurchaseableVariationDTO>,
     val views: ArrayList<PurchaseableViewDTO>
+    val supplierName: String,
+    val supplierSlug: String
     )
 
 @Serializable data class PurchaseableVariationDTO(

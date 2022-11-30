@@ -37,4 +37,6 @@ export class PurchaseableDTO {
     priceCents: number
     views: PurchaseableViewDTO[]
     variations: PurchaseableVariationsDTO[]
+    supplierName: string
+    supplierSlug: string
 }
