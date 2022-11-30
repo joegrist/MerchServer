@@ -1,13 +1,13 @@
 import { DemoDataLoader } from "./demoDataLoader"
 import { ds } from "../../common/dataSource"
-import { log } from "../../config/config"
+import { log } from "../../config/globals"
 
 let loader = new DemoDataLoader()
 
 ds.initialize().then(async () => {
     log.log("Database Connected")
-    loader.loadDemoData(ds)
-
+    await loader.loadDemoData(ds)
+    process.exit()
 }).catch((err: Error) => {
     log.err(`Error on startup`, err)
 })

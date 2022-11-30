@@ -31,7 +31,7 @@ export class Customer {
     password: string
 
     @Column()
-    stripeId: string
+    stripeId: string = ""
 }
 
 export class CustomerHelper {
