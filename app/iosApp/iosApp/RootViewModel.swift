@@ -81,6 +81,7 @@ class RootViewModel: BaseViewModel {
         switch result {
         case .completed:
             showingCheckoutSucceeded = true
+            ApiClient.shared.afterPurchaseCompleted()
         case .failed(let error):
             print(error.localizedDescription)
             showingCheckoutFailed = true
