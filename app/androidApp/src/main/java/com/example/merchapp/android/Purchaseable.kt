@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,8 @@ class Purchaseable : BaseFragment() {
     private var viewList: RecyclerView? = null
     private var variantList: RecyclerView? = null
     private var supplierLogo: ImageView? = null
+    private var supplierName: TextView? = null
+
     var viewsAdapter: ViewListAdapter? = null
     var variantsAdapter: VariantListAdapter? = null
     var items: ArrayList<PurchaseableViewDTO> = arrayListOf()
@@ -43,12 +46,14 @@ class Purchaseable : BaseFragment() {
         viewList = getView()?.findViewById(R.id.view_list)
         variantList = getView()?.findViewById(R.id.variant_list)
         supplierLogo = getView()?.findViewById(R.id.supplier_logo)
+        supplierName = getView()?.findViewById(R.id.supplier_name)
         items = purchaseable?.views ?: arrayListOf()
         viewsAdapter = ViewListAdapter(items)
         variantsAdapter = VariantListAdapter(arrayListOf(), purchaseableId)
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
         supplierLogo?.load("${ApiClient.imagesEndpoint}/${purchaseable?.supplierThumbnail}")
+        supplierName?.text = String.format(resources.getString(R.string.supplied_by), purchaseable?.supplierName)
         val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         viewList?.layoutManager = horizontalLayoutManager
         variantList?.layoutManager = LinearLayoutManager(activity)

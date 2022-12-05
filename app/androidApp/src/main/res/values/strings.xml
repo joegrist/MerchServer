@@ -1,18 +1,9 @@
 <resources>
-    <string name="title_activity_order_form">OrderForm</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_purchaseable">Purchaseable</string>
     <string name="order">Order</string>
     <string name="view_of_product">View of product</string>
     <string name="done">Done</string>
-    <string name="supplied_by">Supplied By</string>
+    <string name="supplied_by">Supplied By %1$s</string>
     <string name="buy">Buy</string>
     <string name="cart_empty">Cart Empty</string>
 </resources>
