@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
+    android:paddingEnd="@dimen/default_gap"
     android:orientation="vertical">
         
         <ImageView
