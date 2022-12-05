@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="vertical">
         
         <ImageView
             android:contentDescription="@string/view_of_product"
-            android:layout_width="100dp"
+            android:layout_width="280dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_height="100dp"
-            android:id="@+id/thumbnail"/>
+            android:layout_height="400dp"
+            android:background="@color/placeholder"
+            android:id="@+id/view_thumbnail"/>
 
         <Space
             android:layout_width="@dimen/default_gap"
             android:layout_height="match_parent"/>
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="99"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/ListText"
+            android:id="@+id/view_name"
             tools:text="View Name"/>
 
 </LinearLayout>

@@ -10,8 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+
 
 class Purchaseable : BaseFragment() {
 
@@ -48,7 +49,8 @@ class Purchaseable : BaseFragment() {
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
         supplierLogo?.load("${ApiClient.imagesEndpoint}/${purchaseable?.supplierThumbnail}")
-        viewList?.layoutManager = LinearLayoutManager(activity)
+        val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        viewList?.layoutManager = horizontalLayoutManager
         variantList?.layoutManager = LinearLayoutManager(activity)
 
         showCurrent()
@@ -82,10 +84,10 @@ class Purchaseable : BaseFragment() {
     private fun showCurrent() {
         variants = purchaseable?.variations?.firstOrNull()?.optionsAsList ?: arrayOf()
         variantsAdapter?.list?.clear()
-        variants.forEach {
-            variantsAdapter?.list?.add(it)
+        for ((index, value) in variants.withIndex()) {
+            variantsAdapter?.list?.add(value)
+            variantsAdapter?.notifyItemChanged(index)
         }
-        variantsAdapter?.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {

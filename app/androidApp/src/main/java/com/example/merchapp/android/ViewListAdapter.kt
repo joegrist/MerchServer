@@ -23,14 +23,12 @@ import java.net.URL
 class ViewListAdapter(val list: ArrayList<PurchaseableViewDTO>): RecyclerView.Adapter<ViewListAdapter.PurchaseableViewHolder>() {
 
     class PurchaseableViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView? = view.findViewById(R.id.design_text_view)
-        val image: ImageView? = view.findViewById(R.id.image_view)
+        val title: TextView? = view.findViewById(R.id.view_name)
+        val image: ImageView? = view.findViewById(R.id.view_thumbnail)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PurchaseableViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item_purchaseable_view, parent, false)
-
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_purchaseable_view, parent, false)
         return PurchaseableViewHolder(view)
     }
 
