@@ -1,22 +1,43 @@
 package com.merch.app.android
 
 import ApiClient
-import IObserver
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import com.merch.app.Greeting
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
+class MerchantListAdapter(val list: ArrayList<String>) : RecyclerView.Adapter<MerchantListAdapter.MerchantViewHolder>() {
+
+    var onClick: ((View) -> Unit)? = null
+
+    class MerchantViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        val textView = v.findViewById<View>(R.id.merchant_name) as TextView
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MerchantViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_merchant, parent, false)
+        view.setOnClickListener {
+            onClick?.invoke(it)
+        }
+        return MerchantViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: MerchantViewHolder, position: Int) {
+        holder.textView.text = list[position]
+    }
+
+    override fun getItemCount(): Int {
+        return list.count()
+    }
+}
 
 class MerchantList : BaseFragment()  {
 
-    var lv: ListView? = null
-    var itemsAdapter: ArrayAdapter<String>? = null
+    var rv: RecyclerView? = null
+    var itemsAdapter: MerchantListAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.merchant_list, container, false)
@@ -25,11 +46,13 @@ class MerchantList : BaseFragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lv = view.findViewById(R.id.merchant_list_list_view) as? ListView
-        itemsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ArrayList<String>())
-        lv?.adapter = itemsAdapter
+        rv = view.findViewById(R.id.merchant_list_recycler_view) as? RecyclerView
+        itemsAdapter = MerchantListAdapter(arrayListOf())
+        rv?.layoutManager = LinearLayoutManager(activity)
+        rv?.adapter = itemsAdapter
 
-        lv?.setOnItemClickListener { _, _, position, _ ->
+        itemsAdapter?.onClick = click@ { v ->
+            val position = rv?.getChildLayoutPosition(v) ?: return@click
             val m = ApiClient.merchants()[position]
             var action = MerchantListDirections.actionMerchantListToPurchaseableList(m.slug, m.name)
             navController?.navigate(action)
@@ -53,10 +76,10 @@ class MerchantList : BaseFragment()  {
     }
 
     private fun showCurrent() {
-        itemsAdapter?.clear()
-        ApiClient.merchants().forEach {
-            itemsAdapter?.add(it.name)
+        itemsAdapter?.list?.clear()
+        for ((index, value) in ApiClient.merchants().withIndex()) {
+            itemsAdapter?.list?.add(value.name)
+            itemsAdapter?.notifyItemChanged(index)
         }
-        itemsAdapter?.notifyDataSetChanged()
     }
 }

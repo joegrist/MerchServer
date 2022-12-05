@@ -46,7 +46,7 @@ import kotlinx.serialization.json.Json
     var variations: ArrayList<PurchaseableVariationDTO>,
     val views: ArrayList<PurchaseableViewDTO>,
     val supplierName: String,
-    val supplierSlug: String
+    val supplierThumbnail: String
     )
 
 @Serializable data class PurchaseableVariationDTO(
@@ -172,7 +172,7 @@ object ApiClient: IObservable {
                 variations = arrayListOf(),
                 views = arrayListOf(),
                 supplierName = it.supplierName,
-                supplierSlug = it.supplierSlug))
+                supplierThumbnail = it.supplierThumbnail))
         }
         return result
     }
@@ -217,7 +217,7 @@ object ApiClient: IObservable {
             arrayListOf(),
             arrayListOf(),
             p?.supplierName ?: "",
-            p?.supplierSlug ?: "")
+            p?.supplierThumbnail ?: "")
 
         Database.views(id).forEach {
             val view = PurchaseableViewDTO(
@@ -305,7 +305,7 @@ object ApiClient: IObservable {
                 p.productId = it.productId
                 p.priceCents = it.priceCents
                 p.supplierName = it.supplierName
-                p.supplierSlug = it.supplierSlug
+                p.supplierThumbnail = it.supplierThumbnail
                 purchasableList.add(p)
                 it.views.forEach {
                     val v = PurchaseableView()

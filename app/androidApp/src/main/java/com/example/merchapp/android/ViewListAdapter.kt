@@ -12,38 +12,35 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.InputStream
 import java.net.URL
 
-class ViewListAdapter(private val context: Activity, list: ArrayList<PurchaseableViewDTO>): ArrayAdapter<PurchaseableViewDTO>(context, 0, list) {
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val p= getItem(position) ?: return View(context)
-        var view = convertView
+class ViewListAdapter(val list: ArrayList<PurchaseableViewDTO>): RecyclerView.Adapter<ViewListAdapter.PurchaseableViewHolder>() {
 
-        if (view == null) {
-            val layoutInflater = LayoutInflater.from(context)
-            view = layoutInflater.inflate(R.layout.list_item_purchaseable, null)
-        }
-
-        val title: TextView? = view?.findViewById(R.id.design_text_view)
-        val image: ImageView? = view?.findViewById(R.id.image_view)
-
-        title?.text = p.name
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val bitmap = BitmapFactory.decodeStream(URL("${ApiClient.imagesEndpoint}/${p.thumbnail}").content as InputStream)
-                CoroutineScope(Dispatchers.Main).launch {
-                    image?.setImageBitmap(bitmap)
-                }
-            } catch (e: Exception) {
-                Log.w("Merch", "Error loading image: ${e.localizedMessage}")
-            }
-        }
-
-        return view ?: View(context)
+    class PurchaseableViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView? = view.findViewById(R.id.design_text_view)
+        val image: ImageView? = view.findViewById(R.id.image_view)
     }
- }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PurchaseableViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_purchaseable_view, parent, false)
+
+        return PurchaseableViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: PurchaseableViewHolder, position: Int) {
+        val p = list[position]
+        holder.title?.text = p.name
+        holder.image?.load("${ApiClient.imagesEndpoint}/${p.thumbnail}")
+    }
+
+    override fun getItemCount(): Int {
+        return list.count()
+    }
+}

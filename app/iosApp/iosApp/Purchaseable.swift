@@ -14,16 +14,7 @@ struct Purchaseable: View {
     var body: some View {
         ScrollView {
             VStack {
-                HStack{
-                    Text("Supplied By \(viewModel.supplerName)")
-                    Spacer()
-                    WebImage(url: URL(string: viewModel.supplerLogo))
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 32, height: 32)
-                }
-                .frame(maxWidth: .infinity)
-                .padding([.leading, .trailing])
+                WebImage(url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(viewModel.supplierThumbnail)"))
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         ForEach(viewModel.thumbnails, id: \.id) { t in

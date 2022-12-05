@@ -30,7 +30,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/supplier_logo"/>
             </LinearLayout>
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 style="@style/ListNoDivider"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
@@ -40,7 +40,7 @@
 
             <View style="@style/Divider"/>
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 style="@style/ListNoDivider"
                 android:layout_width="match_parent"
                 android:paddingTop="@dimen/half_gap"

@@ -13,4 +13,6 @@
     <string name="view_of_product">View of product</string>
     <string name="done">Done</string>
     <string name="supplied_by">Supplied By</string>
+    <string name="buy">Buy</string>
+    <string name="cart_empty">Cart Empty</string>
 </resources>

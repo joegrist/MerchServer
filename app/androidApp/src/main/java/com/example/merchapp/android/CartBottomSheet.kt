@@ -3,19 +3,18 @@ package com.merch.app.android
 import ApiClient
 import ApiClient.cartValueCents
 import PurchaseDTO
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ListView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import java.text.NumberFormat
 
 class CartBottomSheet : BaseBottomSheetDialogFragment() {
 
-    var lv: ListView? = null
+    var lv: RecyclerView? = null
     var itemsAdapter: PurchaseListAdapter? = null
     var emptyMessage: TextView? = null
     var cartValue: TextView? = null
@@ -35,7 +34,7 @@ class CartBottomSheet : BaseBottomSheetDialogFragment() {
         cartValue = view.findViewById(R.id.cart_value)
         cartBuy = view.findViewById(R.id.cart_buy)
         done = view.findViewById(R.id.cart_done)
-        itemsAdapter = PurchaseListAdapter(requireActivity(), items)
+        itemsAdapter = PurchaseListAdapter(items)
         lv?.adapter = itemsAdapter
 
         itemsAdapter?.incClick = { position, _ ->

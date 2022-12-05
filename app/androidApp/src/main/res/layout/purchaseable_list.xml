@@ -9,8 +9,8 @@
     tools:context=".PurchaseableList"
     android:background="?android:colorBackground">
 
-    <ListView
-        android:id="@+id/purchaseable_list_list_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/purchaseable_list_recycler_view"
         android:layout_width="match_parent"
         tools:listitem="@layout/list_item_purchaseable"
         android:layout_height="match_parent"/>

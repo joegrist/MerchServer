@@ -32,7 +32,7 @@ export async function listDesignsForMerchant(request: Request, response: Respons
         dto.productId = design.product.id
         dto.productName = design.product.name
         dto.supplierName = design.product.supplier.name
-        dto.supplierSlug = design.product.supplier.slug
+        dto.supplierThumbnail = `supplier/${design.product.supplier.slug}.svg`
         
         const viewList = await views.find({
             where: { design: { id: design.id } },

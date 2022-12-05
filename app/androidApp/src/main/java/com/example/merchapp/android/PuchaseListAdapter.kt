@@ -7,45 +7,48 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-class PurchaseListAdapter(private val context: Activity, list: ArrayList<PurchaseDTO>): ArrayAdapter<PurchaseDTO>(context, 0, list) {
+
+
+class PurchaseListAdapter(val list: ArrayList<PurchaseDTO>): RecyclerView.Adapter<PurchaseListAdapter.PurchaseViewHolder>() {
+
+    class PurchaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView? = view.findViewById(R.id.purchase_name)
+        val sub: TextView? = view.findViewById(R.id.purchase_variants)
+        val qty: TextView? = view.findViewById(R.id.purchase_qty)
+        val inc: ImageButton? = view.findViewById(R.id.inc)
+        val dec: ImageButton? = view.findViewById(R.id.dec)
+    }
 
     var incClick: ((Int, String) -> Unit)? = null
     var decClick: ((Int, String) -> Unit)? = null
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PurchaseViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_purchase, parent, false)
+        return PurchaseViewHolder(view)
+    }
 
-        val purchase = getItem(position) ?: return View(context)
-        val purchaseable: PurchaseableDTO = ApiClient.purchaseable(purchase.purchaseable.id)
+    override fun onBindViewHolder(holder: PurchaseViewHolder, position: Int) {
 
-        var view = convertView
+        val purchase = list[position]
 
-        if (view == null) {
-            val layoutInflater = LayoutInflater.from(context)
-            view = layoutInflater.inflate(R.layout.list_item_purchase, null)
-        }
+        holder.title?.text = purchase.purchaseable.name
+        holder.sub?.text = purchase.variation
+        holder.qty?.text = purchase.quantity.toString()
 
-        val title: TextView? = view?.findViewById(R.id.purchase_name)
-        val sub: TextView? = view?.findViewById(R.id.purchase_variants)
-        val qty: TextView? = view?.findViewById(R.id.purchase_qty)
-        val inc: ImageButton? = view?.findViewById(R.id.inc)
-        val dec: ImageButton? = view?.findViewById(R.id.dec)
-
-        title?.text = purchaseable.name
-        sub?.text = purchase.variation
-        qty?.text = purchase.quantity.toString()
-
-        inc?.setOnClickListener {
+        holder.inc?.setOnClickListener {
             incClick?.invoke(position, purchase.id)
         }
 
-        dec?.setOnClickListener {
+        holder.dec?.setOnClickListener {
             decClick?.invoke(position, purchase.id)
         }
-
-        return view ?: View(context)
     }
- }
+
+    override fun getItemCount(): Int {
+        return list.count()
+    }
+}

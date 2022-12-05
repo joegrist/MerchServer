@@ -50,4 +50,5 @@ dependencies {
     implementation("com.stripe:stripe-android:20.16.1")
     implementation("io.coil-kt:coil:2.2.2")
     implementation("io.coil-kt:coil-svg:2.2.2")
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
 }

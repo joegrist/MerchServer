@@ -2,9 +2,6 @@ package com.merch.app.android
 
 import AppEvent
 import IObserver
-import android.os.Bundle
-import android.view.View
-import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

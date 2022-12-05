@@ -8,9 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListView
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import androidx.recyclerview.widget.RecyclerView
 
 class Purchaseable : BaseFragment() {
 
@@ -18,8 +19,8 @@ class Purchaseable : BaseFragment() {
 
     private var purchaseableId: Long = 0
     private var purchaseable: PurchaseableDTO? = null
-    private var viewList: ListView? = null
-    private var variantList: ListView? = null
+    private var viewList: RecyclerView? = null
+    private var variantList: RecyclerView? = null
     private var supplierLogo: ImageView? = null
     var viewsAdapter: ViewListAdapter? = null
     var variantsAdapter: VariantListAdapter? = null
@@ -28,10 +29,6 @@ class Purchaseable : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.purchaseable, container, false)
-    }
-
-    fun qty(variation: String): Long {
-        return ApiClient.cartVariantQuantity(purchaseableId, variation).toLong()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,11 +43,14 @@ class Purchaseable : BaseFragment() {
         variantList = getView()?.findViewById(R.id.variant_list)
         supplierLogo = getView()?.findViewById(R.id.supplier_logo)
         items = purchaseable?.views ?: arrayListOf()
-        viewsAdapter = ViewListAdapter(requireActivity(), items)
-        variantsAdapter = VariantListAdapter(requireActivity(), arrayListOf(), purchaseableId)
+        viewsAdapter = ViewListAdapter(items)
+        variantsAdapter = VariantListAdapter(arrayListOf(), purchaseableId)
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
-        supplierLogo?.load("http://merch.zapto.org:8888/supplier/ID.svg")
+        supplierLogo?.load("${ApiClient.imagesEndpoint}/${purchaseable?.supplierThumbnail}")
+        viewList?.layoutManager = LinearLayoutManager(activity)
+        variantList?.layoutManager = LinearLayoutManager(activity)
+
         showCurrent()
 
         variantsAdapter?.incClick = { variation ->
@@ -81,9 +81,9 @@ class Purchaseable : BaseFragment() {
 
     private fun showCurrent() {
         variants = purchaseable?.variations?.firstOrNull()?.optionsAsList ?: arrayOf()
-        variantsAdapter?.clear()
+        variantsAdapter?.list?.clear()
         variants.forEach {
-            variantsAdapter?.add(it)
+            variantsAdapter?.list?.add(it)
         }
         variantsAdapter?.notifyDataSetChanged()
     }

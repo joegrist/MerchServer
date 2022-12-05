@@ -33,9 +33,9 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/default_gap"
         android:gravity="center"
-        android:text="Cart Empty" />
+        android:text="@string/cart_empty" />
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:orientation="vertical"
         tools:listitem="@layout/list_item_purchase"
@@ -49,7 +49,7 @@
         android:id="@+id/cart_buy"
         style="@style/AppButton"
         android:layout_margin="@dimen/half_gap"
-        android:text="Buy"/>
+        android:text="@string/buy"/>
 
 
 </LinearLayout>

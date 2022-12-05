@@ -38,5 +38,5 @@ export class PurchaseableDTO {
     views: PurchaseableViewDTO[]
     variations: PurchaseableVariationsDTO[]
     supplierName: string
-    supplierSlug: string
+    supplierThumbnail: string
 }

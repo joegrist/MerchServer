@@ -20,7 +20,8 @@ class PurchaseableViewModel: BaseViewModel {
     @Published var variants: [Variant] = []
     @Published var title: String = ""
     @Published var supplerName: String = ""
-    @Published var supplerLogo: String = ""
+    @Published var supplierThumbnail: String = ""
+
     private let client = ApiClient()
     
     init(purchaseableId: Int64) {
@@ -58,7 +59,7 @@ class PurchaseableViewModel: BaseViewModel {
     func update() {
         title = p.name
         supplerName = p.supplierName
-        supplerLogo = "http://merch.zapto.org:8888/supplier/\(p.supplierSlug).svg"
+        supplierThumbnail = p.supplierThumbnail
         let variation = p.variations.firstObject as? PurchaseableVariationDTO
         let options = variation?.options.components(separatedBy: ",")
         

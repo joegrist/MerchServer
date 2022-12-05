@@ -3,22 +3,19 @@ package com.merch.app.android
 import ApiClient
 import IObserver
 import PurchaseableDTO
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class PurchaseableList : BaseFragment(), IObserver {
 
-    val args: PurchaseableListArgs by navArgs()
-    var lv: ListView? = null
-    var itemsAdapter: PurchaseableListAdapter? = null
-    var items: ArrayList<PurchaseableDTO> = arrayListOf()
+    private val args: PurchaseableListArgs by navArgs()
+    var rv: RecyclerView? = null
+    private var itemsAdapter: PurchaseableListAdapter? = null
 
     private var merchantSlug: String = "demo"
 
@@ -29,13 +26,15 @@ class PurchaseableList : BaseFragment(), IObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lv = view.findViewById(R.id.purchaseable_list_list_view) as? ListView
+        rv = view.findViewById(R.id.purchaseable_list_recycler_view) as? RecyclerView
         merchantSlug = args.merchantSlug
-        itemsAdapter = PurchaseableListAdapter(requireActivity(), items)
-        lv?.adapter = itemsAdapter
+        itemsAdapter = PurchaseableListAdapter(arrayListOf())
+        rv?.adapter = itemsAdapter
+        rv?.layoutManager = LinearLayoutManager(activity)
 
-        lv?.setOnItemClickListener { _, _, position, _ ->
-            val p = items.get(position)
+        itemsAdapter?.onClick = click@ { view ->
+            val position = rv?.getChildLayoutPosition(view) ?: return@click
+            val p = itemsAdapter?.list?.get(position) ?: return@click
             var action = PurchaseableListDirections.actionPurchaseableListToPurchaseable(p.id, p.name)
             navController?.navigate(action)
         }
@@ -53,10 +52,10 @@ class PurchaseableList : BaseFragment(), IObserver {
     }
 
     private fun showCurrent() {
-        items.clear()
-        ApiClient.purchaseables(merchantSlug).forEach {
-            items.add(it)
+        itemsAdapter?.list?.clear()
+        for ((index, value) in ApiClient.purchaseables(merchantSlug).withIndex()) {
+            itemsAdapter?.list?.add(value)
+            itemsAdapter?.notifyItemChanged(index)
         }
-        itemsAdapter?.notifyDataSetChanged()
     }
 }

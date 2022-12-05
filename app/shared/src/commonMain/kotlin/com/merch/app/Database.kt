@@ -29,7 +29,7 @@ class Purchaseable : RealmObject {
     var priceCents: Long = 0
     var variations: String = ""
     var supplierName: String = ""
-    var supplierSlug: String = ""
+    var supplierThumbnail: String = ""
 }
 
 class PurchaseableVariation: RealmObject {
