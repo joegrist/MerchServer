@@ -14,36 +14,38 @@ struct Purchaseable: View {
     var body: some View {
         ScrollView {
             VStack {
-                WebImage(url: URL(string: "http://127.0.0.1:8888/supplier/ID.svg"))
+                HStack{
+                    Text("Supplied By \(viewModel.supplerName)")
+                    Spacer()
+                    WebImage(url: URL(string: viewModel.supplerLogo))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 32, height: 32)
+                }
+                .frame(maxWidth: .infinity)
+                .padding([.leading, .trailing])
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         ForEach(viewModel.thumbnails, id: \.id) { t in
                             VStack {
-                                AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)")) { phase in
-                                    if let image = phase.image {
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .cornerRadius(10)
-                                    } else if phase.error != nil {
+                                WebImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(t.thumbnail)"))
+                                    .placeholder{
                                         ZStack {
                                             Color(UIColor.secondarySystemBackground)
                                                 .cornerRadius(10)
                                             Text("No Image")
                                         }
-                                    } else {
-                                        ZStack {
-                                            Color(UIColor.secondarySystemBackground)
-                                                .cornerRadius(10)
-                                            ProgressView()
-                                        }
                                     }
-                                }
-                                .frame(width: 300, height: 450)
+                                    .resizable()
+                                    .indicator(.activity)
+                                    .transition(.fade(duration: 0.5))
+                                    .scaledToFill()
+                                    .frame(width: 300, height: 450)
+                                    .cornerRadius(10)
                                 Text(t.name)
                             }
                         }
-                    }
+                    }.padding([.leading, .trailing])
                 }
                 VStack {
                     ForEach(viewModel.variants, id: \.id) { v in

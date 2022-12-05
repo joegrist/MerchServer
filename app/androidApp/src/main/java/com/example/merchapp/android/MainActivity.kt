@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity(), IObserver  {
 
     override fun onCallEnd() {
         loader(false)
+        updateCartCount() // FIXME: hack
     }
 
     override fun onEvent(event: AppEvent) {

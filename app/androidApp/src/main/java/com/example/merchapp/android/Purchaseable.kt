@@ -50,7 +50,7 @@ class Purchaseable : BaseFragment() {
         variantsAdapter = VariantListAdapter(requireActivity(), arrayListOf(), purchaseableId)
         viewList?.adapter = viewsAdapter
         variantList?.adapter = variantsAdapter
-        supplierLogo?.load("http://127.0.0.1:8888/supplier/ID.svg")
+        supplierLogo?.load("http://merch.zapto.org:8888/supplier/ID.svg")
         showCurrent()
 
         variantsAdapter?.incClick = { variation ->

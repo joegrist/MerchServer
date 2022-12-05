@@ -1,5 +1,9 @@
 import SwiftUI
 import shared
+import SDWebImage
+import SDWebImageSVGCoder
+import SDWebImageWebPCoder
+import SDWebImagePDFCoder
 
 class GlobalState: ObservableObject {
     @Published var showingUserSheet = false
@@ -13,6 +17,21 @@ struct iOSApp: App {
     
     init() {
         config()
+        
+        // Add WebP/SVG/PDF support
+        SDImageCodersManager.shared.addCoder(SDImageWebPCoder.shared)
+        SDImageCodersManager.shared.addCoder(SDImageSVGCoder.shared)
+        SDImageCodersManager.shared.addCoder(SDImagePDFCoder.shared)
+        
+        // Add default HTTP header
+        SDWebImageDownloader.shared.setValue("image/webp,image/apng,image/*,*/*;q=0.8", forHTTPHeaderField: "Accept")
+        
+        // Add multiple caches
+        let cache = SDImageCache(namespace: "tiny")
+        cache.config.maxMemoryCost = 100 * 1024 * 1024 // 100MB memory
+        cache.config.maxDiskSize = 50 * 1024 * 1024 // 50MB disk
+        SDImageCachesManager.shared.addCache(cache)
+        SDWebImageManager.defaultImageCache = SDImageCachesManager.shared
     }
     
 	var body: some Scene {

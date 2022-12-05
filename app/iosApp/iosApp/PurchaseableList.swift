@@ -1,5 +1,6 @@
 import SwiftUI
 import shared
+import SDWebImageSwiftUI
 
 struct PurchaseableList: View {
     
@@ -37,27 +38,17 @@ struct PurchaseableRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(purchaseable.thumbnail)")) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
+            WebImage( url: URL(string: "\(ApiClient.shared.imagesEndpoint)/\(purchaseable.thumbnail)"))
+                .resizable()
+                .placeholder{
+                    Color(UIColor.secondarySystemBackground)
                         .cornerRadius(10)
-                } else if phase.error != nil {
-                    ZStack {
-                        Color(UIColor.secondarySystemBackground)
-                            .cornerRadius(10)
-                        Text("-")
-                    }
-                } else {
-                    ZStack {
-                        Color(UIColor.secondarySystemBackground)
-                            .cornerRadius(10)
-                        ProgressView()
-                    }
                 }
-            }
-            .frame(width: 100, height: 100)
+                .indicator(.activity)
+                .transition(.fade(duration: 0.5))
+                .scaledToFill()
+                .frame(width: 100, height: 100)
+                .cornerRadius(10)
             Text(purchaseable.name)
         }
     }
