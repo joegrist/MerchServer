@@ -51,6 +51,7 @@ export class OrderDTO {
     id: string
     variation: string
     purchased: string
+    fulfilled: string
     customer: CustomerDTO
     design: DesignDTO
 }

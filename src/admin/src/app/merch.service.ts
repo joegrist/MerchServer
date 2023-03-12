@@ -8,7 +8,7 @@ import { OrderDTO } from '../../../server/ts/controller/dto';
 })
 export class MerchService implements OnInit {
 
-  private ordersUrl = 'http://localhost:3333/admin/orders';  // URL to web api
+  private ordersUrl = 'http://merch.zapto.org:3333/admin/orders';  // URL to web api
   orders: OrderDTO[] = []
 
   constructor(private http: HttpClient) { }

@@ -1,7 +1,14 @@
-<h2>{{ order.id }}</h2>
-<ul>
-    <li>{{ order.purchased }}
-    <li>{{ order.customer.name }}
-    <li>{{ order.customer.email }}
-    <li>{{ order.quantity }} x {{ order.variation }} {{ order.design.name }}
-</ul>
+<div class="order">
+    <div>
+        <input type="checkbox"/>
+    </div>
+    <div>
+        <div class="order-id">{{ order.id }}</div>
+        <div>{{ order.purchased | date }}</div>
+        <div>{{ order.customer.name }} {{ order.customer.email }}</div>
+        <div>{{ order.quantity }} x {{ order.variation }} {{ order.design.name }}</div>
+    </div>
+    <div>
+        <div>{{ order.fulfilled | date }}</div>
+    </div>
+</div>

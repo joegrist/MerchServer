@@ -1,1 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+div.order {
+    border-top: solid 1px black;
+    display: flex;
+    div {
+        .order-id {
+            font-weight: bold;
+        }
+    }
+}

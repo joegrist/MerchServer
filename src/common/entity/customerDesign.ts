@@ -25,6 +25,9 @@ export class CustomerDesign {
     @Column({ nullable: true })
     purchased: Date
 
+    @Column({ nullable: true })
+    fulfilled: Date
+
     @Column() 
     priceCents: number = 0
 }
