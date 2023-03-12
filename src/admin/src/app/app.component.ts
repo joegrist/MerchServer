@@ -25,4 +25,18 @@ export class AppComponent implements OnInit {
   trackOrder(index: number, order: OrderDTO) {
     return order.id
   }
+
+  checkedOrders() {
+    return this.orders.filter(order => order.checked).flatMap(order => order.id)
+  }
+
+  fulfil() {
+    console.log(this.orders)
+    console.log(this.checkedOrders())
+    this.merchService.setFulfilment(true, this.checkedOrders())
+  }
+
+  unFulfil() {
+    this.merchService.setFulfilment(false, this.checkedOrders())
+  }
 }

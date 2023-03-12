@@ -102,6 +102,13 @@ ds.initialize().then(async () => {
         .catch(err => next(err))
     })
 
+    app.post("/admin/fulfil", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> orders`)
+        orders(request, response)
+        .then(() => next)
+        .catch(err => next(err))
+    })
+
     // run app
     http.createServer(app).listen(3333);
     https.createServer(credentials, app).listen(4444);

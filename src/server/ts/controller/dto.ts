@@ -54,4 +54,6 @@ export class OrderDTO {
     fulfilled: string
     customer: CustomerDTO
     design: DesignDTO
+
+    checked: boolean = false
 }

@@ -1,6 +1,6 @@
 <div class="order">
     <div>
-        <input type="checkbox"/>
+        <input type="checkbox" (change)="checkChange()" [checked]="order.checked"/>
     </div>
     <div>
         <div class="order-id">{{ order.id }}</div>

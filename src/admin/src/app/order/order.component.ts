@@ -9,4 +9,8 @@ import { OrderDTO } from '../../../../server/ts/controller/dto';
 export class OrderComponent {
 
   @Input() order!: OrderDTO
+
+  checkChange() {
+    this.order.checked = !this.order.checked
+  }
 }

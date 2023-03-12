@@ -1,5 +1,9 @@
 <h1>Orders</h1>
 
+<div>
+  <button (click)="fulfil()">Fulfil</button><button (click)="unFulfil()">Un-Fulfil</button>
+</div>
+
 <div *ngFor="let order of orders; trackBy: trackOrder">
   <app-order [order]="order"></app-order>
 </div> 

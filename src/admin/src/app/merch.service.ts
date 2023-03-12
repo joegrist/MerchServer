@@ -8,19 +8,27 @@ import { OrderDTO } from '../../../server/ts/controller/dto';
 })
 export class MerchService implements OnInit {
 
-  private ordersUrl = 'http://merch.zapto.org:3333/admin/orders';  // URL to web api
+  private base = 'http://merch.zapto.org:3333/admin/'
+  private ordersUrl = `${this.base}orders`
+  private fulfilUrl = `${this.base}fulfil`
   orders: OrderDTO[] = []
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    console.log("y")
-    this.getOrders().subscribe(orders => { console.log(orders); this.orders = orders})    
+    this.fetch()   
+  }
+
+  fetch() {
+    this.getOrders().subscribe(orders => { this.orders = orders}) 
   }
 
   /** GET orders from the server */
   getOrders(): Observable<any[]> {
-    return this.http.get<any[]>(this.ordersUrl)
+    return this.http.get<OrderDTO[]>(this.ordersUrl)
   }
 
+  setFulfilment(to: boolean, orders: string[]) {
+    this.http.get<boolean>(this.fulfilUrl).subscribe(completed => this.fetch())
+  }
 }
