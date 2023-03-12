@@ -12,6 +12,7 @@ import { listDesignsForMerchant } from "./controller/designs"
 import { getCustomer, addEditCartItem, updateCart, login } from "./controller/customer"
 import { afterPurchase, getPaymentIntent } from "./controller/checkout"
 import { log } from "../../config/globals"
+import { orders } from "./controller/admin";
 
 const credentials = {
     key: fs.readFileSync('ssl/key.pem', 'utf8'),
@@ -90,6 +91,13 @@ ds.initialize().then(async () => {
     app.post("/customer/login", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> login`)
         login(request, response)
+        .then(() => next)
+        .catch(err => next(err))
+    })
+
+    app.get("/admin/orders", (request: Request, response: Response, next: Function) => {
+        log.log(`${request.path} -> orders`)
+        orders(request, response)
         .then(() => next)
         .catch(err => next(err))
     })

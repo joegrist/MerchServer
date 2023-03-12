@@ -8,7 +8,8 @@
     "build": "npm run ts; ",
     "generate": "ts-node src/tools/ts/generate.ts",
     "server": "ts-node src/server/ts/app.ts",
-    "img": "ts-node src/img/ts/img.ts"
+    "img": "ts-node src/img/ts/img.ts",
+    "admin": "cd src/admin; ng serve --open"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",

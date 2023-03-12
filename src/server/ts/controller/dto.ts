@@ -40,3 +40,17 @@ export class PurchaseableDTO {
     supplierName: string
     supplierThumbnail: string
 }
+
+export class DesignDTO {
+    name: string
+}
+
+export class OrderDTO {
+    quantity: number
+    priceCents: number
+    id: string
+    variation: string
+    purchased: string
+    customer: CustomerDTO
+    design: DesignDTO
+}
