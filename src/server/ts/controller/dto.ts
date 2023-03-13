@@ -57,3 +57,8 @@ export class OrderDTO {
 
     checked: boolean = false
 }
+
+export class FulfilmentDTO {
+    filfilled: boolean
+    orders: string[]
+}

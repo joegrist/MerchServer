@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   }
 
   getData() {
-    this.merchService.getOrders().subscribe(orders => { console.log(orders); this.orders = orders})
+    this.merchService.getOrders().subscribe(orders => this.orders = orders)
   }
 
   trackOrder(index: number, order: OrderDTO) {
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
 
   fulfil() {
     console.log(this.orders)
-    console.log(this.checkedOrders())
+    console.log(this.orders.filter(order => order.checked))
     this.merchService.setFulfilment(true, this.checkedOrders())
   }
 

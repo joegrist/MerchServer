@@ -1,7 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { OrderDTO } from '../../../server/ts/controller/dto';
+import { FulfilmentDTO, OrderDTO } from '../../../server/ts/controller/dto';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,9 @@ export class MerchService implements OnInit {
   }
 
   setFulfilment(to: boolean, orders: string[]) {
-    this.http.get<boolean>(this.fulfilUrl).subscribe(completed => this.fetch())
+    const payload = new FulfilmentDTO()
+    payload.filfilled = to
+    payload.orders = orders
+    this.http.post(this.fulfilUrl, payload).subscribe(completed => this.fetch())
   }
 }

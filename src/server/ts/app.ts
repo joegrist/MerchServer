@@ -31,6 +31,11 @@ ds.initialize().then(async () => {
     // for parsing application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded({ extended: true }))
 
+    app.use((req, res, next) => {
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200")
+        next();
+    })
+
     // register all application routes
     app.get("/", (request: Request, response: Response, next: Function) => {
         log.log(`${request.path} -> appInfo`)

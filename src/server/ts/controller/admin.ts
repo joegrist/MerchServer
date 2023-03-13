@@ -10,7 +10,6 @@ export async function orders(request: Request, response: Response) {
         where: {purchased : Not(IsNull())},
         relations: ["design", "customer"]
     })
-    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200")
     response.send(orders)
 }
 
