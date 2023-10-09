@@ -12,7 +12,7 @@ export async function getPaymentIntent(request: Request, response: Response) {
     response.setHeader('content-type', 'application/json')
     const result = {
         paymentIntent: stripePaymentIntent.client_secret,
-        publishableKey: config.STRIPE_TEST_KEY_PUBLISHABLE
+        publishableKey: config.STRIPE_KEY
     }
     log.log(`Payment intent created:`)
     log.obj(result)

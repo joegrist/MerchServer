@@ -11,12 +11,14 @@ import { listAllMerchants } from "./controller/merchant"
 import { listDesignsForMerchant } from "./controller/designs"
 import { getCustomer, addEditCartItem, updateCart, login } from "./controller/customer"
 import { afterPurchase, getPaymentIntent } from "./controller/checkout"
-import { log } from "../../config/globals"
+import { config, log } from "../../config/globals"
 import { orders } from "./controller/admin";
 
+
 const credentials = {
-    key: fs.readFileSync('ssl/key.pem', 'utf8'),
-    cert: fs.readFileSync('ssl/cert.pem', 'utf8')
+    key: fs.readFileSync('ssl/api-key.pem', 'utf8'),
+    cert: fs.readFileSync('ssl/api-cert.pem', 'utf8'),
+    passphrase: config.API_SSL_PASSPHRASE
 }
 
 ds.initialize().then(async () => {
@@ -32,7 +34,6 @@ ds.initialize().then(async () => {
     app.use(bodyParser.urlencoded({ extended: true }))
 
     app.use((req, res, next) => {
-        //res.append("Access-Control-Allow-Origin", "http://localhost:4200")
         res.append('Access-Control-Allow-Origin', ['*']);
         res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
         res.append('Access-Control-Allow-Headers', 'Content-Type');

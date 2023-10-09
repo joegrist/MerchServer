@@ -7,7 +7,8 @@
     "ts": "tsc --build src/server; tsc --build src/tools;  tsc --build src/img",
     "build": "npm run ts; ",
     "generate": "ts-node src/tools/ts/generate.ts",
-    "server": "ts-node src/server/ts/app.ts",
+    "server": "env-cmd ts-node src/server/ts/app.ts",
+    "pwa": "env-cmd ts-node src/pwa/ts/app.ts",
     "img": "ts-node src/img/ts/img.ts",
     "admin": "cd src/admin; ng serve --open"
   },
@@ -22,6 +23,7 @@
     "@types/multer": "^1.4.7",
     "body-parser": "^1.20.1",
     "crypto": "^1.0.1",
+    "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "jimp": "^0.16.2",

@@ -8,5 +8,5 @@
         "types": ["node"],
         "outFile": "build/server.js"
     },
-    "include": ["src/ts/**/*", "test/ts/**/*"],
+    "include": ["src/server/ts/**/*", "test/ts/**/*"],
 }
