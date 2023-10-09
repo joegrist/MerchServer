@@ -8,7 +8,7 @@
     "build": "npm run ts; ",
     "generate": "ts-node src/tools/ts/generate.ts",
     "server": "env-cmd ts-node src/server/ts/app.ts",
-    "pwa": "env-cmd ts-node src/pwa/ts/app.ts",
+    "pwa": "env-cmd node pwa.js",
     "img": "ts-node src/img/ts/img.ts",
     "admin": "cd src/admin; ng serve --open"
   },

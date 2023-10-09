@@ -1,7 +1,0 @@
-{
-    "extends": "../config/base",
-    "compilerOptions": {
-        "outDir": "../../build/server",
-    },
-    "include": ["ts/**/*"],
-}
